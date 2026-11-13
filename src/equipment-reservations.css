@@ -1,0 +1,54 @@
+.eq-page { max-width: 1320px; }
+.eq-steps { display: flex; align-items: center; gap: 18px; margin-bottom: 25px; color: var(--ob-muted); }
+.eq-page .eq-steps button { border: 0; background: transparent; color: inherit; padding-inline: 0; }
+.eq-page .eq-steps [aria-current] { color: var(--ob-blue); font-weight: 750; }
+.eq-cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; max-width: 920px; }
+.eq-card { border: 1px solid var(--ob-line); border-radius: 12px; background: white; overflow: hidden; }
+.eq-card:hover, .eq-card.eq-selected { border-color: var(--ob-blue); background: #eef6ff; }
+.eq-page .eq-pick { border: 0; background: transparent; border-radius: 0; width: 100%; min-height: 130px; position: relative; justify-content: start; gap: 24px; text-align: left; padding: 22px; color: var(--ob-ink); white-space: normal; }
+.eq-pick > svg { flex: none; }
+.eq-pick strong { font-size: clamp(17px, 2vw, 24px); display: block; }
+.eq-pick small { display: block; color: var(--ob-muted); margin-top: 4px; }
+.eq-pick .eq-blocked { color: #9c431d; }
+.eq-check { position: absolute; top: 12px; right: 12px; color: var(--ob-blue); }
+.eq-card-footer { display: flex; justify-content: space-between; gap: 5px; padding: 5px 12px 12px; flex-wrap: wrap; }
+.eq-card-footer button { background: transparent; border-color: transparent; }
+.eq-local-admin { margin-top: 22px; color: var(--ob-muted); font-size: 13px; }
+.eq-local-admin summary { cursor: pointer; margin-bottom: 7px; }
+.eq-layout { display: grid; grid-template-columns: minmax(0, 2fr) minmax(240px, 1fr); align-items: start; gap: 16px; }
+.eq-month { display: flex; align-items: center; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+.eq-month h2 { margin-left: 5px; }
+.eq-grid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); border-top: 1px solid var(--ob-line); border-left: 1px solid var(--ob-line); border-radius: 8px; overflow: hidden; }
+.eq-grid > div { min-width: 0; border-right: 1px solid var(--ob-line); border-bottom: 1px solid var(--ob-line); }
+.eq-weekday { background: var(--ob-soft); padding: 7px 0; text-align: center; font-size: 13px; }
+.eq-day { min-height: 79px; padding: 4px; }
+.eq-day-selected { background: #eaf4ff; }
+.eq-outside { color: var(--ob-muted); background: #f7f9fc; }
+.eq-page .eq-day > button { background: transparent; border: 0; padding: 3px 5px; color: inherit; font-size: 13px; }
+.eq-page .eq-day > button:hover { background: #dfedfc; }
+.eq-page .eq-day > .eq-today { background: var(--ob-blue); color: white; border-radius: 999px; min-width: 23px; }
+.eq-page .eq-day > .eq-event { display: block; width: 100%; text-align: left; overflow: hidden; text-overflow: ellipsis; background: #edf3fa; color: #38526f; padding: 2px 3px; font-size: 10px; margin-top: 3px; }
+.eq-page .eq-day > .eq-own { background: #dceeff; color: #0c59a7; }
+.eq-page .eq-maint, .eq-page .eq-day > .eq-maint { background: #fff2d9; color: #794b0e; }
+.eq-side > p { margin-top: 5px; }
+.eq-side fieldset, .eq-overlay fieldset { display: grid; gap: 10px; border: 0; padding: 0; margin: 12px 0 0; min-width: 0; }
+.eq-side fieldset details > label { margin-top: 7px; }
+.eq-pair { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 7px; }
+.eq-conditions { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 3px; }
+.eq-conditions button { padding-inline: 3px; }
+.eq-conditions [aria-pressed=true] { background: #eaf4ff; border-color: var(--ob-blue); }
+.eq-day-list { display: grid; gap: 4px; margin: 10px 0; }
+.eq-day-list p { font-size: 12px; padding: 5px; border-radius: 6px; }
+.eq-detail { display: grid; grid-template-columns: auto 1fr; gap: 7px; }
+.eq-detail dd { margin: 0; overflow-wrap: anywhere; }
+.eq-side > button, .eq-side .eq-maint-action { margin-top: 9px; }
+.eq-overlay { position: fixed; inset: 0; z-index: 20; display: grid; place-items: center; padding: 16px; background: #14274055; }
+.eq-overlay > * { width: min(100%, 440px); max-height: 90vh; overflow: auto; }
+.eq-overlay section { display: grid; gap: 10px; }
+.eq-page .eq-message { margin-top: 12px; color: #17684e; }
+@media (max-width: 1100px) { .eq-layout { grid-template-columns: minmax(0, 1fr); } }
+@media (max-width: 550px) {
+  .eq-cards { grid-template-columns: minmax(0, 1fr); }
+  .eq-day { min-height: 57px; padding: 2px; }
+  .eq-page .eq-day > .eq-event { font-size: 9px; }
+}

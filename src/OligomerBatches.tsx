@@ -1,6 +1,7 @@
+import { availableMaterials, readInventorySafely } from './material-inventory';
 import { useEffect, useRef, useState } from 'react';
 import { Plus, Search, Upload } from 'lucide-react';
-import { library, makeRow, units, type Material, type Saved, type Unit } from './formulation-model';
+import { makeRow, units, type Material, type Saved, type Unit } from './formulation-model';
 import type { ResearchStore } from './calculator-model';
 import {
   batchStatuses, batchTypes, blankBatch, readBatches, researchers, saveBatch,
@@ -63,7 +64,7 @@ export default function OligomerBatches({ projects }: { projects: Project[] }) {
   const [materialLots, setMaterialLots] = useState<Record<string, string>>({});
   const editor = useRef<HTMLFormElement>(null);
   const files = useRef<HTMLInputElement>(null);
-  const materials = localData<Material[]>('isnm-material-library-v1', library);
+  const materials = availableMaterials(readInventorySafely());
   const formulations = localData<Saved[]>('isnm-formulations', []);
   const research = localData<ResearchStore | null>('isnm-research-v1', null);
   useEffect(() => {
@@ -307,7 +308,7 @@ export default function OligomerBatches({ projects }: { projects: Project[] }) {
             {picker && <div className="ob-picker">
               <input aria-label="원료 검색" placeholder="원료명, ID, Lot, 제조사 검색" value={materialQuery} onChange={event => setMaterialQuery(event.target.value)}/>
               {materials.filter(material => [material.name, material.id, (material as Material & { manufacturer?: string }).manufacturer,
-                ...material.lots.flatMap(lot => [lot.id, lot.name])].some(value => value?.toLowerCase().includes(materialQuery.trim().toLowerCase())))
+                ...material.lots.flatMap(lot => [lot.id, lot.name, lot.inventory?.manufacturer])].some(value => value?.toLowerCase().includes(materialQuery.trim().toLowerCase())))
                 .map(material => <div className="ob-picker-row" key={material.id}>
                   <span>{material.name}</span><select aria-label={material.name + ' Lot'} value={materialLots[material.id] ?? material.lots[0]?.id ?? ''}
                     onChange={event => setMaterialLots(previous => ({ ...previous, [material.id]: event.target.value }))}>
