@@ -1,8 +1,12 @@
-# ISNM LAB Workspace
+# ISNM LAB Workspace · 2026-11-14 · v1
 
 연구 프로젝트, 조성 정보, 조성계산기, 합성 계획, 샘플 계획을 관리하는 React + TypeScript + Vite 웹앱입니다.
 
-현재 웹앱: https://isnm-daily-research-k7v2.dn2315401.chatgpt.site
+2026-11-14 v1 시작본 웹앱: https://isnm-lab-2026-11-14-v1.dn2315401.chatgpt.site
+
+GitHub 최신 main (`258a1b0`)을 기준으로 만든 공동 개발 시작본입니다. 작업 브랜치는 `work/2026-11-14-v1`, 고정 태그는 `2026-11-14-v1`입니다.
+
+날짜·버전별 다운로드, 수정, 재저장은 [공동 개발 가이드](docs/COLLABORATION.md)를 참고하세요.
 
 ## 로컬 실행
 
@@ -11,6 +15,7 @@ Node.js 22 이상이 필요합니다.
 ```bash
 git clone https://github.com/dn2315401/isnm-lab-workspace.git
 cd isnm-lab-workspace
+git switch work/2026-11-14-v1
 npm ci
 npm run dev
 ```

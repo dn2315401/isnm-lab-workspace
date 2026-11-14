@@ -1,0 +1,5 @@
+import {useState} from 'react';
+import {GitBranch,Download,ExternalLink,X} from 'lucide-react';
+import version from '../version.json';
+import './version.css';
+export default function VersionBadge(){const[open,setOpen]=useState(false);return <div className="version-badge-wrap"><button className="version-badge" aria-expanded={open} aria-label="웹앱 버전 및 소스 코드" onClick={()=>setOpen(!open)}><GitBranch size={12}/>{version.date} · {version.version}</button>{open&&<div className="version-card"><div className="version-card-heading"><strong>{version.name}</strong><button aria-label="버전 정보 닫기" onClick={()=>setOpen(false)}><X size={14}/></button></div><p>{version.description}</p><a href={`${version.repository}/tree/${version.tag}`} target="_blank" rel="noreferrer"><GitBranch size={13}/>이 버전의 소스 코드<ExternalLink size={11}/></a><a href={`${version.repository}/archive/refs/tags/${version.tag}.zip`}><Download size={13}/>이 버전 다운로드 (ZIP)</a><small>코드 수정본은 GitHub에 저장합니다.<br/>실험 데이터는 각 브라우저에 따로 저장됩니다.</small></div>}</div>}
