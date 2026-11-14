@@ -17,14 +17,14 @@
 .mi-card, .mi-properties { min-width: 0; border: 1px solid var(--ob-line); border-radius: 9px; padding: 12px; }
 .mi-properties > .mi-card { border: 0; padding: 0; }
 .mi-card h3 { margin-bottom: 10px; }
-.mi-card dl { margin: 0; font-size: 13px; }
+.mi-card dl { margin: 0; font-size: var(--text-small); }
 .mi-card dl > div { display: grid; grid-template-columns: 1fr 1.1fr; gap: 7px; border-top: 1px solid #e9eff6; padding: 7px 0; }
 .mi-card dt { color: var(--ob-muted); }
 .mi-card dd { margin: 0; overflow-wrap: anywhere; white-space: pre-wrap; }
 .mi-card > .ob-field, .mi-card > .mi-pair, .mi-card > .ob-drop { margin-top: 10px; }
 .mi-card textarea { resize: vertical; }
 .mi-pair { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
-.mi-check { display: flex; align-items: center; gap: 5px; margin: 8px 0; font-size: 13px; }
+.mi-check { display: flex; align-items: center; gap: 5px; margin: 8px 0; font-size: var(--text-small); }
 .mi-document { display: flex; flex-wrap: wrap; gap: 7px; align-items: center; padding: 8px; border: 1px solid var(--ob-line); border-radius: 8px; margin-top: 8px; overflow-wrap: anywhere; }
 .mi-document :is(strong, span) { flex: 1; min-width: 90px; }
 .mi-document a { color: var(--ob-blue); padding: 6px; }

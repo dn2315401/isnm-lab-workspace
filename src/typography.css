@@ -1,0 +1,199 @@
+/* Shared, non-linear text scale. 1rem follows the user's browser preference. */
+:root{
+ --text-caption:.75rem;       /* 12px at the default 16px root */
+ --text-meta:.8125rem;        /* 13px */
+ --text-label:.875rem;       /* 14px */
+ --text-small:.9375rem;      /* 15px */
+ --text-body:1rem;           /* 16px */
+ --text-subheading:1.0625rem;/* 17px */
+ --text-section:1.125rem;    /* 18px */
+ --text-heading:1.25rem;     /* 20px */
+ --text-title-small:1.5rem;  /* 24px */
+ --text-title:1.75rem;       /* 28px */
+ font-size:100%;
+ line-height:1.5;
+}
+body{line-height:1.5}
+button,input,select,textarea{line-height:1.5}
+p,dd{line-height:1.65}
+input:not([type=checkbox]):not([type=radio]):not([type=range]):not([type=file]),select{min-height:2.375rem}
+textarea{line-height:1.65}
+input,select,textarea{max-width:100%}
+:is(.app,.project-page,.formulation-page,.rs-page) :is(h1,h2,h3,h4){line-height:1.35;overflow-wrap:break-word}
+main :is(.page-heading,.section-heading,.record-panel-title,.form-heading,.form-table-heading){flex-wrap:wrap;row-gap:.8rem}
+header{height:auto;min-height:4.875rem;padding-block:.9rem;gap:.75rem;flex-wrap:wrap}
+.header-right{flex-wrap:wrap;row-gap:.65rem;column-gap:1rem}
+.breadcrumb{font-size:var(--text-label);line-height:1.6}
+.today{font-size:var(--text-meta)}
+aside{overflow-y:auto;overscroll-behavior:contain}
+nav button{line-height:1.5;min-height:2.9rem}
+.workspace{margin-block:1.5rem}
+.profile{flex-wrap:wrap;row-gap:.6rem}
+.lab-note{margin-top:1.25rem}
+.avatar{flex-shrink:0}
+.avatars span{width:1.875rem;height:1.875rem;font-size:var(--text-caption)}
+.welcome{min-height:19rem}
+.welcome-copy{max-width:65%}
+.welcome h2{line-height:1.45}
+.page-heading p{line-height:1.65}
+.stat{align-items:flex-start}
+.stat div{min-width:0}
+.stat p{line-height:1.65}
+.stat h3{line-height:1.2}
+.project-card h3{line-height:1.5}
+.project-card>p{line-height:1.65;min-height:3.3em}
+.calendar-grid button{height:2.375rem;min-width:2rem;width:2.375rem;line-height:1.4;font-size:var(--text-label)}
+.calendar-legend{flex-wrap:wrap;row-gap:.6rem}
+.calendar-legend small{font-size:var(--text-caption);line-height:1.6}
+.calendar-legend>span{font-size:var(--text-meta)}
+.calendar-grid .weekday{font-size:var(--text-caption)}
+.equipment-feature{flex-wrap:wrap;row-gap:1rem}
+.booking{align-items:flex-start;padding-block:1rem}
+.booking .time{width:3.3rem;flex-shrink:0}
+.profile small,.page-heading p,.section-heading p,.project-card>p,.card-footer,.stat p,.today{color:#697488}
+.form-table,.calc-input-table,.calc-result-table,.rs-result-table{line-height:1.55}
+.form-table :is(input,select),.calc-input-table :is(input,select){height:auto;min-height:2.375rem;line-height:1.5}
+.form-table .lot-select,.calc-input-table .calc-lot{min-height:1.85rem;line-height:1.5}
+.form-table{min-width:1120px}
+.form-table th:nth-child(2){width:155px}
+.form-table th:nth-child(3){width:205px}
+.form-table th:nth-child(4){width:110px}
+.form-table th:nth-child(5){width:85px}
+.form-table th:nth-child(6),.form-table th:nth-child(7){width:90px}
+.form-table th:nth-child(8){width:165px}
+.form-table .amount-input{width:5.5rem}
+.calc-input-table{min-width:800px}
+.calc-input-table th:nth-child(2){width:190px}
+.calc-input-table th:nth-child(3){width:145px}
+.calc-input-table th:nth-child(4){width:110px}
+.calc-input-table th:nth-child(5){width:105px}
+.calc-input-table th:nth-child(6){width:115px}
+.calc-result-table{min-width:780px}
+.form-table :is(th,td),.calc-input-table :is(th,td),.calc-result-table :is(th,td){padding-block:.9rem}
+.form-table th,.calc-input-table th,.calc-result-table th{white-space:normal}
+.form-name{min-width:12rem}
+.form-name input{line-height:1.5}
+.form-meta{flex-wrap:wrap;row-gap:1.2rem}
+.form-meta .molecular-label{min-width:12rem}
+.mode-options label{line-height:1.5;min-width:0}
+.calculator-modal-header{flex-shrink:0;gap:.8rem}
+.calculator-modal-header h2{line-height:1.4}
+.calculator-modal-header p{line-height:1.6}
+.calculator-dialog>.project-tabs{flex-wrap:wrap;row-gap:0}
+.calculator-dialog>.calc-save-bar{flex-wrap:wrap;gap:1rem}
+.calculator-dialog>.calc-save-bar>div{flex-wrap:wrap;justify-content:flex-end;row-gap:.65rem}
+.calculator-dialog .calc-settings-second-row{grid-template-columns:minmax(0,1.6fr) minmax(11rem,.8fr);gap:1.2rem}
+.calculator-dialog .calc-settings-second-row .mode-options{grid-template-columns:repeat(2,minmax(0,1fr))}
+.calculator-dialog .calc-checkbox{line-height:1.6}
+.calc-checkbox small,.basis-explanation,.precision-note,.result-note,.project-local-note,.link-footnote,.property-note{color:#718096}
+.calc-section-label{flex-wrap:wrap;row-gap:.6rem}
+.calc-result-totals{flex-wrap:wrap;row-gap:1rem}
+.project-page .input-suffix,.formulation-page .search{align-items:stretch}
+.project-page .input-suffix>input,.project-page .input-suffix>select{line-height:1.5}
+.project-page label,.formulation-page label{line-height:1.5}
+.project-page-heading{flex-wrap:wrap}
+.project-tags{flex-wrap:wrap;row-gap:.6rem}
+.form-bottom,footer{flex-wrap:wrap;line-height:1.6}
+.version-badge{font-size:var(--text-meta)}
+.version-card{width:min(21rem,calc(100vw - 2rem));top:2.7rem}
+.version-card-heading{align-items:flex-start}
+.rs-common-filters,.rs-date-filters{row-gap:1rem}
+.rs-multi>div{top:calc(100% + .25rem)}
+.rs-multi summary,.rs-multi label,.rs-date-filters>label,.rs-common-filters>label{line-height:1.5}
+.rs-filter-footer,.rs-result-controls,.rs-page-bar{row-gap:.8rem;flex-wrap:wrap}
+.rs-result-table{min-width:1250px}
+.rs-result-table th:nth-child(3){width:250px}
+.rs-result-table th:nth-child(4){width:150px}
+.rs-result-table th:nth-child(6){width:110px}
+.rs-result-table th:nth-child(7){width:140px}
+.rs-result-table th:nth-child(8){width:135px}
+.rs-result-table td,.rs-fields dd{line-height:1.6}
+.rs-result-controls{margin-left:auto}
+.rs-result-controls select{min-width:8rem}
+.rs-comparison :is(input,select){font:inherit;line-height:1.5}
+.rs-compare-table{min-width:780px}
+.rs-relationships li>button{flex-wrap:wrap;row-gap:.5rem}
+.rs-relationships small{white-space:normal}
+.rs-relationships :is(strong,span){overflow-wrap:anywhere}
+.rs-chips>button{font-size:var(--text-meta);line-height:1.5}
+.rs-detail-note,.rs-local-note,.rs-match-reason,.rs-date-hint,.rs-pending-query{color:#71829b}
+.rs-no-results,.rs-empty{line-height:1.65}
+.ob-page{font-size:var(--text-body);line-height:1.6}
+.ob-page table{font-size:var(--text-label);line-height:1.55}
+.ob-page th,.ob-page td{line-height:1.55}
+.ob-page :is(.ob-badge,.ob-field>span,.ob-muted){line-height:1.6}
+.ob-page :is(input,select,textarea){line-height:1.5}
+.ob-page .ob-heading h1{font-size:clamp(1.625rem,2.6vw,2rem)}
+.ob-page .ob-list-title{flex-wrap:wrap;row-gap:.75rem}
+.ob-page .ob-filters{flex-wrap:wrap}
+@media(max-width:1100px){
+ .bottom-grid{grid-template-columns:1fr}
+ .calculator-dialog .calc-two-column{grid-template-columns:1fr}
+ .form-meta .meta-divider{display:none}
+ .rs-common-filters{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:850px){
+ .stats{grid-template-columns:1fr}
+ .stat{align-items:center}
+ .stat p{display:block}
+ .stat h3{margin-bottom:.6rem}
+ .welcome-copy{max-width:100%}
+ .molecule{opacity:.32;right:-4rem}
+ .rs-date-filters{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
+ .rs-date-filters>span{grid-column:1/-1}
+ .project-grid{grid-template-columns:1fr}
+}
+@media(max-width:650px){
+ header{padding-block:.85rem}
+ .breadcrumb{font-size:var(--text-meta)}
+ .header-right{column-gap:.65rem}
+ .welcome{min-height:20rem;padding:1.5rem 1.1rem}
+ .welcome p{font-size:var(--text-label)}
+ .welcome button{font-size:var(--text-label)}
+ .page-heading h1{font-size:1.5rem}
+ .page-heading p{font-size:var(--text-label)}
+ .page-heading-actions{width:100%;justify-content:flex-end;row-gap:.6rem}
+ .page-heading-actions>.primary,.page-heading-actions>.blue-primary{font-size:var(--text-meta);padding:.65rem .8rem}
+ .calendar-grid{gap:.15rem}
+ .calendar-grid button{height:2rem;width:100%;min-width:0;font-size:var(--text-label)}
+ .equipment-feature{gap:1rem}
+ .machine{display:none}
+ .form-meta{gap:1rem}
+ .form-name{min-width:0;width:100%}
+ .form-icon{display:none}
+ .calculator-modal-header{padding:1rem .75rem;align-items:flex-start}
+ .calculator-modal-header h2{font-size:var(--text-section)}
+ .calculator-modal-header p{font-size:var(--text-caption)}
+ .calculator-heading-icon{display:none}
+ .calculator-dialog .calc-settings-second-row{grid-template-columns:1fr}
+ .calculator-dialog>.calc-save-bar{padding:.8rem .75rem}
+ .calculator-dialog>.calc-save-bar>div{width:100%;justify-content:flex-end;flex-wrap:wrap}
+ .calculator-dialog>.calc-save-bar :is(.outline,.blue-primary,.text-button){font-size:var(--text-meta);line-height:1.5}
+ .calculator-dialog .sample-card,.calculator-dialog .options-card{grid-template-columns:1fr}
+ .calculator-dialog .sample-card>*{grid-column:1/-1}
+ .calculator-dialog .options-card .extra-input{grid-column:1}
+ .form-actions{flex-wrap:wrap;row-gap:.65rem}
+ .form-heading h1{font-size:1.5rem}
+ .rs-search{grid-template-columns:minmax(0,1fr) 6rem}
+ .rs-common-filters,.rs-date-filters{grid-template-columns:1fr}
+ .rs-date-filters>span{grid-column:auto}
+ .rs-extra-kinds>div{max-width:calc(100vw - 7rem);grid-template-columns:1fr}
+ .rs-filter-footer>label{width:100%}
+ .rs-result-controls{justify-content:flex-start;flex-wrap:wrap}
+ .rs-result-controls>label{font-size:var(--text-meta)}
+ .rs-fields{grid-template-columns:1fr}
+ .rs-compare-bar{align-items:flex-start;flex-wrap:wrap}
+ .rs-compare-bar>span{width:100%;flex:none}
+ .rs-compare-bar>button:last-child{font-size:var(--text-meta)}
+ .rs-comparison-heading h2{font-size:var(--text-heading)}
+ .version-card{right:-4rem}
+}
+small{font-size:var(--text-meta);line-height:1.5}
+.page-heading p,.welcome p,.project-card>p,.modal>p{font-size:var(--text-small)}
+:is(.form-table,.calc-input-table,.calc-result-table,.rs-result-table) :is(th,td){font-size:var(--text-label)}
+.rs-fields dd{font-size:var(--text-small)}
+.rs-curve-scroll{overflow-x:auto;width:100%;overscroll-behavior:contain}
+.rs-curve-scroll>.rs-curve{min-width:600px}
+@media(max-width:650px){.page-heading p,.project-card>p{font-size:var(--text-label)}}
+.primary,.blue-primary,.outline,.ob-primary{white-space:normal;overflow-wrap:anywhere;max-width:100%}
+.primary>svg,.blue-primary>svg,.outline>svg,.ob-primary>svg{flex-shrink:0}

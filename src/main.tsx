@@ -9,6 +9,7 @@ import React, {useState,useEffect} from 'react';
 import {createRoot} from 'react-dom/client';
 import {Home, FolderOpen, FlaskConical, CalendarDays, ChevronRight, ChevronLeft, Plus, Search, Bell, ArrowUpRight, Clock3, Settings, LogOut, X, Microscope, BookOpen, Check, MoreHorizontal} from 'lucide-react';
 import './styles.css';
+import './typography.css';
 import Formulation from './Formulation';
 import ProjectPage from './ProjectPage';
 type Project={id:number;name:string;category:string;description:string;progress:number;color:string};
