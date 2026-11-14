@@ -1,12 +1,12 @@
-# ISNM LAB Workspace · 2026-11-14 · v1
+# ISNM LAB Workspace · 2026-11-14 작업본
 
 연구 프로젝트, 조성 정보, 조성계산기, 합성 계획, 샘플 계획을 관리하는 React + TypeScript + Vite 웹앱입니다.
 
-2026-11-14 v1 시작본 웹앱: https://isnm-lab-2026-11-14-v1.dn2315401.chatgpt.site
+11-14 작업본 웹앱: https://isnm-lab-2026-11-14-v1.dn2315401.chatgpt.site
 
-GitHub 최신 main (`258a1b0`)을 기준으로 만든 공동 개발 시작본입니다. 작업 브랜치는 `work/2026-11-14-v1`, 고정 태그는 `2026-11-14-v1`입니다.
+현재 수정 내용은 `work/2026-11-14-v1` 브랜치에 계속 저장합니다. main은 별도 요청이 없으면 유지합니다. `2026-11-14-v1` 태그는 최초 시작본 보관용이며, 현재 수정본은 작업 브랜치에서 확인하세요.
 
-날짜·버전별 다운로드, 수정, 재저장은 [공동 개발 가이드](docs/COLLABORATION.md)를 참고하세요.
+현재 작업본 다운로드, 수정, 재저장은 [공동 개발 가이드](docs/COLLABORATION.md)를 참고하세요.
 
 ## 로컬 실행
 
@@ -24,6 +24,7 @@ npm run dev
 
 ```bash
 npm run test:calculator # 계산·검증 테스트
+npm run test:search     # 데이터 검색 검증
 npm run build           # TypeScript 검사와 프로덕션 빌드
 npm run preview         # 빌드 결과 확인
 ```
@@ -81,3 +82,7 @@ git push -u origin feature/my-change
 - `src/*.css`: 반응형 화면 스타일
 - `tests/calculator.test.cjs`: 계산·검증 테스트
 - `scripts/test-calculator.mjs`: 테스트 실행 스크립트
+
+## 데이터 검색 업데이트
+
+날짜 자동 인식, 동일 버전 조성 필터, 관계 탐색, 페이지별 조회, 측정/참조 구분, 최대 5개 샘플 비교와 호환 곡선 비교를 추가했습니다. 구현 범위, 파일, 데이터 계약, 테스트와 미구현 서버 연동은 [데이터 검색 작업 보고](docs/DATA_SEARCH.md)를 참고하세요.

@@ -1,207 +1,40 @@
-import { useEffect, useRef, useState, type ReactNode } from 'react';
-import { ArrowLeft, ArrowUpRight, FileText, Search } from 'lucide-react';
-import { buildSearch, emptySearch, kinds, materialLink, searchResults, type Result, type SearchFilters, type SearchProject } from './research-search';
+import {useEffect,useMemo,useRef,useState,type ReactNode} from 'react';
+import {Search,X,ArrowLeft,ArrowUpRight,ChevronRight,Download,RefreshCw,SlidersHorizontal,Database,GitBranch,Layers,Info,FileText} from 'lucide-react';
+import {createLocalSearchRepository,emptySearch,kinds,dateLabels,validateFilters,hasCriteria,numberValue,type SearchFilters,type SearchProject,type Result,type SearchRepository} from './research-search';
+import {parseDateQuery} from './search-dates';
+import ResearchComparison from './ResearchComparison';
 import './research-search.css';
-
-const pageSize = 10;
-const tabs = ['기본 정보', '합성 조건', '원료·Lot', '분석 결과'];
-const sessionKey = 'isnm-search-state';
-const initial = { filters: emptySearch, submitted: false, page: 1, selected: '', tab: 0, scroll: 0 };
-type State = typeof initial;
-
-function restore(): State {
-  try { return { ...initial, ...JSON.parse(sessionStorage.getItem(sessionKey) ?? '{}') }; }
-  catch { return initial; }
-}
-
-function fields(values: [string, string][]) {
-  return <dl className="rs-fields">{values.map(([label, value]) => <div key={label}><dt>{label}</dt><dd>{value || '—'}</dd></div>)}</dl>;
-}
-
-function analysis(result: Result): [string, string][] {
-  const batch = result.batch;
-  return batch ? [['Mn', batch.mn ? Number(batch.mn).toLocaleString('ko-KR') + ' g/mol' : ''], ['PDI', batch.pdi],
-    ['Tni', batch.tni ? batch.tni + ' °C' : ''], ['비고', batch.notes], ['분석 참조', batch.analysisRefs]] : result.fields;
-}
-
-function recipe(result: Result): [string, string][] {
-  const batch = result.batch;
-  return batch ? [['모노머 조성비', batch.composition], ['조성 기준', batch.basis], ['촉매', batch.catalyst],
-    ['촉매 함량', batch.catalystAmount ? batch.catalystAmount + ' wt%' : ''], ['반응 온도', batch.temperature ? batch.temperature + ' °C' : ''],
-    ['반응 시간', batch.duration ? batch.duration + ' h' : ''], ['용매', batch.solvent], ['세척액', batch.wash]] : result.fields;
-}
-
-function ingredients(result: Result) {
-  const rows = result.batch?.ingredients ?? result.rows ?? [];
-  return rows.length ? <ul className="rs-links">{rows.map(row => <li key={row.id}><a href={materialLink(row.lotId)}>{row.name} · {row.lot}</a>
-    <span>{row.amount ? row.amount + ' ' + row.unit : '사용량 미등록'}</span></li>)}</ul> : <p className="ob-muted">등록된 원료·Lot가 없습니다.</p>;
-}
-
-function status(result: Result) {
-  return result.status ? <span className="ob-badge" data-status={result.status === '분석 완료' ? '완료' : result.status}>{result.status}</span> : '—';
-}
-
-export default function ResearchSearch({ projects, originalKey }: { projects: SearchProject[]; originalKey: string }) {
-  const [state, setState] = useState(restore);
-  const [filters, setFilters] = useState(state.filters);
-  const [loading, setLoading] = useState(false);
-  const [data, setData] = useState(() => buildSearch(projects));
-  const [error, setError] = useState('');
-  const timer = useRef<number | undefined>(undefined);
-  const searchInput = useRef<HTMLInputElement>(null);
-  const selected = data.results.find(result => result.key === state.selected);
-  const original = data.results.find(result => encodeURIComponent(result.key) === originalKey);
-  const results = state.submitted ? searchResults(data.results, state.filters) : [];
-  const pages = Math.max(1, Math.ceil(results.length / pageSize));
-  const page = Math.min(state.page, pages);
-  const visible = results.slice((page - 1) * pageSize, page * pageSize);
-  const batchTable = results.length > 0 && results.every(result => result.kind === '올리고머 배치');
-  const people = [...new Set(data.results.flatMap(result => result.researcher ? [result.researcher] : []))].sort();
-
-  useEffect(() => {
-    const frame = requestAnimationFrame(() => window.scrollTo(0, originalKey ? 0 : state.scroll));
-    return () => { cancelAnimationFrame(frame); window.clearTimeout(timer.current); };
-  }, [originalKey]);
-
-  function remember(next: State) {
-    setState(next);
-    try { sessionStorage.setItem(sessionKey, JSON.stringify(next)); } catch { /* In-memory search remains available. */ }
-  }
-
-  function run(next: SearchFilters) {
-    window.clearTimeout(timer.current);
-    setError('');
-    if (next.period === 'custom' && next.start && next.end && next.start > next.end) {
-      setLoading(false);
-      setError('종료일은 시작일 이후여야 합니다.');
-      return;
-    }
-    const submitted = Object.entries(next).some(([key, value]) => !['sort', 'start', 'end'].includes(key) && value.trim());
-    setLoading(true);
-    timer.current = window.setTimeout(() => {
-      try {
-        setData(buildSearch(projects));
-        remember({ ...initial, filters: next, submitted });
-      } catch { setError('검색 데이터를 읽지 못했습니다. 다시 검색해주세요.'); }
-      finally { setLoading(false); }
-    }, 0);
-  }
-
-  function filter(key: keyof SearchFilters, value: string) {
-    const next = { ...filters, [key]: value };
-    setFilters(next);
-    run(next);
-  }
-
-  function highlight(value: string): ReactNode {
-    const query = state.filters.query.trim();
-    if (!query) return value;
-    const index = value.toLowerCase().indexOf(query.toLowerCase());
-    return index < 0 ? value : <>{value.slice(0, index)}<mark>{value.slice(index, index + query.length)}</mark>{value.slice(index + query.length)}</>;
-  }
-
-  function section(title: string, content: ReactNode) {
-    return <section className="ob-list rs-section"><h2>{title}</h2>{content}</section>;
-  }
-
-  const capture = () => remember({ ...state, scroll: window.scrollY });
-
-  if (originalKey) return <div className="ob-page rs-page">
-    <a className="rs-back" href="#data-search"><ArrowLeft size={16}/> 검색 결과로 돌아가기</a>
-    {original ? <>
-      <div className="ob-heading"><div className="rs-title"><h1>{original.name}</h1><span className="ob-badge">{original.batch?.id ?? original.id}</span>
-        {status(original)}{original.example && <small>예시</small>}</div>
-        <a className="rs-action" href={original.source}><ArrowUpRight size={16}/> 관리 화면에서 열기</a></div>
-      {section('기본 정보', fields(original.fields))}
-      {original.batch && section('합성 레시피', fields(recipe(original)))}
-      {original.batch && section('분석 결과', fields(analysis(original)))}
-      <div className="rs-pair">
-        {(original.batch || original.rows) && section('원료·Lot', ingredients(original))}
-        {original.batch && section('첨부 파일', original.batch.attachments.length
-          ? <ul className="rs-links">{original.batch.attachments.map(file => <li key={file.id}><FileText size={16}/><a href={file.data} download={file.name}>{file.name}</a></li>)}</ul>
-          : <p className="ob-muted">등록된 첨부 파일이 없습니다.</p>)}
-      </div>
-    </> : section('원본 기록', <p className="ob-muted">이 기록을 현재 브라우저에서 찾을 수 없습니다.</p>)}
-  </div>;
-
-  return <section className="ob-page rs-page">
-    <div className="ob-heading"><div><h1>데이터 검색</h1><p>프로젝트 실험 기록과 올리고머 합성·분석 결과를 찾아보세요.</p></div></div>
-    <form className="rs-search" role="search" onSubmit={event => { event.preventDefault(); run(filters); }}
-      onKeyDown={event => { if (event.key === 'Escape') { setFilters({ ...filters, query: '' }); searchInput.current?.focus(); } }}>
-      <input ref={searchInput} aria-label="통합 검색어" value={filters.query} placeholder="프로젝트명, 올리고머명, Batch ID, 원료명 또는 Lot 검색"
-        onChange={event => setFilters({ ...filters, query: event.target.value })}/>
-      <button className="ob-primary" type="submit">검색</button>
-    </form>
-    <div className="ob-filters rs-filters">
-      <label>프로젝트<select value={filters.project} onChange={event => filter('project', event.target.value)}>
-        <option value="">전체</option>{projects.map(project => <option key={project.id} value={project.id}>{project.name}</option>)}</select></label>
-      <label>유형<select value={filters.kind} onChange={event => filter('kind', event.target.value)}>
-        <option value="">전체</option>{kinds.map(kind => <option key={kind}>{kind}</option>)}</select></label>
-      <label>연구자<select value={filters.researcher} onChange={event => filter('researcher', event.target.value)}>
-        <option value="">전체</option>{people.map(person => <option key={person}>{person}</option>)}</select></label>
-      <label>기간<select value={filters.period} onChange={event => filter('period', event.target.value)}>
-        <option value="">전체 기간</option><option value="week">최근 7일</option><option value="month">최근 30일</option>
-        <option value="quarter">최근 3개월</option><option value="half">최근 6개월</option><option value="year">최근 1년</option><option value="custom">사용자 지정</option></select></label>
-      <label>분석 상태<select value={filters.status} onChange={event => filter('status', event.target.value)}>
-        <option value="">전체</option>{['분석 전', '분석 대기', '분석 완료', '실패'].map(value => <option key={value}>{value}</option>)}</select></label>
-      {filters.period === 'custom' && <div className="ob-range">
-        <label>시작일<input type="date" value={filters.start} onChange={event => filter('start', event.target.value)}/></label>
-        <label>종료일<input type="date" value={filters.end} onChange={event => filter('end', event.target.value)}/></label>
-      </div>}
-    </div>
-    {error && <p className="ob-error" role="alert">{error}</p>}
-    {!!data.warnings.length && <p className="ob-error" role="status">불러오지 못한 데이터 · {data.warnings.join(', ')}</p>}
-    {loading || !state.submitted || !results.length ? <div className="ob-list rs-empty" role="status">
-      <span><Search size={36}/></span><h2>{loading ? '검색 중…' : state.submitted ? '검색 결과가 없습니다.' : '검색어를 입력해 주세요.'}</h2>
-      {state.submitted && !loading && <button onClick={() => { setFilters(emptySearch); run(emptySearch); searchInput.current?.focus(); }}>검색 조건 초기화</button>}
-    </div> : <>
-      <section className="ob-list" aria-labelledby="rs-results">
-        <div className="ob-list-title"><h2 id="rs-results">검색 결과</h2><span role="status">총 {results.length}건</span>
-          <label className="rs-sort">정렬<select value={filters.sort} onChange={event => filter('sort', event.target.value)}>
-            <option value="relevance">관련도순</option><option value="new">최신순</option><option value="old">오래된순</option><option value="name">이름순</option></select></label></div>
-        <div className="ob-scroll"><table><thead><tr>{(batchTable ? ['Batch ID', '올리고머명', '조성비', 'Mn (g/mol)', 'PDI', '상태']
-          : ['유형', '이름 / 기록 ID', '요약', '연구자', '날짜', '상태']).map(value => <th key={value}>{value}</th>)}</tr></thead>
-          <tbody>{visible.map(result => {
-            const choose = () => remember({ ...state, selected: result.key, tab: result.kind === '분석 결과' ? 3 : 0, scroll: window.scrollY });
-            const batch = result.batch;
-            return <tr key={result.key} onClick={choose} className={selected?.key === result.key ? 'ob-active' : ''}>
-              {batchTable && batch ? <>
-                <td><button className="ob-link" aria-pressed={selected?.key === result.key}>{highlight(result.id)}</button></td>
-                <td>{highlight(result.name)} {result.example && <small>예시</small>}</td><td>{highlight(batch.composition) || '—'}</td>
-                <td className="ob-num">{batch.mn ? Number(batch.mn).toLocaleString('ko-KR') : '—'}</td><td className="ob-num">{batch.pdi || '—'}</td>
-              </> : <>
-                <td><span className="ob-badge">{result.kind}</span></td>
-                <td><button className="ob-link" aria-pressed={selected?.key === result.key}>{highlight(result.name)}</button>
-                  <small className="rs-id">{highlight(result.id)} {result.example && '· 예시'}</small></td>
-                <td>{highlight(result.summary ?? '') || '—'}</td><td>{highlight(result.researcher ?? '') || '—'}</td><td>{result.date?.slice(0, 10) || '—'}</td>
-              </>}
-              <td>{status(result)}</td>
-            </tr>;
-          })}</tbody></table></div>
-        {pages > 1 && <div className="ob-pagination rs-pages"><button disabled={page === 1} aria-label="이전 페이지" onClick={() => remember({ ...state, page: page - 1, selected: '' })}>‹</button>
-          <span>{page} / {pages}</span><button disabled={page === pages} aria-label="다음 페이지" onClick={() => remember({ ...state, page: page + 1, selected: '' })}>›</button></div>}
-      </section>
-      {selected && <section className="ob-list rs-section" aria-label="선택한 기록 요약">
-        <div className="ob-heading"><div className="rs-title"><h2>{selected.name}</h2><span className="ob-badge">{selected.batch?.id ?? selected.id}</span></div>
-          <a className="rs-action" href={'#data-search/record/' + encodeURIComponent(selected.key)} onClick={capture}><ArrowUpRight size={16}/> 원본 기록 열기</a></div>
-        {(selected.batch || selected.rows) ? <>
-          <div className="rs-tabs" role="tablist" aria-label="기록 상세">
-            {tabs.map((title, index) => <button role="tab" id={'rs-tab-' + index} aria-selected={state.tab === index} aria-controls="rs-tab-content"
-              tabIndex={state.tab === index ? 0 : -1} key={title} onClick={() => remember({ ...state, tab: index })}
-              onKeyDown={event => {
-                if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
-                event.preventDefault();
-                const next = event.key === 'Home' ? 0 : event.key === 'End' ? tabs.length - 1
-                  : (index + (event.key === 'ArrowLeft' ? -1 : 1) + tabs.length) % tabs.length;
-                remember({ ...state, tab: next });
-                document.getElementById('rs-tab-' + next)?.focus();
-              }}>{title}</button>)}
-          </div>
-          <div role="tabpanel" id="rs-tab-content" aria-labelledby={'rs-tab-' + state.tab}>
-            {state.tab === 2 ? ingredients(selected) : fields(state.tab === 1 ? recipe(selected) : state.tab === 3 ? analysis(selected) : selected.fields)}
-          </div>
-        </> : fields(selected.fields)}
-      </section>}
-    </>}
-  </section>;
-}
+const sessionKey='isnm-search-state-v2';
+type SearchState={filters:SearchFilters;submitted:boolean;selected:string;tab:string;scroll:number};
+const initial=():SearchState=>({filters:structuredClone(emptySearch),submitted:false,selected:'',tab:'기본 정보',scroll:0});
+function restore():SearchState{try{const params=new URLSearchParams(location.hash.split('?')[1]||'');const value=JSON.parse(params.get('s')||sessionStorage.getItem(sessionKey)||'null');if(!value)return initial();const filters={...structuredClone(emptySearch),...value.filters};validateFilters(filters);return {...initial(),...value,filters}}catch{return initial()}}
+function Multi({title,values,options,onChange}:{title:string;values:string[];options:{value:string;label:string}[];onChange:(v:string[])=>void}){const[q,setQ]=useState('');return <details className="rs-multi"><summary>{title}<b>{values.length?values.length:'전체'}</b></summary><div><input aria-label={`${title} 항목 검색`} placeholder={`${title} 검색`} value={q} onChange={e=>setQ(e.target.value)}/>{options.filter(o=>o.label.toLowerCase().includes(q.toLowerCase())).map(o=><label key={o.value}><input type="checkbox" checked={values.includes(o.value)} onChange={e=>onChange(e.target.checked?[...values,o.value]:values.filter(v=>v!==o.value))}/>{o.label}</label>)}{!options.length&&<small>등록된 항목이 없습니다.</small>}</div></details>}
+function Fields({values}:{values:[string,string][]}){return <dl className="rs-fields">{values.map(([key,value],i)=><div key={key+i}><dt>{key}</dt><dd>{value!==''&&value!==undefined?value:'미기록'}</dd></div>)}</dl>}
+const categoryTabs:[string,string[]][]=[['전체',[]],['프로젝트',['프로젝트']],['원료',['원료','원료 Lot']],['올리고머',['올리고머 배치']],['조성',['조성 정보','계산 기록']],['합성',['합성 기록']],['샘플',['샘플','샘플 그룹']],['분석',['측정 기록','분석 결과','분석 참조']]];
+const detailTabs=(r:Result)=>r.kind==='올리고머 배치'?['기본 정보','합성 조건','원료·Lot','분석 결과','사용 이력']:r.kind==='합성 기록'?['기본 정보','사용 조성','합성 공정','제작 샘플','첨부 파일']:r.kind==='샘플'?['기본 정보','제작 조건','공정 이력','분석 이력','결과·파일']:r.kind==='측정 기록'?['기본 정보','측정 조건','분석 결과','원본 데이터','그래프·파일']:['기본 정보','원료·Lot','연결 데이터'];
+const csvCell=(value:unknown)=>{let t=String(value??'');if(/^[=+@\-\t\r]/.test(t))t="'"+t;return '"'+t.replaceAll('"','""')+'"'};
+export default function ResearchSearch({projects,originalKey,repository:givenRepository}:{projects:SearchProject[];originalKey:string;repository?:SearchRepository}){const repository=useMemo(()=>givenRepository||createLocalSearchRepository(projects),[givenRepository,projects]);const[state,setState]=useState<SearchState>(restore);const[filters,setFilters]=useState(state.filters);const[response,setResponse]=useState<Awaited<ReturnType<SearchRepository['query']>>|null>(null);const[loading,setLoading]=useState(false);const[error,setError]=useState('');const[detailError,setDetailError]=useState('');const[detail,setDetail]=useState<Result|null>(null);const[related,setRelated]=useState<Result[]>([]);const[detailLoading,setDetailLoading]=useState(false);const[relatedLimit,setRelatedLimit]=useState(15);const[facets,setFacets]=useState({projects:[] as {id:string;name:string}[],people:[] as string[],statuses:[] as string[],equipment:[] as string[],modes:[] as string[]});const[basket,setBasket]=useState<string[]>([]);const[comparison,setComparison]=useState<Result[]|null>(null);const[compareError,setCompareError]=useState('');const[exporting,setExporting]=useState(false);const request=useRef(0);const controller=useRef<AbortController|null>(null);const inputRef=useRef<HTMLInputElement>(null);const focusDetail=useRef(false);const selected=originalKey?(()=>{try{return decodeURIComponent(originalKey)}catch{return originalKey}})():state.selected;
+function remember(next:SearchState,writeUrl=true){setState(next);try{sessionStorage.setItem(sessionKey,JSON.stringify(next))}catch{}if(writeUrl){const base=location.hash.split('?')[0]||'#data-search';const params=new URLSearchParams();params.set('s',JSON.stringify({...next,scroll:0}));history.replaceState(null,'',base+'?'+params.toString())}}
+async function refreshFacets(){try{setFacets(await repository.facets())}catch{setError('검색 대상 목록을 읽지 못했습니다. 검색 조건은 유지됩니다.')}}
+async function run(next:SearchFilters,keepSelection=false){const id=++request.current;controller.current?.abort();const currentController=new AbortController();controller.current=currentController;setError('');try{validateFilters(next)}catch(e){setError(e instanceof Error?e.message:'검색 조건을 확인해 주세요.');setLoading(false);return}const submitted=hasCriteria(next);remember({...state,filters:next,submitted,selected:keepSelection?state.selected:'',tab:'기본 정보',scroll:0});if(!submitted){setResponse(null);setLoading(false);return}setLoading(true);try{await new Promise<void>(resolve=>setTimeout(resolve,0));const result=await repository.query(next,currentController.signal);if(id!==request.current)return;setResponse(result);if(result.page!==next.page){const adjusted={...next,page:result.page};setFilters(adjusted);remember({...state,filters:adjusted,submitted:true,selected:keepSelection?state.selected:'',tab:'기본 정보',scroll:0})}}catch(e){if(id!==request.current||e instanceof DOMException&&e.name==='AbortError')return;setError(e instanceof Error?e.message:'검색 요청에 실패했습니다. 조건을 유지한 상태로 재시도할 수 있습니다.')}finally{if(id===request.current)setLoading(false)}}
+function change<K extends keyof SearchFilters>(key:K,value:SearchFilters[K]){const next={...filters,[key]:value,page:key==='page'?value:1} as SearchFilters;if(key==='dateMode'){next.dateValue='';next.start='';next.end=''}setFilters(next);void run(next)}
+function reset(){const next=structuredClone(emptySearch);setFilters(next);setBasket([]);void run(next);inputRef.current?.focus()}
+useEffect(()=>{void refreshFacets();if(state.submitted)void run(state.filters,true);const frame=requestAnimationFrame(()=>window.scrollTo(0,originalKey?0:state.scroll));return()=>{cancelAnimationFrame(frame);controller.current?.abort();request.current++}},[repository]);
+useEffect(()=>{const refresh=()=>{void refreshFacets();if(state.submitted)void run(state.filters,true)};window.addEventListener('storage',refresh);window.addEventListener('focus',refresh);return()=>{window.removeEventListener('storage',refresh);window.removeEventListener('focus',refresh)}},[repository,state.filters,state.submitted]);
+useEffect(()=>{const abort=new AbortController();let active=true;setDetail(null);setRelated([]);setDetailError('');setRelatedLimit(15);if(!selected){setDetailLoading(false);return}setDetailLoading(true);Promise.all([repository.detail(selected,abort.signal),repository.related(selected,abort.signal)]).then(([r,links])=>{if(!active)return;setDetail(r);setRelated(links);if(!r)setDetailError('현재 이 기록을 찾을 수 없습니다. 삭제·보관 또는 접근 범위 변경 여부를 원본에서 확인해 주세요.');if(focusDetail.current){document.getElementById('rs-detail')?.scrollIntoView({block:'start',behavior:'smooth'});focusDetail.current=false}}).catch(e=>{if(active&&e.name!=='AbortError')setDetailError('상세 정보를 조회하지 못했습니다. 다시 선택해 주세요.')}).finally(()=>active&&setDetailLoading(false));return()=>{active=false;abort.abort()}},[selected,repository,response]);
+function choose(r:Result){if(originalKey){const next={...state,selected:r.key,tab:'기본 정보'};remember(next,false);location.hash='#data-search/record/'+encodeURIComponent(r.key)+'?'+new URLSearchParams({s:JSON.stringify(next)});return}focusDetail.current=true;remember({...state,selected:r.key,tab:'기본 정보',scroll:window.scrollY})}
+async function compare(){setCompareError('');try{const records=await Promise.all(basket.map(k=>repository.detail(k)));if(records.some(r=>!r||r.kind!=='샘플'))throw Error('일부 선택 시료를 더 이상 찾을 수 없습니다. 선택을 다시 확인하세요.');setComparison(records as Result[])}catch(e){setCompareError(e instanceof Error?e.message:'샘플을 불러오지 못했습니다.')}}
+async function exportCsv(all:boolean){setExporting(true);setError('');try{let records=response?.items||[];if(all){records=[];let page=1,pages=1;do{const result=await repository.query({...state.filters,page,pageSize:100});records.push(...result.items);pages=result.pages;page++}while(page<=pages)}const rows=[['검색 조건',JSON.stringify(state.filters)],['내보낸 시각 (Asia/Seoul)',new Date().toLocaleString('ko-KR',{timeZone:'Asia/Seoul'})],['범위',all?'검색 전체 결과':'현재 페이지'],['유형','ID','이름','버전','프로젝트','연구자',dateLabels[state.filters.dateType],'상태','일치 방식'],...records.map(r=>[r.kind,r.id,r.name,r.version??'',r.projects.map(p=>facets.projects.find(x=>x.id===p)?.name||p).join(', '),r.researcher||'',r.dates[state.filters.dateType],r.status||'',r.via||r.match||''])];const blob=new Blob(['\ufeff'+rows.map(row=>row.map(csvCell).join(',')).join('\r\n')],{type:'text/csv;charset=utf-8'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='ISNM-search-'+new Date().toISOString().slice(0,10)+'.csv';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)}catch(e){setError(e instanceof Error?e.message:'내보내기를 완료하지 못했습니다.')}finally{setExporting(false)}}
+function highlight(value:string):ReactNode{if(state.filters.queryMode==='date'||parseDateQuery(state.filters.query,state.filters.queryMode))return value;const q=state.filters.query.trim();if(!q)return value;const index=value.toLowerCase().indexOf(q.toLowerCase());return index<0?value:<>{value.slice(0,index)}<mark>{value.slice(index,index+q.length)}</mark>{value.slice(index+q.length)}</>}
+const rows=response?.items||[];const relevantKinds=filters.kinds;const shows=(...values:string[])=>!relevantKinds.length||values.some(v=>relevantKinds.includes(v));const activeTab=categoryTabs.find(([,values])=>values.length===filters.kinds.length&&values.every(v=>filters.kinds.includes(v)))?.[0];const activeFilters=Object.entries(filters).filter(([key,value])=>!['page','pageSize','sort','queryMode','dateType','weightBasis','thicknessBasis','thicknessUnit','stretchBasis','resultUnit'].includes(key)&&JSON.stringify(value)!==JSON.stringify(emptySearch[key as keyof SearchFilters]));const filterNames:Record<string,string>={query:'검색어',kinds:'유형',projectIds:'프로젝트',researchers:'연구자',statuses:'상태',dateMode:'날짜 모드',dateValue:'날짜',dateType:'날짜 기준',start:'시작일',end:'종료일',scope:'검색 범위',includeExamples:'예시 포함',all:'전체 보기',archive:'보관',includeMaterial:'포함 원료',excludeMaterial:'제외 원료',lot:'원료 Lot',componentRole:'원료 역할',formulationId:'조성 ID',formulationVersion:'조성 버전',weightMaterial:'함량 원료',weightMin:'wt% 최소',weightMax:'wt% 최대',shape:'형태',groupId:'시료 그룹',thicknessMin:'두께 최소',thicknessMax:'두께 최대',stretchMin:'연신 최소',stretchMax:'연신 최대',mnMin:'Mn 최소',mnMax:'Mn 최대',mwMin:'Mw 최소',mwMax:'Mw 최대',pdiMin:'PDI 최소',pdiMax:'PDI 최대',equipment:'장비',analysisCompletion:'분석 완료 조건',hasFile:'파일',processKind:'공정',temperatureMin:'온도 최소',temperatureMax:'온도 최대',resultName:'분석 항목',resultMin:'결과 최소',resultMax:'결과 최대',resultTemperature:'측정 온도',resultFrequency:'측정 주파수',measurementMode:'측정 모드',widthMin:'폭 최소',widthMax:'폭 최대',lengthMin:'길이 최소',lengthMax:'길이 최대',diameterMin:'직경 최소',diameterMax:'직경 최대'};
+function range(label:string,min:keyof SearchFilters,max:keyof SearchFilters,unit:string){return <fieldset className="rs-numeric-range"><legend>{label} <small>{unit}</small></legend><input aria-label={`${label} 최소`} type="number" step="any" value={String(filters[min])} onChange={e=>change(min,e.target.value as never)} placeholder="최소"/><span>~</span><input aria-label={`${label} 최대`} type="number" step="any" value={String(filters[max])} onChange={e=>change(max,e.target.value as never)} placeholder="최대"/></fieldset>}
+function linkedList(list:Result[],empty='연결된 기록이 없습니다.'){return list.length?<ul className="rs-relationships">{list.map(r=><li key={r.key}><button onClick={()=>choose(r)}><span className="ob-badge">{r.kind}</span><strong>{r.id}{r.version!==undefined?' · v'+r.version:''}</strong><span>{r.name}</span><small>{dateLabels[state.filters.dateType]} {r.dates[state.filters.dateType]||'미기록'}</small><ChevronRight size={14}/></button></li>)}</ul>:<p className="ob-muted">{empty}</p>}
+function renderDetailContent(r:Result){const tab=state.tab;const linkKind=(...values:string[])=>related.filter(v=>values.includes(v.kind));if(tab==='원료·Lot'||tab==='사용 조성'){const ingredients=r.rows||[];return <>{ingredients.length?<div className="ob-scroll"><table><thead><tr><th>원료</th><th>원료 Lot</th><th>기록된 계획량</th><th>역할</th><th>분자량</th></tr></thead><tbody>{ingredients.map(row=><tr key={row.id}><td>{row.name}</td><td>{row.lot}</td><td>{row.amount} {row.unit}</td><td>{row.role}</td><td>{row.mw??'미등록'}</td></tr>)}</tbody></table></div>:<p className="ob-muted">저장된 원료 구성 데이터가 없습니다.</p>}{r.kind==='합성 기록'&&<Fields values={r.fields.filter(([k])=>['실제 계량량','공통 조건'].includes(k))}/>}<p className="rs-detail-note">계획 스냅샷과 실제 계량량을 구분합니다. 이름이 같은 다른 버전의 원료 정보를 섞지 않습니다.</p></>}
+if(tab==='합성 조건')return <Fields values={r.fields.filter(([key])=>['온도','시간','합성 조건','비고'].includes(key))}/>;if(tab==='제작 조건')return <Fields values={r.fields.filter(([key])=>!['Sample ID','샘플명'].includes(key))}/>;if(tab==='합성 공정'||tab==='공정 이력')return linkedList(linkKind('공정 기록'),'연결된 공정 기록이 없습니다.');if(tab==='제작 샘플')return linkedList(linkKind('샘플','샘플 그룹'),'연결된 샘플 기록이 없습니다.');if(tab==='분석 이력')return linkedList(linkKind('측정 기록','분석 참조'),'연결된 분석 기록이 없습니다.');if(tab==='분석 결과'){if(r.kind==='올리고머 배치')return <><Fields values={r.fields.filter(([key])=>['Mn','Mw','PDI','분석 참조'].includes(key))}/><p className="rs-detail-note">참조 문구나 배치 완료 상태만으로 개별 측정의 분석 완료를 판단하지 않습니다.</p>{linkedList(linkKind('측정 기록','분석 결과'))}</>;return linkedList(linkKind('분석 결과'),'저장된 수치 분석 결과가 없습니다.')}if(tab==='측정 조건')return <Fields values={r.fields.filter(([key])=>['장비','모드','측정 조건','처리 방법','측정일'].includes(key))}/>;if(['첨부 파일','결과·파일','원본 데이터','그래프·파일'].includes(tab)){const files=linkKind('파일');const subset=tab==='원본 데이터'?files.filter(f=>f.raw.role==='Raw'):tab==='그래프·파일'?files.filter(f=>['Plot','Image','Processed'].includes(f.raw.role)):files;return <>{linkedList(subset,'연결된 파일 메타데이터가 없습니다.')}<p className="rs-detail-note">Raw·Processed·Plot 역할은 파일 상세에서 구분합니다. 파일 목록을 여는 것만으로 장비 원본을 해석하거나 분석을 완료하지 않습니다.</p></>}if(tab==='연결 데이터'||tab==='사용 이력')return linkedList(related);if(r.kind==='파일')return <><Fields values={r.fields}/>{typeof r.raw.data==='string'&&/^data:/.test(r.raw.data)?<a className="rs-action" href={r.raw.data} download={r.raw.name||r.id}><Download size={14}/>등록된 파일 다운로드</a>:<p className="ob-muted">파일 메타데이터만 있거나 원본 다운로드 서비스가 연결되지 않았습니다.</p>}</>;return <Fields values={r.fields}/>}
+const detailPanel=(detailLoading||detail||detailError)&&<section className="ob-list rs-section rs-detail-panel" id="rs-detail" aria-label="선택한 데이터 상세" aria-busy={detailLoading}>{detailLoading?<p role="status">상세 정보를 불러오는 중…</p>:detailError?<p className="ob-error" role="alert">{detailError}</p>:detail&&<><div className="ob-heading"><div><span className="rs-eyebrow">READ ONLY · {detail.kind}</span><h2>{detail.name}</h2><div className="rs-detail-meta"><span>{detail.id}{detail.version!==undefined?' · v'+detail.version:''}</span><span>{detail.status||'상태 미기록'}</span></div></div><a className="rs-action" href={detail.source} onClick={()=>remember({...state,scroll:window.scrollY},false)}><ArrowUpRight size={14}/>{detail.source.startsWith('#data-search')?'원본 조회 페이지 열기':'원본 관리 화면 열기'}</a></div><div className="rs-tabs" role="tablist" aria-label="선택 데이터 상세 탭">{detailTabs(detail).map((tab,i,list)=><button key={tab} role="tab" aria-selected={state.tab===tab} tabIndex={state.tab===tab?0:-1} aria-controls="rs-detail-content" id={'detail-tab-'+i} onClick={()=>remember({...state,tab})} onKeyDown={e=>{if(!['ArrowLeft','ArrowRight','Home','End'].includes(e.key))return;e.preventDefault();const j=e.key==='Home'?0:e.key==='End'?list.length-1:(i+(e.key==='ArrowRight'?1:-1)+list.length)%list.length;remember({...state,tab:list[j]});document.getElementById('detail-tab-'+j)?.focus()}}>{tab}</button>)}</div><div id="rs-detail-content" role="tabpanel" aria-labelledby={'detail-tab-'+Math.max(0,detailTabs(detail).indexOf(state.tab))}>{renderDetailContent(detail)}</div><div className="rs-relation-heading"><GitBranch size={15}/><h3>연결된 데이터</h3><span>{related.length}건</span></div>{linkedList(related.slice(0,relatedLimit))}{related.length>relatedLimit&&<button className="rs-action" onClick={()=>setRelatedLimit(n=>n+20)}>연결 기록 더 보기</button>}<p className="rs-detail-note">현재 기록에 실제 연결된 데이터만 표시합니다. 상세 조회는 원본을 저장하거나 수정하지 않습니다.</p></>}</section>;
+if(originalKey)return <section className="ob-page rs-page"><a className="rs-back" href={'#data-search?'+new URLSearchParams({s:JSON.stringify(state)})}><ArrowLeft size={15}/>검색 조건으로 돌아가기</a>{detailPanel}</section>;
+return <section className="ob-page rs-page"><div className="ob-heading"><div><span className="rs-eyebrow">DATA SEARCH & RESEARCH DATABASE</span><h1>데이터 검색</h1><p>프로젝트 실험 기록과 올리고머 합성·분석 결과를 찾아보세요.</p></div><span className="rs-storage-badge"><Database size={13}/>현재 브라우저 저장 데이터</span></div><form className="rs-search" role="search" onSubmit={e=>{e.preventDefault();void run({...filters,page:1})}}><div className="rs-query-wrap"><Search size={19}/><input ref={inputRef} aria-label="통합 검색어" aria-describedby={error?'rs-search-error':undefined} value={filters.query} onChange={e=>setFilters({...filters,query:e.target.value})} placeholder="이름·ID·원료명 또는 2026-11, 2026-11-01 ~ 2026-11-14"/>{filters.query&&<button type="button" aria-label="검색어 지우기" onClick={()=>{change('query','');inputRef.current?.focus()}}><X size={15}/></button>}</div><select aria-label="검색어 해석" value={filters.queryMode} onChange={e=>change('queryMode',e.target.value as SearchFilters['queryMode'])}><option value="auto">자동 인식</option><option value="text">일반 검색어</option><option value="date">날짜 검색</option></select><button className="ob-primary" type="submit" disabled={loading}><Search size={15}/>{loading?'검색 중…':'검색'}</button></form>{filters.query!==state.filters.query&&state.submitted&&<p className="rs-pending-query">검색어가 변경되었습니다. Enter 또는 검색 버튼으로 적용하세요.</p>}<div className="rs-kind-tabs" role="group" aria-label="데이터 유형">{categoryTabs.map(([label,values])=><button key={label} className={activeTab===label?'active':''} onClick={()=>change('kinds',values)}><span>{label}</span></button>)}<details className="rs-extra-kinds"><summary>상세 유형</summary><div>{kinds.map(kind=><label key={kind}><input type="checkbox" checked={filters.kinds.includes(kind)} onChange={e=>change('kinds',e.target.checked?[...filters.kinds,kind]:filters.kinds.filter(v=>v!==kind))}/>{kind}</label>)}</div></details></div><section className="rs-filter-card" aria-label="검색 조건"><div className="rs-common-filters"><Multi title="프로젝트" values={filters.projectIds} options={facets.projects.map(p=>({value:p.id,label:p.name}))} onChange={v=>change('projectIds',v)}/><Multi title="연구자" values={filters.researchers} options={facets.people.map(v=>({value:v,label:v}))} onChange={v=>change('researchers',v)}/><Multi title="기록 상태" values={filters.statuses} options={facets.statuses.map(v=>({value:v,label:v}))} onChange={v=>change('statuses',v)}/><label>검색 범위<select value={filters.scope} onChange={e=>change('scope',e.target.value)}><option value="all">연구실 전체 (로컬)</option><option value="project">프로젝트 연결 데이터</option><option value="shared">원료·올리고머 라이브러리</option></select></label><label>보관 상태<select value={filters.archive} onChange={e=>change('archive',e.target.value)}><option value="active">활성 데이터</option><option value="archived">보관 데이터만</option><option value="all">보관 포함</option></select></label></div><div className="rs-date-filters"><label>날짜 기준<select value={filters.dateType} onChange={e=>change('dateType',e.target.value as SearchFilters['dateType'])}>{Object.entries(dateLabels).map(([value,label])=><option key={value} value={value}>{label}</option>)}</select></label><label>날짜 검색<select value={filters.dateMode} onChange={e=>change('dateMode',e.target.value)}><option value="all">전체 기간</option><option value="day">특정 날짜</option><option value="month">특정 월</option><option value="year">특정 연도</option><option value="range">기간 지정</option></select></label>{['day','month','year'].includes(filters.dateMode)&&<label>{filters.dateMode==='day'?'날짜':filters.dateMode==='month'?'월':'연도'}<input aria-label="검색 날짜 값" type={filters.dateMode==='day'?'date':filters.dateMode==='month'?'month':'number'} min={filters.dateMode==='year'?'1000':undefined} max={filters.dateMode==='year'?'9999':undefined} value={filters.dateValue} onChange={e=>change('dateValue',e.target.value)}/></label>}{filters.dateMode==='range'&&<><label>시작일<input type="date" value={filters.start} onChange={e=>change('start',e.target.value)}/></label><label>종료일<input type="date" value={filters.end} onChange={e=>change('end',e.target.value)}/></label></>}<span>한국시간 기준 · 실제 수행일 미기록은 생성일로 대체하지 않습니다.</span></div><details className="rs-advanced"><summary><SlidersHorizontal size={15}/>상세 조건<span>유형별 조건을 펼쳐서 검색</span></summary><div className="rs-advanced-grid">{shows('올리고머 배치')&&<fieldset><legend>올리고머 물성</legend>{range('Mn','mnMin','mnMax','g/mol')}{range('Mw','mwMin','mwMax','g/mol')}{range('PDI','pdiMin','pdiMax','Đ')}</fieldset>}{shows('조성 정보','계산 기록','합성 기록','샘플','올리고머 배치')&&<fieldset><legend>원료·조성</legend><label>포함 원료<input value={filters.includeMaterial} onChange={e=>change('includeMaterial',e.target.value)} placeholder="원료명 또는 ID"/></label><label>제외 원료<input value={filters.excludeMaterial} onChange={e=>change('excludeMaterial',e.target.value)}/></label><label>원료 Lot<input value={filters.lot} onChange={e=>change('lot',e.target.value)}/></label><label>원료 역할<input value={filters.componentRole} onChange={e=>change('componentRole',e.target.value)} placeholder="예: 가교제"/></label><div className="rs-pair"><label>조성 ID<input value={filters.formulationId} onChange={e=>change('formulationId',e.target.value)}/></label><label>버전<input type="number" min="1" step="1" value={filters.formulationVersion} onChange={e=>change('formulationVersion',e.target.value)}/></label></div><label>함량을 확인할 원료<input value={filters.weightMaterial} onChange={e=>change('weightMaterial',e.target.value)}/></label><label>wt% 분모<select value={filters.weightBasis} onChange={e=>change('weightBasis',e.target.value)}><option value="all">전체 투입 원료</option><option value="solids">용매 제외 원료</option></select></label>{range('원료 함량','weightMin','weightMax','wt%')}</fieldset>}{shows('샘플','샘플 그룹')&&<fieldset><legend>샘플 제작 조건</legend><label>형태<select value={filters.shape} onChange={e=>change('shape',e.target.value)}><option value="">전체</option>{['Film','Fiber','Bulk','Coating','Other'].map(v=><option key={v}>{v}</option>)}</select></label><label>Sample Group<input value={filters.groupId} onChange={e=>change('groupId',e.target.value)}/></label><div className="rs-pair"><label>두께 기준<select value={filters.thicknessBasis} onChange={e=>change('thicknessBasis',e.target.value)}><option value="actual">실제 측정 두께</option><option value="planned">목표 두께</option></select></label><label>두께 단위<select value={filters.thicknessUnit} onChange={e=>change('thicknessUnit',e.target.value)}><option>µm</option><option>mm</option><option>nm</option></select></label></div>{range('두께','thicknessMin','thicknessMax',filters.thicknessUnit)}{range('폭','widthMin','widthMax','mm')}{range('길이','lengthMin','lengthMax','mm')}{range('직경','diameterMin','diameterMax','mm')}<label>연신 기준<select value={filters.stretchBasis} onChange={e=>change('stretchBasis',e.target.value)}><option value="percent">연신율 (%)</option><option value="ratio">연신비 (배)</option></select></label>{range('연신','stretchMin','stretchMax',filters.stretchBasis==='ratio'?'배':'%')}</fieldset>}{shows('합성 기록','공정 기록','샘플')&&<fieldset><legend>공정 조건</legend><label>기록된 공정<select value={filters.processKind} onChange={e=>change('processKind',e.target.value)}><option value="">전체</option>{[['mix','혼합'],['degas','탈포'],['cast','캐스팅'],['cure','경화'],['stretch','연신'],['finish','후처리']].map(([v,l])=><option key={v} value={v}>{l}</option>)}</select></label>{range('공정 온도','temperatureMin','temperatureMax','°C')}</fieldset>}{shows('측정 기록','분석 결과','샘플')&&<fieldset><legend>측정·분석</legend><Multi title="장비 종류" values={filters.equipment} options={facets.equipment.map(v=>({value:v,label:v}))} onChange={v=>change('equipment',v)}/><label>분석 조건<select value={filters.analysisCompletion} onChange={e=>change('analysisCompletion',e.target.value)}><option value="any">제한 없음</option><option value="exists">연결된 측정 존재</option><option value="completed">분석 완료가 명시된 측정이 하나 이상</option><option value="pending">분석 대기·진행 중인 측정이 하나 이상</option></select></label><label>측정 모드<select value={filters.measurementMode} onChange={e=>change('measurementMode',e.target.value)}><option value="">전체</option>{facets.modes.map(v=><option key={v}>{v}</option>)}</select></label><label>파일 존재<select value={filters.hasFile} onChange={e=>change('hasFile',e.target.value)}><option value="any">제한 없음</option><option value="yes">파일 메타데이터 있음</option><option value="no">파일 메타데이터 없음</option></select></label><details><summary>저장된 분석 결과 수치 검색</summary><label>결과 항목명<input value={filters.resultName} onChange={e=>change('resultName',e.target.value)} placeholder="예: Storage Modulus"/></label><label>결과 단위<select value={filters.resultUnit} onChange={e=>change('resultUnit',e.target.value)}>{['Pa','kPa','MPa','GPa','°C','%','g/mol'].map(v=><option key={v}>{v}</option>)}</select></label>{range('결과값','resultMin','resultMax',filters.resultUnit)}<label>측정 온도 (°C)<input type="number" step="any" value={filters.resultTemperature} onChange={e=>change('resultTemperature',e.target.value)}/></label><label>측정 주파수 (Hz)<input type="number" step="any" value={filters.resultFrequency} onChange={e=>change('resultFrequency',e.target.value)}/></label><small>같은 Measurement·Result의 조건과 단위를 함께 확인합니다.</small></details></fieldset>}</div></details><div className="rs-filter-footer"><label><input type="checkbox" checked={filters.includeExamples} onChange={e=>change('includeExamples',e.target.checked)}/>저장된 예시 데이터 포함</label><button onClick={reset}>필터 초기화</button><button onClick={()=>change('all',true)}><Layers size={13}/>전체 데이터 보기</button></div></section>
+{activeFilters.length>0&&<div className="rs-chips" aria-label="적용된 검색 조건">{activeFilters.map(([key,value])=><button key={key} onClick={()=>{const next={...filters,[key]:structuredClone(emptySearch[key as keyof SearchFilters]),page:1};if(key==='dateMode'){next.dateValue='';next.start='';next.end=''}setFilters(next);void run(next)}}>{filterNames[key]||key}: {Array.isArray(value)?value.join(', '):typeof value==='boolean'?'선택':String(value)}<X size={11}/></button>)}</div>}
+{error&&<div id="rs-search-error" className="rs-search-error" role="alert"><Info size={16}/><span>{error}</span><button onClick={()=>void run(filters)}><RefreshCw size={13}/>재시도</button></div>}{response?.warnings.length? <p className="ob-error" role="status">일부 저장 데이터를 읽지 못했습니다. 표시된 건수는 조회된 데이터 기준입니다. 원본은 변경하지 않았습니다. ({response.warnings.join(', ')})</p>:null}{response?.dateHint&&<p className="rs-date-hint">날짜로 인식: <strong>{response.dateHint}</strong> · {dateLabels[state.filters.dateType]} · 일반 숫자로 찾으려면 ‘일반 검색어’를 선택하세요.</p>}
+{!state.submitted&&!loading?<section className="ob-list rs-empty"><span><Search size={36}/></span><h2>검색어를 입력하거나 필터를 선택해 주세요.</h2><p>ID·이름·원료명부터 날짜 검색까지, 저장된 연구 기록을 찾아보세요.</p><button className="rs-action" onClick={()=>change('all',true)}>저장된 전체 데이터 보기</button></section>:<section className="ob-list rs-results" aria-busy={loading}><div className="ob-list-title"><h2>검색 결과</h2><span role="status">{loading?'검색 중…':response?'총 '+response.total.toLocaleString()+'건':'검색 대기'}</span><div className="rs-result-controls"><label>정렬<select value={filters.sort} onChange={e=>change('sort',e.target.value)}>{[['relevance','관련도순'],['new','최신순'],['old','오래된순'],['name','이름 오름차순'],['nameDesc','이름 내림차순'],['id','ID순']].map(([v,l])=><option key={v} value={v}>{l}</option>)}</select></label><label>표시<select value={filters.pageSize} onChange={e=>change('pageSize',Number(e.target.value))}>{[20,50,100].map(n=><option key={n} value={n}>{n}건</option>)}</select></label></div></div>{rows.length?<><div className="ob-scroll"><table className="rs-result-table"><thead><tr><th>비교</th><th>유형</th><th>ID / 이름</th><th>프로젝트</th><th>{filters.kinds.includes('올리고머 배치')?'Mn / PDI':filters.kinds.includes('샘플')?'형태 / 측정 수':filters.kinds.includes('측정 기록')?'장비 / 모드':'요약'}</th><th>연구자</th><th>{dateLabels[state.filters.dateType]}</th><th>상태</th></tr></thead><tbody>{rows.map(r=><tr key={r.key} className={selected===r.key?'ob-active':''} onClick={()=>choose(r)}><td onClick={e=>e.stopPropagation()}>{r.kind==='샘플'?<input type="checkbox" aria-label={`${r.id} 비교 선택`} checked={basket.includes(r.key)} onChange={e=>{if(e.target.checked&&basket.length>=5){setCompareError('한 번에 최대 5개 시료를 비교할 수 있습니다.');return}setCompareError('');setBasket(e.target.checked?[...basket,r.key]:basket.filter(k=>k!==r.key))}}/>:'—'}</td><td><span className="ob-badge">{r.kind}</span>{r.example&&<small className="rs-example">예시</small>}</td><td><button className="ob-link" aria-pressed={selected===r.key}>{highlight(r.id)}{r.version!==undefined?' · v'+r.version:''}</button><strong className="rs-result-name">{highlight(r.name)}</strong><small className="rs-match-reason">{r.via||r.match}</small></td><td>{r.projects.map(p=>facets.projects.find(x=>x.id===p)?.name||p).join(', ')||'공용·연결 미등록'}</td><td>{r.kind==='올리고머 배치'?<>{r.metrics.mn===null?'Mn 미측정':`Mn ${r.metrics.mn} g/mol`}<small>PDI {r.metrics.pdi??'미측정'}</small></>:r.kind==='샘플'?<>{r.raw.shape||'형태 미기록'}<small>측정 기록 {r.metrics.measurementCount??0}건</small></>:r.kind==='측정 기록'?<>{r.raw.equipment||'장비 미기록'}<small>{r.raw.mode||'모드 미기록'}</small></>:<span title={r.summary}>{r.summary?.slice(0,120)||'—'}</span>}</td><td>{r.researcher||'미기록'}</td><td>{r.dates[state.filters.dateType]||'미기록'}{state.filters.dateType==='performed'&&<small>{r.kind==='원료 Lot'?'입고·구매일':r.kind==='프로젝트'?'프로젝트 시작일':r.kind==='조성 정보'?'조성 정의일':r.kind==='계산 기록'?'계산 생성일':''}</small>}</td><td><span className="ob-badge">{r.status||'미기록'}</span></td></tr>)}</tbody></table></div><div className="rs-page-bar"><span>{response?.page} / {response?.pages} 페이지</span><div><button aria-label="이전 결과 페이지" disabled={loading||!response||response.page<=1} onClick={()=>change('page',Math.max(1,(response?.page||1)-1))}>이전</button><button aria-label="다음 결과 페이지" disabled={loading||!response||response.page>=response.pages} onClick={()=>change('page',(response?.page||1)+1)}>다음</button></div><button disabled={exporting} onClick={()=>void exportCsv(false)}><Download size={12}/>현재 페이지 CSV</button><button disabled={exporting} onClick={()=>void exportCsv(true)}><Download size={12}/>{exporting?'내보내는 중…':'전체 결과 CSV'}</button></div></>:!loading&&<div className="rs-no-results"><Search size={29}/><h3>{error?'검색을 완료하지 못했습니다.':'검색 조건에 해당하는 데이터가 없습니다.'}</h3><p>{error?'조건을 유지한 상태로 재시도하세요.':'조건을 바꾸거나 필터를 초기화해 보세요.'}</p><button className="rs-action" onClick={reset}>필터 초기화</button></div>}</section>}
+{basket.length>0&&<section className="rs-compare-bar"><span><Layers size={15}/>샘플 {basket.length}/5개 선택</span><button onClick={()=>setBasket([])}>선택 해제</button><button className="ob-primary" disabled={basket.length<2} onClick={()=>void compare()}>선택한 샘플 비교</button></section>}{compareError&&<p className="ob-error" role="alert">{compareError}</p>}{detailPanel}<p className="rs-local-note">현재는 브라우저 로컬 검색 어댑터를 사용합니다. 공유 DB·서버 검색·로그인 권한 검사·보안 파일 다운로드 API는 연결되지 않았습니다. 원본 데이터는 검색으로 수정되지 않습니다.</p>{comparison&&<ResearchComparison samples={comparison} repository={repository} onClose={()=>setComparison(null)}/>}</section>}

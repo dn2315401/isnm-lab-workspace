@@ -1,10 +1,10 @@
 {
-  "name": "ISNM LAB · 2026-11-14 · v1",
+  "name": "ISNM LAB · 2026-11-14 작업본",
   "date": "2026-11-14",
   "version": "v1",
   "branch": "work/2026-11-14-v1",
   "tag": "2026-11-14-v1",
   "repository": "https://github.com/dn2315401/isnm-lab-workspace",
   "basedOnCommit": "258a1b05a89b6ed688c595e68fd75b456f7cd781",
-  "description": "GitHub 최신 main 기준 공동 개발 시작본"
+  "description": "11-14 공동 작업본 · 데이터 검색 개선"
 }

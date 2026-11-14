@@ -1,156 +1,70 @@
-import { readInventory, makeMaterialDraft } from './material-inventory';
-import { readBatches, type Batch } from './oligomer-batches';
-import type { Saved, Row } from './formulation-model';
-import type { ResearchStore } from './calculator-model';
-
-export const kinds = ['프로젝트', '올리고머 배치', '조성 정보', '합성 기록', '원료', '원료 Lot', '샘플', '분석 결과'] as const;
-export type Kind = typeof kinds[number];
-export type SearchProject = { id: number; name: string; description: string; category: string; progress: number };
-export type Result = {
-  key: string; id: string; name: string; kind: Kind; projects: string[]; researcher?: string;
-  date?: string; status?: string; analysisStatus?: string; summary?: string; source: string;
-  terms?: string[]; fields: [string, string][]; rows?: Row[]; batch?: Batch; example?: boolean;
-};
-export const materialLink = (id: string) => '#materials/' + encodeURIComponent(id);
-const projectLink = (id: string) => '#project/' + encodeURIComponent(id);
-const batchLink = (id: string) => '#oligomer-batches/' + encodeURIComponent(id);
-const normalize = (value: string) => value.normalize('NFKC').toLowerCase().trim();
-const rowTerms = (rows: Row[]) => rows.flatMap(row => [row.name, row.lot, row.materialId, row.lotId]);
-
-export function buildSearch(projects: SearchProject[]) {
-  const results: Result[] = [];
-  const warnings: string[] = [];
-  function read<T>(name: string, source: () => T, fallback: T): T {
-    try { return source(); }
-    catch { warnings.push(name); return fallback; }
-  }
-  const batches = read('올리고머 배치', readBatches, []);
-  const materials = read('원료물질', readInventory, []);
-  const formulations = read<Saved[]>('조성 정보', () => JSON.parse(localStorage.getItem('isnm-formulations') ?? '[]'), []);
-  const research = read<ResearchStore>('합성·샘플', () => JSON.parse(localStorage.getItem('isnm-research-v1') ?? 'null')
-    ?? { syntheses: [], samples: [], calculations: [] }, { syntheses: [], samples: [], calculations: [] });
-  const projectName = (id: string) => projects.find(project => String(project.id) === id)?.name ?? id;
-  const add = (result: Omit<Result, 'key'>) => results.push({ ...result, key: result.kind + ':' + result.id });
-  const materialProjects = new Map<string, Set<string>>();
-  for (const record of [...formulations.map(record => ({ rows: record.rows, ids: [record.projectId] })),
-    ...research.syntheses.map(record => ({ rows: record.input.rows, ids: [record.projectId] })),
-    ...batches.map(batch => ({ rows: batch.ingredients, ids: batch.projectIds }))]) {
-    for (const row of record.rows) {
-      for (const id of [row.materialId, row.lotId]) {
-        const linked = materialProjects.get(id) ?? new Set<string>();
-        record.ids.filter(Boolean).forEach(project => linked.add(project));
-        materialProjects.set(id, linked);
-      }
-    }
-  }
-  for (const project of projects) {
-    const id = String(project.id);
-    add({ id: 'PRJ-' + id.padStart(3, '0'), name: project.name, kind: '프로젝트', projects: [id],
-      source: projectLink(id), summary: project.description, terms: [project.category],
-      fields: [['분류', project.category], ['진행률', project.progress + '%'], ['설명', project.description]] });
-  }
-  for (const batch of batches) {
-    const analysisStatus = batch.status === '완료' ? '분석 완료' : batch.status === '실패' ? '실패'
-      : batch.status === '분석 대기' || batch.status === '합성 완료' ? '분석 대기' : '분석 전';
-    const common = { projects: batch.projectIds, researcher: batch.researcher, source: batchLink(batch.id), batch, example: batch.example };
-    add({ ...common, id: batch.id, name: batch.name || '이름 미등록', kind: '올리고머 배치',
-      date: batch.actualDate || batch.plannedDate, status: batch.status, analysisStatus, summary: batch.composition,
-      terms: [batch.type, batch.notes, batch.catalyst, batch.solvent, batch.sampleIds, batch.analysisRefs, ...rowTerms(batch.ingredients)],
-      fields: [['올리고머 유형', batch.type], ['연구자', batch.researcher], ['합성일', batch.actualDate], ['예정일', batch.plannedDate], ['비고', batch.notes]] });
-    for (const ref of batch.analysisRefs.split(/[,\n]+/).map(value => value.trim()).filter(Boolean).filter((value, index, list) => list.indexOf(value) === index)) {
-      add({ ...common, id: ref + ' · ' + batch.id, name: ref, kind: '분석 결과', analysisStatus, status: analysisStatus,
-        terms: [ref, batch.id, batch.name, batch.sampleIds], summary: '배치에 등록된 분석 참조',
-        fields: [['분석 기록 ID', ref], ['Batch ID', batch.id], ['샘플 ID', batch.sampleIds]] });
-    }
-  }
-  for (const material of materials) {
-    const source = material.lots[0] ? materialLink(material.lots[0].id) : '#materials';
-    add({ id: material.id, name: material.name, kind: '원료', source, example: material.example,
-      projects: [...(materialProjects.get(material.id) ?? [])], summary: material.cas,
-      terms: [material.component, ...material.lots.flatMap(lot => [lot.name, lot.inventory?.manufacturer ?? ''])],
-      fields: [['CAS 번호', material.cas ?? ''], ['분류', material.component], ['등록 Lot', material.lots.map(lot => lot.name).join(', ')]] });
-    for (const lot of material.lots) {
-      const values = makeMaterialDraft(material, lot);
-      add({ id: lot.id, name: material.name + ' · ' + lot.name, kind: '원료 Lot', source: materialLink(lot.id),
-        projects: [...(materialProjects.get(lot.id) ?? [])], date: values.purchased, status: values.lifecycle, example: lot.example ?? material.example,
-        summary: [values.manufacturer, values.location].filter(Boolean).join(' · '),
-        terms: [lot.name, material.cas ?? '', values.notes, values.state],
-        fields: [['Lot 번호', lot.name], ['CAS 번호', values.cas], ['회사명', values.manufacturer], ['위치', values.location],
-          ['잔량', values.remaining ? values.remaining + ' ' + values.unit : ''], ['MSDS', values.msds?.name ?? '']] });
-    }
-  }
-  for (const record of formulations) add({
-    id: record.id + ':v' + record.version, name: record.name, kind: '조성 정보', projects: [record.projectId],
-    researcher: (record as Saved & { author?: string }).author, date: record.savedAt, source: '#formulation', rows: record.rows,
-    summary: 'v' + record.version, terms: [record.synthesisId, ...record.sampleIds, ...record.analysisRefs, ...rowTerms(record.rows)],
-    fields: [['조성 버전', String(record.version)], ['저장일', record.savedAt.slice(0, 10)], ['샘플 ID', record.sampleIds.join(', ')]],
-  });
-  for (const record of research.syntheses) {
-    const author = research.calculations.find(item => item.id === record.calculationId)?.author;
-    add({ id: record.id, name: record.input.name || record.id, kind: '합성 기록', projects: [record.projectId],
-      date: record.performedDate || record.plannedDate || record.createdAt, researcher: author, status: record.status,
-      source: projectLink(record.projectId) + '/' + encodeURIComponent(record.id), rows: record.input.rows,
-      summary: record.conditions, terms: [record.memo, record.formulationId, ...record.sampleIds, ...rowTerms(record.input.rows)],
-      fields: [['합성 조건', record.conditions], ['비고', record.memo], ['샘플 ID', record.sampleIds.join(', ')]] });
-  }
-  for (const sample of research.samples) {
-    const synthesis = research.syntheses.find(record => record.id === sample.synthesisId);
-    const source = projectLink(sample.projectId) + '/' + encodeURIComponent(sample.synthesisId);
-    const analysisStatus = sample.analysis?.trim() ? undefined : '분석 전';
-    add({ id: sample.id, name: sample.name || sample.id, kind: '샘플', projects: [sample.projectId], source,
-      date: synthesis?.performedDate || synthesis?.createdAt, status: sample.status, analysisStatus, summary: sample.shape,
-      terms: [sample.synthesisId, sample.formulationId, sample.notes, sample.analysis],
-      fields: [['합성 기록', sample.synthesisId], ['형태', sample.shape], ['비고', sample.notes], ['분석 참조', sample.analysis]] });
-    if (sample.analysis?.trim()) add({ id: sample.id, name: sample.analysis, kind: '분석 결과', projects: [sample.projectId], source,
-      summary: '샘플에 등록된 분석 참조', fields: [['샘플 ID', sample.id], ['분석 참조', sample.analysis]], terms: [sample.name, sample.synthesisId] });
-  }
-  return { warnings, results: results.map(result => ({ ...result, terms: [...(result.terms ?? []),
-    ...result.projects.filter(Boolean).map(projectName), ...result.fields.map(([, value]) => value)] })) };
-}
-
-export const emptySearch = { query: '', project: '', kind: '', researcher: '', period: '', start: '', end: '', status: '', sort: 'relevance' };
-export type SearchFilters = typeof emptySearch;
-
-function score(result: Result, keyword: string): number {
-  const id = normalize(result.id);
-  const name = normalize(result.name);
-  if (id === keyword) return 6;
-  if (id.includes(keyword)) return 5;
-  if (name === keyword) return 4;
-  if (name.includes(keyword)) return 3;
-  if (normalize(result.researcher ?? '').includes(keyword)) return 2;
-  return [result.summary ?? '', ...(result.terms ?? [])].some(value => normalize(value).includes(keyword)) ? 1 : 0;
-}
-
-export function searchResults(results: Result[], filters: SearchFilters, now = new Date()) {
-  const keywords = normalize(filters.query).split(/\s+/).filter(Boolean);
-  const cutoff = new Date(now);
-  const days = { week: 6, month: 29 }[filters.period];
-  const months = { quarter: 3, half: 6, year: 12 }[filters.period];
-  if (days !== undefined) cutoff.setDate(now.getDate() - days);
-  if (months !== undefined) {
-    cutoff.setDate(1);
-    cutoff.setMonth(now.getMonth() - months);
-    const lastDay = new Date(cutoff.getFullYear(), cutoff.getMonth() + 1, 0).getDate();
-    cutoff.setDate(Math.min(now.getDate(), lastDay));
-  }
-  const dateKey = (date: Date) => date.toLocaleDateString('sv-SE');
-  const start = filters.period === 'custom' ? filters.start : filters.period ? dateKey(cutoff) : '';
-  const end = filters.period === 'custom' ? filters.end : filters.period ? dateKey(now) : '';
-  return results.flatMap(result => {
-    const date = result.date?.slice(0, 10) ?? '';
-    if ((filters.project && !result.projects.includes(filters.project)) || (filters.kind && result.kind !== filters.kind)
-      || (filters.researcher && result.researcher !== filters.researcher) || (filters.status && result.analysisStatus !== filters.status)
-      || ((start || end) && (!date || (start && date < start) || (end && date > end)))) return [];
-    const scores = keywords.map(keyword => score(result, keyword));
-    if (scores.includes(0)) return [];
-    return [{ result, relevance: keywords.length ? score(result, normalize(filters.query)) * 10 + scores.reduce((sum, value) => sum + value, 0) : 0 }];
-  }).sort((a, b) => {
-    const date = (b.result.date ?? '').localeCompare(a.result.date ?? '');
-    const name = a.result.name.localeCompare(b.result.name, 'ko');
-    if (filters.sort === 'new') return date || name;
-    if (filters.sort === 'old') return (a.result.date && b.result.date ? -date : date) || name;
-    if (filters.sort === 'name') return name;
-    return b.relevance - a.relevance || date || name;
-  }).map(item => item.result);
-}
+import {calculate,type Row} from './formulation-model';
+import {seoulDay,parseDateQuery,filterRange} from './search-dates';
+import {recordKeys} from './search-records';
+export const kinds=['프로젝트','원료','원료 Lot','올리고머 배치','조성 정보','계산 기록','합성 기록','샘플 그룹','샘플','공정 기록','측정 기록','분석 결과','파일','분석 참조'] as const;
+export type Kind=typeof kinds[number];
+export type SearchProject={id:number;name:string;description:string;category:string;progress:number};
+type Raw=Record<string,any>;
+export type Result={key:string;id:string;name:string;kind:Kind;projects:string[];researcher?:string;date?:string;dates:Record<DateType,string>;status?:string;analysisStatus?:string;summary?:string;source:string;terms:string[];fields:[string,string][];rows?:Row[];example?:boolean;archived?:boolean;links:string[];downstream:string[];raw:Raw;metrics:Record<string,number|null>;match?:string;via?:string;relevance?:number;version?:number};
+export type DateType='performed'|'created'|'updated'|'planned';
+export const dateLabels:Record<DateType,string>={performed:'실제 수행일',created:'데이터 생성일',updated:'최종 수정일',planned:'예정일'};
+export const materialLink=(id:string)=>'#materials/'+encodeURIComponent(id);
+export const originalLink=(key:string)=>'#data-search/record/'+encodeURIComponent(key);
+export const normalize=(value:unknown)=>String(value??'').normalize('NFKC').toLowerCase().trim();
+export function numberValue(v:unknown):number|null{if(v===null||v===undefined||typeof v==='boolean'||String(v).trim()==='')return null;const n=Number(v);return Number.isFinite(n)?n:null}
+export function convertNumber(value:unknown,unit:string,target:string):number|null{const n=numberValue(value);if(n===null)return null;const length:Record<string,number>={'nm':.001,'µm':1,'μm':1,'um':1,mm:1000,cm:10000,m:1000000};const pressure:Record<string,number>={Pa:.000001,kPa:.001,MPa:1,GPa:1000};if(unit===target)return n;if(unit in length&&target in length)return n*length[unit]/length[target];if(unit in pressure&&target in pressure)return n*pressure[unit]/pressure[target];return null}
+const arr=(v:unknown):Raw[]=>Array.isArray(v)?v.filter(x=>x&&typeof x==='object'):[];
+const strings=(v:unknown):string[]=>Array.isArray(v)?v.map(String):typeof v==='string'?v.split(/[,\n]+/).map(x=>x.trim()).filter(Boolean):[];
+const text=(v:unknown):string=>v===null||v===undefined?'':typeof v==='object'?JSON.stringify(v):String(v);
+const projectSource=(pid:unknown,sid?:unknown)=>'#project/'+encodeURIComponent(text(pid))+(sid?'/'+encodeURIComponent(text(sid)):'');
+const refs=(rows:Raw[])=>rows.flatMap(r=>[r.name,r.materialId,r.lot,r.lotId].filter(Boolean).map(String));
+const dates=(r:Raw,performed?:unknown):Record<DateType,string>=>({performed:seoulDay(performed),created:seoulDay(r.createdAt??r.savedAt??r.uploadedAt),updated:seoulDay(r.updatedAt),planned:seoulDay(r.plannedDate)});
+const safeRows=(rows:unknown)=>arr(rows).filter(r=>r.enabled!==false) as Row[];
+const compositionRows=(rows:unknown,result:Raw|undefined)=>safeRows(rows).filter(r=>!result?.results?.find((v:Raw)=>v.id===r.id)||result.results.find((v:Raw)=>v.id===r.id).included!==false).map(r=>{const v=arr(result?.results).find(v=>v.id===r.id);return v&&numberValue(v.mass)!==null?{...r,amount:String(v.mass),unit:'g' as const}:r});
+export type SearchIndex={results:Result[];byKey:Map<string,Result>;warnings:string[];fingerprint:string};
+export const storageKeys=['isnm-projects','isnm-material-library-v1','isnm-oligomer-batches-v1','isnm-formulations','isnm-research-v1','isnm-equipment-v1',...Object.values(recordKeys)];
+export function fingerprint(storage:Pick<Storage,'getItem'>=localStorage){return storageKeys.map(k=>k+':'+(storage.getItem(k)??'')).join('\u0001')}
+export function buildSearch(projects:SearchProject[]=[],storage:Pick<Storage,'getItem'>=localStorage):SearchIndex{const warnings:string[]=[];const read=(key:string,array=true):any=>{const raw=storage.getItem(key);if(raw===null)return array?[]:{};try{const value=JSON.parse(raw);if(array&&!Array.isArray(value)||!array&&(!value||typeof value!=='object'||Array.isArray(value)))throw Error();return value}catch{warnings.push(key);return array?[]:{}}};const p=arr(read('isnm-projects')),m=arr(read('isnm-material-library-v1')),batches=arr(read('isnm-oligomer-batches-v1')),forms=arr(read('isnm-formulations')),research=read('isnm-research-v1',false),syntheses=arr(research.syntheses),samples=arr(research.samples),calcs=arr(research.calculations),measurements=arr(read(recordKeys.measurements)),analysis=arr(read(recordKeys.analysis)),fileRecords=arr(read(recordKeys.files));const byKey=new Map<string,Result>();const aliases=new Map<string,Set<string>>();const key=(kind:Kind,id:unknown,version?:unknown)=>kind+':'+text(id)+(version!==undefined?':v'+text(version):'');
+function add(kind:Kind,r:Raw,values:Partial<Result>={},version?:unknown){if(r.id===undefined||r.id===null||r.deleted===true)return;const id=text(r.id),k=key(kind,id,version);if(byKey.has(k))return;const result:Result={key:k,id,name:text(r.name??r.title??r.experimentName??r.id),kind,projects:strings(r.projectIds??(r.projectId!==undefined?[r.projectId]:[])),researcher:text(r.researcher??r.author??r.createdBy??r.uploadedBy),dates:dates(r,r.performedDate??r.actualDate),status:text(r.status),analysisStatus:text(r.analysisStatus),summary:text(r.description??r.notes??r.memo),source:originalLink(k),terms:[],fields:[],links:[],downstream:[],raw:r,metrics:{},example:!!r.example,archived:!!r.archived||['Archived','Disposed','폐기','보관'].includes(text(r.status)),...values};result.date=result.dates.performed;byKey.set(k,result);for(const alias of [id,k,values.id,r.displayId]){if(!alias)continue;const set=aliases.get(String(alias))||new Set();set.add(k);aliases.set(String(alias),set)}return result}
+function relation(parent:Result|undefined,child:Result|undefined){if(!parent||!child||parent.key===child.key)return;if(!parent.links.includes(child.key))parent.links.push(child.key);if(!child.links.includes(parent.key))child.links.push(parent.key);if(!parent.downstream.includes(child.key))parent.downstream.push(child.key)}
+const find=(kind:Kind,id:unknown,version?:unknown)=>byKey.get(key(kind,id,version));
+function file(owner:Result,record:Raw){if(!record.id)return;const f=add('파일',record,{projects:owner.projects,researcher:text(record.uploadedBy),dates:dates(record),fields:[['파일 역할',text(record.role||'Other')],['원본 파일명',text(record.originalName||record.name)],['형식',text(record.type)],['크기',record.size===undefined?'':text(record.size)+' bytes'],['파일 해시',text(record.hash)],['연결 기록',owner.id]],terms:[text(record.originalName),text(record.description)],example:owner.example||record.example});relation(owner,f)}
+for(const r of p){const id='PRJ-'+text(r.id).padStart(3,'0');const result=add('프로젝트',r,{id,projects:[text(r.id)],source:projectSource(r.id),dates:dates(r,r.startDate),summary:text(r.description),terms:[text(r.category),text(r.id)],fields:[['분류',text(r.category)],['설명',text(r.description)],['진행률',r.progress===undefined?'':text(r.progress)+'%']]});if(result)aliases.get(text(r.id))?.add(result.key)}
+for(const material of m){const lotList=arr(material.lots);const root=add('원료',material,{source:lotList.length?materialLink(lotList[0].id):'#materials',terms:[text(material.cas),text(material.aliases),text(material.chemicalName),text(material.component)],fields:[['CAS 번호',text(material.cas)],['분류',text(material.component)],['원료명',text(material.name)],['별칭',text(material.aliases)],['분자량',text(material.mw)],['밀도',text(material.density)]]});for(const lot of lotList){const inv=lot.inventory||{};const r=add('원료 Lot',lot,{name:text(material.name)+' · '+text(lot.name),status:text(inv.lifecycle),archived:['Archived','Disposed'].includes(text(inv.lifecycle)),projects:root?.projects||[],source:materialLink(lot.id),dates:{...dates(lot),performed:seoulDay(inv.purchased)},example:!!(lot.example??material.example),terms:[text(material.id),text(material.name),text(material.cas),text(inv.manufacturer),text(inv.notes)],fields:[['원료명',text(material.name)],['Lot 번호',text(lot.name)],['입고·구매일',text(inv.purchased)],['제조·공급업체',text(inv.manufacturer)],['CAS 번호',text(material.cas)],['보관 위치',text(inv.location)],['잔량',inv.remaining===undefined?'':text(inv.remaining)+' '+text(lot.unit||material.unit||'g')]]});relation(root,r);if(r&&inv.msds)file(r,{...inv.msds,role:'Document'})}}
+for(const r of batches){const rows=safeRows(r.ingredients);const result=add('올리고머 배치',r,{source:'#oligomer-batches/'+encodeURIComponent(r.id),rows,terms:[text(r.type),text(r.composition),text(r.notes),text(r.catalyst),text(r.solvent),...refs(rows)],metrics:{mn:numberValue(r.mn),mw:numberValue(r.mw),pdi:numberValue(r.pdi),targetMw:numberValue(r.targetMw)},fields:[['유형',text(r.type)],['합성일',text(r.actualDate)],['예정일',text(r.plannedDate)],['연구자',text(r.researcher)],['합성 조건',text(r.composition)],['온도',r.temperature?text(r.temperature)+' °C':''],['시간',r.duration?text(r.duration)+' h':''],['Mn',r.mn?text(r.mn)+' g/mol':''],['Mw',r.mw?text(r.mw)+' g/mol':''],['PDI',text(r.pdi)],['분석 참조',text(r.analysisRefs)],['비고',text(r.notes)]]});if(result)for(const f of arr(r.attachments))file(result,f)}
+for(const r of forms){const rows=safeRows(r.rows);add('조성 정보',r,{version:r.version,source:'#formulation/'+encodeURIComponent(r.id)+'/v'+r.version,rows,dates:dates(r,r.savedAt),terms:[...refs(rows),text(r.id)],fields:[['Formulation ID',text(r.id)],['버전',text(r.version)],['함량 기준',r.basis==='solids'?'용매 제외':'전체 투입 원료'],['작성자',text(r.author)],['생성일',seoulDay(r.savedAt)]]},r.version)}
+for(const r of calcs){const rows=compositionRows(r.input?.rows,r.result);add('계산 기록',r,{name:text(r.input?.name||r.id),rows,dates:dates(r,r.createdAt),terms:[...refs(rows),text(r.formulationId)],fields:[['조성 ID',text(r.formulationId)],['조성 버전',text(r.version)],['계산 기준',text(r.input?.mode)],['목표량',text(r.input?.target)+' '+text(r.input?.targetUnit)],['생성일',seoulDay(r.createdAt)]]})}
+for(const r of syntheses){const rows=compositionRows(r.input?.rows,r.result),calc=calcs.find(c=>c.id===r.calculationId);const result=add('합성 기록',r,{name:text(r.experimentName||r.input?.name||r.id),rows,researcher:text(r.author||calc?.author),source:projectSource(r.projectId,r.id),terms:[text(r.displayId),text(r.formulationId),text(r.memo),text(r.conditions),...refs(rows)],fields:[['표시 ID',text(r.displayId)],['조성 ID',text(r.formulationId)],['조성 버전',text(r.input?.sourceVersion)],['계산 기록',text(r.calculationId)],['실제 수행일',text(r.performedDate)],['예정일',text(r.plannedDate)],['실제 계량량',text(r.actualAmounts)],['공통 조건',text(r.common||r.conditions)],['비고',text(r.memo)]]});if(result)for(const step of arr(r.steps)){const process=add('공정 기록',step,{projects:result.projects,researcher:result.researcher,source:originalLink(key('공정 기록',step.id)),dates:dates(step,step.startedAt||step.performedDate),summary:text(step.memo),fields:[['공정 유형',text(step.kind)],['실제 조건',text(step.actual)],['계획 조건',text(step.planned)],['수행 시작',text(step.startedAt)],['수행 종료',text(step.endedAt)],['기록 입력 시각',text(step.recordedAt)],['관찰',text(step.memo)]]});relation(result,process);if(process)for(const f of arr(step.attachments))file(process,f)}}
+for(const r of [...arr(read(recordKeys.groups)),...syntheses.flatMap(s=>arr(s.sampleGroups).map((g):Raw=>({...g,projectId:s.projectId,synthesisId:s.id})))])add('샘플 그룹',r,{fields:[['연결 합성',text(r.synthesisId)],['반복 시료 그룹',text(r.name)]]});
+for(const r of samples){const sr=syntheses.find(s=>s.id===r.synthesisId);const a=numberValue(r.initialLength),z=numberValue(r.finalLength);const ratio=a!==null&&z!==null&&a>0&&z>0?z/a:numberValue(r.stretchRatio);add('샘플',r,{raw:{...r,formulationVersion:sr?.input?.sourceVersion},dates:dates(r,r.performedDate??r.actualDate??r.madeAt),source:sr?projectSource(r.projectId,r.synthesisId):originalLink(key('샘플',r.id)),rows:compositionRows(sr?.input?.rows,sr?.result),terms:[text(r.synthesisId),text(r.formulationId),text(r.groupId),text(r.notes),text(r.productionResult),text(r.observations),text(r.analysis)],metrics:{thickness:convertNumber(r.actualThickness,r.actualThicknessUnit||r.thicknessUnit||'µm','µm'),targetThickness:convertNumber(r.thickness,r.thicknessUnit||'µm','µm'),width:convertNumber(r.width,r.widthUnit||'mm','mm'),length:convertNumber(r.length,r.lengthUnit||'mm','mm'),diameter:convertNumber(r.diameter,r.diameterUnit||'mm','mm'),stretchRatio:ratio,stretchPercent:ratio!==null?(ratio-1)*100:numberValue(r.stretchPercent)},fields:[['Sample ID',text(r.id)],['샘플명',text(r.name)],['형태',text(r.shape)],['연결 합성',text(r.synthesisId)],['조성 ID',text(r.formulationId)],['목표 두께',r.thickness?text(r.thickness)+' '+text(r.thicknessUnit||'µm'):''],['실제 두께',r.actualThickness?text(r.actualThickness)+' '+text(r.actualThicknessUnit||r.thicknessUnit||'µm'):''],['제작일',seoulDay(r.performedDate??r.actualDate??r.madeAt)],['공통 조건',text(sr?.common||sr?.conditions)],['개별 경화 조건',text(r.cureOverride)],['연신 초기·최종 길이',r.initialLength&&r.finalLength?`${r.initialLength} → ${r.finalLength} mm`: ''],['보관 위치',text(r.location)],['비고',text(r.notes)],['분석 참조',text(r.analysis)]]});const sample=find('샘플',r.id);if(sample){for(const f of arr(r.attachments))file(sample,f);for(const a of arr(r.analysisRecords)){if(a.id&&!measurements.some(x=>x.id===a.id)){const ref=add('분석 참조',a,{projects:sample.projects,source:sample.source,name:text(a.reference||a.name||a.id),status:'참조만 등록',terms:[text(r.id),text(a.kind)],fields:[['샘플',text(r.id)],['분석 종류',text(a.kind)],['참조',text(a.reference)],['안내','독립된 측정·완료 결과로 간주하지 않는 참조 정보입니다.']]});relation(sample,ref)}}}}
+for(const r of arr(read(recordKeys.processes)))add('공정 기록',r,{dates:dates(r,r.performedDate||r.startedAt),fields:[['공정 조건',text(r.conditions||r.actual)],['관찰',text(r.memo)]]});
+for(const r of measurements){const sample=find('샘플',r.sampleId);const result=add('측정 기록',r,{projects:r.projectId?[String(r.projectId)]:sample?.projects||[],terms:[text(r.equipment),text(r.equipmentId),text(r.sampleId),text(r.mode)],fields:[['Measurement ID',text(r.id)],['Sample ID',text(r.sampleId)],['장비',text(r.equipment)],['모드',text(r.mode)],['측정일',text(r.performedDate)],['측정 상태',text(r.status)],['분석 상태',text(r.analysisStatus)],['측정 조건',text(r.conditions)],['처리 방법',text(r.processingMethod)]]});relation(sample,result)}
+for(const r of analysis){const meas=find('측정 기록',r.measurementId);const result=add('분석 결과',r,{projects:meas?.projects||[],dates:{...dates(r),performed:meas?.dates.performed||''},terms:[text(r.measurementId),text(r.unit),text(r.processingMethod)],fields:[['Result ID',text(r.id)],['Measurement ID',text(r.measurementId)],['결과 항목',text(r.name)],['수치',r.value===undefined?'':text(r.value)+' '+text(r.unit)],['측정 조건',text(r.conditions)],['버전',text(r.version)],['처리 방법',text(r.processingMethod)]]});relation(meas,result)}
+for(const r of fileRecords){const owner=find('측정 기록',r.measurementId)||find('샘플',r.sampleId)||[...byKey.values()].find(x=>x.id===r.ownerId);if(owner)file(owner,r);else add('파일',r,{fields:[['원본 파일명',text(r.originalName||r.name)],['역할',text(r.role)],['안내','연결 원본을 현재 브라우저에서 찾을 수 없습니다.']]})}
+for(const node of byKey.values()){for(const pid of node.projects)relation(find('프로젝트',pid),node);if(node.rows){for(const row of node.rows){relation(find('원료',row.materialId),node);relation(find('원료 Lot',row.lotId),node);relation(find('올리고머 배치',row.lotId),node);relation(find('올리고머 배치',String(row.materialId).replace(/^batch:/,'')),node)}}if(node.kind==='계산 기록')relation(find('조성 정보',node.raw.formulationId,node.raw.version),node);if(node.kind==='합성 기록'){relation(find('계산 기록',node.raw.calculationId),node);relation(find('조성 정보',node.raw.formulationId,node.raw.input?.sourceVersion),node);for(const a of Object.values(node.raw.actuals||{}) as Raw[])node.terms.push(text(a.lot))}if(node.kind==='샘플'){relation(find('합성 기록',node.raw.synthesisId),node);relation(find('샘플 그룹',node.raw.groupId),node)}if(node.kind==='공정 기록'){relation(find('합성 기록',node.raw.synthesisId),node);for(const sid of strings(node.raw.sampleIds??(node.raw.sampleId?[node.raw.sampleId]:[])))relation(find('샘플',sid),node)}}
+for(const synthesis of syntheses){for(const step of arr(synthesis.steps)){const process=find('공정 기록',step.id);const targets=strings(step.sampleIds);const ids=targets.length?targets:samples.filter(s=>s.synthesisId===synthesis.id).map(s=>String(s.id));for(const id of ids)relation(find('샘플',id),process)}}
+// 프로젝트는 실제 연결 자식의 범위로만 원료·공용 기록의 프로젝트 관계를 집계합니다.
+for(const batch of batches){const node=find('올리고머 배치',batch.id);for(const id of strings(batch.sampleIds))relation(node,find('샘플',id));for(const id of strings(batch.analysisRefs)){relation(node,find('측정 기록',id));relation(node,find('분석 결과',id))}}
+for(const node of byKey.values()){if(!['원료','원료 Lot','올리고머 배치'].includes(node.kind))continue;const seen=new Set<string>();const queue=[node.key];while(queue.length){const k=queue.shift()!;if(seen.has(k))continue;seen.add(k);const child=byKey.get(k);child?.projects.forEach(pid=>{if(!node.projects.includes(pid))node.projects.push(pid)});for(const next of child?.downstream||[]){if(byKey.get(next)?.kind!=='프로젝트')queue.push(next)}}}
+for(const node of byKey.values()){node.metrics.sampleCount=node.downstream.filter(k=>byKey.get(k)?.kind==='샘플').length;node.metrics.measurementCount=node.downstream.filter(k=>byKey.get(k)?.kind==='측정 기록').length;node.terms.push(...node.projects.map(pid=>p.find(x=>String(x.id)===pid)?.name||projects.find(x=>String(x.id)===pid)?.name||pid));node.terms.push(...node.fields.map(([,v])=>v));}
+return {results:[...byKey.values()],byKey,warnings,fingerprint:fingerprint(storage)}}
+export const emptySearch={query:'',queryMode:'auto' as 'auto'|'text'|'date',kinds:[] as string[],projectIds:[] as string[],researchers:[] as string[],statuses:[] as string[],dateMode:'all',dateType:'performed' as DateType,dateValue:'',start:'',end:'',sort:'relevance',page:1,pageSize:20,includeExamples:false,archive:'active',scope:'all',all:false,includeMaterial:'',excludeMaterial:'',lot:'',componentRole:'',formulationId:'',formulationVersion:'',weightMaterial:'',weightMin:'',weightMax:'',weightBasis:'all',shape:'',groupId:'',thicknessMin:'',thicknessMax:'',thicknessUnit:'µm',thicknessBasis:'actual',widthMin:'',widthMax:'',lengthMin:'',lengthMax:'',diameterMin:'',diameterMax:'',stretchMin:'',stretchMax:'',stretchBasis:'percent',mnMin:'',mnMax:'',mwMin:'',mwMax:'',pdiMin:'',pdiMax:'',equipment:[] as string[],analysisCompletion:'any',hasFile:'any',processKind:'',temperatureMin:'',temperatureMax:'',resultName:'',resultMin:'',resultMax:'',resultUnit:'MPa',resultTemperature:'',resultFrequency:'',measurementMode:''};
+export type SearchFilters=typeof emptySearch;
+export function validateFilters(f:SearchFilters){if(!['all','project','shared'].includes(f.scope))throw Error('지원하지 않는 검색 범위입니다.');if(!['Pa','kPa','MPa','GPa','°C','%','g/mol'].includes(f.resultUnit))throw Error('지원하지 않는 분석 결과 단위입니다.');if(!['any','exists','completed','pending'].includes(f.analysisCompletion)||!['any','yes','no'].includes(f.hasFile))throw Error('지원하지 않는 분석 조건입니다.');if(!['auto','text','date'].includes(f.queryMode)||!['performed','created','updated','planned'].includes(f.dateType)||!['all','day','month','year','range'].includes(f.dateMode)||!['relevance','new','old','name','nameDesc','id'].includes(f.sort)||!['active','archived','all'].includes(f.archive)||![20,50,100].includes(f.pageSize)||!Number.isInteger(f.page)||f.page<1)throw Error('지원하지 않는 검색 조건입니다.');if(f.formulationVersion.trim()&&(!Number.isInteger(Number(f.formulationVersion))||Number(f.formulationVersion)<1))throw Error('조성 버전은 1 이상의 정수여야 합니다.');if(f.kinds.some(k=>!kinds.includes(k as Kind)))throw Error('지원하지 않는 데이터 유형입니다.');if(!['µm','mm','nm'].includes(f.thicknessUnit)||!['all','solids'].includes(f.weightBasis)||!['actual','planned'].includes(f.thicknessBasis)||!['percent','ratio'].includes(f.stretchBasis))throw Error('지원하지 않는 단위 또는 계산 기준입니다.');parseDateQuery(f.query,f.queryMode);filterRange(f.dateMode,f.dateValue,f.start,f.end);for(const [min,max,label,negative] of [['weightMin','weightMax','원료 함량',false],['thicknessMin','thicknessMax','두께',false],['widthMin','widthMax','폭',false],['lengthMin','lengthMax','길이',false],['diameterMin','diameterMax','직경',false],['stretchMin','stretchMax','연신',false],['mnMin','mnMax','Mn',false],['mwMin','mwMax','Mw',false],['pdiMin','pdiMax','PDI',false],['temperatureMin','temperatureMax','온도',true],['resultMin','resultMax','분석 결과',true]] as const){const a=f[min],b=f[max];if([a,b].some(v=>v.trim()&&(numberValue(v)===null||!negative&&Number(v)<0)))throw Error(label+' 범위에 유효한 수치를 입력해 주세요.');if(a.trim()&&b.trim()&&Number(a)>Number(b))throw Error(label+'의 최소값은 최대값보다 클 수 없습니다.')}if((f.weightMin||f.weightMax)&&!f.weightMaterial.trim())throw Error('함량을 검색할 원료를 지정해 주세요.');if((f.weightMin&&Number(f.weightMin)>100)||(f.weightMax&&Number(f.weightMax)>100))throw Error('wt% 범위는 0~100입니다.');if((f.resultMin||f.resultMax||f.resultTemperature||f.resultFrequency)&&!f.resultName.trim())throw Error('수치 검색할 분석 결과 항목명을 입력해 주세요.');if(f.resultFrequency.trim()&&(numberValue(f.resultFrequency)===null||Number(f.resultFrequency)<0)||f.resultTemperature.trim()&&numberValue(f.resultTemperature)===null)throw Error('측정 온도·주파수는 유효한 숫자여야 합니다.');}
+function inRange(value:number|null,min:string,max:string){if(!min.trim()&&!max.trim())return true;return value!==null&&(!min.trim()||value>=Number(min))&&(!max.trim()||value<=Number(max))}
+export function conditionsMatch(c:Raw,temperature:string,frequency:string){let t=numberValue(c.temperature),hz=numberValue(c.frequency);const tu=text(c.temperatureUnit||'°C'),fu=text(c.frequencyUnit||'Hz');if(t!==null){if(tu==='K')t-=273.15;else if(tu==='°F')t=(t-32)*5/9;else if(tu!=='°C')t=null}const ff:Record<string,number>={Hz:1,kHz:1000,MHz:1000000,mHz:.001};hz=hz!==null&&fu in ff?hz*ff[fu]:null;return (!temperature.trim()||t!==null&&Math.abs(t-Number(temperature))<1e-7)&&(!frequency.trim()||hz!==null&&Math.abs(hz-Number(frequency))<1e-7)}
+function rowMatch(r:Row,q:string){return [r.name,r.materialId,r.lotId,r.lot].some(v=>normalize(v).includes(normalize(q)))}
+function recipes(n:Result,index:SearchIndex):Row[][]{if(n.rows)return [n.rows];const seen=new Set<string>();const queue=[n.key];const found:Row[][]=[];while(queue.length){const k=queue.shift()!;if(seen.has(k))continue;seen.add(k);const r=index.byKey.get(k);if(r?.rows){found.push(r.rows);continue}for(const link of r?.links||[]){const parent=index.byKey.get(link);if(parent&&['합성 기록','계산 기록','조성 정보','샘플'].includes(parent.kind))queue.push(link)}}return found}
+export function measurementNodes(n:Result,index:SearchIndex){if(n.kind==='측정 기록')return [n];if(n.kind==='분석 결과')return n.links.map(k=>index.byKey.get(k)).filter((x):x is Result=>x?.kind==='측정 기록');return n.downstream.flatMap(k=>{const child=index.byKey.get(k);return child?.kind==='측정 기록'?[child]:[]})}
+function directScore(n:Result,q:string){if(!q)return 0;if(normalize(n.id)===q||normalize(n.key)===q||normalize(n.raw.displayId)===q)return 100;if(normalize(n.name)===q)return 90;if(normalize(n.name).includes(q))return 75;if(normalize(n.id).includes(q))return 70;return [n.summary,n.researcher,...n.terms].some(v=>normalize(v).includes(q))?40:0}
+export function performSearch(index:SearchIndex,f:SearchFilters){validateFilters(f);const auto=parseDateQuery(f.query,f.queryMode),range=filterRange(f.dateMode,f.dateValue,f.start,f.end);const keyword=auto?'':normalize(f.query);const relevance=new Map<string,{score:number;via?:string}>();if(keyword){const tokens=keyword.split(/\s+/);for(const n of index.results){const scores=tokens.map(t=>directScore(n,t));if(scores.every(s=>s>0))relevance.set(n.key,{score:directScore(n,keyword)||Math.min(...scores)})}const queue=[...relevance.entries()].filter(([k])=>!['프로젝트','파일','분석 참조'].includes(index.byKey.get(k)!.kind)).map(([k])=>({key:k,origin:k,depth:0}));const visited=new Set<string>();while(queue.length){const next=queue.shift()!;if(visited.has(next.key)||next.depth>7)continue;visited.add(next.key);const node=index.byKey.get(next.key)!;if(next.depth>0&&!relevance.has(node.key))relevance.set(node.key,{score:10-next.depth,via:index.byKey.get(next.origin)!.name+' 연결 기록을 통해 검색됨'});for(const child of node.downstream){if(index.byKey.get(child)?.kind!=='프로젝트')queue.push({key:child,origin:next.origin,depth:next.depth+1})}}}
+const matches=index.results.filter(n=>{if(n.example&&!f.includeExamples||n.archived&&f.archive==='active'||!n.archived&&f.archive==='archived')return false;if(f.scope==='shared'&&!['원료','원료 Lot','올리고머 배치'].includes(n.kind)||f.scope==='project'&&!n.projects.length)return false;if(f.kinds.length&&!f.kinds.includes(n.kind)||f.projectIds.length&&!f.projectIds.some(p=>n.projects.includes(p))||f.researchers.length&&!f.researchers.includes(n.researcher||'')||f.statuses.length&&!f.statuses.includes(n.status||''))return false;if(keyword&&!relevance.has(n.key))return false;const day=n.dates[f.dateType];for(const r of [auto,range])if(r&&(!day||day<r.start||day>r.end))return false;if(f.formulationId&&!normalize(n.raw.formulationId??(n.kind==='조성 정보'?n.id:'')).includes(normalize(f.formulationId)))return false;if(f.formulationVersion&&String(n.version??n.raw.version??n.raw.input?.sourceVersion??n.raw.formulationVersion??'')!==f.formulationVersion)return false;const rr=recipes(n,index);if(f.includeMaterial&&!rr.some(rows=>rows.some(r=>rowMatch(r,f.includeMaterial))))return false;if(f.excludeMaterial&&rr.some(rows=>rows.some(r=>rowMatch(r,f.excludeMaterial))))return false;if(f.lot&&!rr.some(rows=>rows.some(r=>[r.lot,r.lotId].some(x=>normalize(x).includes(normalize(f.lot)))))&&!(n.kind==='원료 Lot'&&normalize(n.raw.name).includes(normalize(f.lot))))return false;if(f.componentRole&&!rr.some(rows=>rows.some(r=>normalize(r.role).includes(normalize(f.componentRole)))))return false;if(f.weightMaterial||f.weightMin||f.weightMax){if(!rr.some(rows=>{const stats=calculate(rows,f.weightBasis as 'all'|'solids');return rows.some((r,i)=>rowMatch(r,f.weightMaterial)&&inRange(stats.percent[i].wt,f.weightMin,f.weightMax))}))return false}
+if(f.shape&&normalize(n.raw.shape)!==normalize(f.shape)||f.groupId&&!normalize(n.kind==='샘플 그룹'?n.id:n.raw.groupId??'').includes(normalize(f.groupId)))return false;const thickness=n.metrics[f.thicknessBasis==='actual'?'thickness':'targetThickness']??null;if(!inRange(thickness,f.thicknessMin?String(convertNumber(f.thicknessMin,f.thicknessUnit,'µm')):'',f.thicknessMax?String(convertNumber(f.thicknessMax,f.thicknessUnit,'µm')):''))return false;for(const metric of ['width','length','diameter'] as const)if(!inRange(n.metrics[metric]??null,f[metric+'Min' as 'widthMin'],f[metric+'Max' as 'widthMax']))return false;if(!inRange(n.metrics[f.stretchBasis==='ratio'?'stretchRatio':'stretchPercent']??null,f.stretchMin,f.stretchMax))return false;for(const metric of ['mn','mw','pdi'] as const)if(!inRange(n.metrics[metric]??null,f[metric+'Min' as 'mnMin'],f[metric+'Max' as 'mnMax']))return false;const measures=measurementNodes(n,index);if(f.equipment.length||f.analysisCompletion!=='any'||f.measurementMode||f.resultName){if(!measures.some(measure=>{if(f.equipment.length&&!f.equipment.some(e=>normalize(measure.raw.equipment)===normalize(e)))return false;if(f.measurementMode&&normalize(measure.raw.mode)!==normalize(f.measurementMode))return false;const analysisState=normalize(measure.raw.analysisStatus);const done=['completed','complete','완료','분석 완료','분석완료'].includes(analysisState)||['분석 완료','분석완료'].includes(normalize(measure.raw.status));const pending=['pending','inprogress','in progress','분석 대기','분석 중','대기','미완료'].includes(analysisState);if(f.analysisCompletion==='completed'&&!done||f.analysisCompletion==='pending'&&!pending)return false;if(f.resultName){return measure.downstream.map(k=>index.byKey.get(k)).some(r=>{if(!r||r.kind!=='분석 결과'||n.kind==='분석 결과'&&r.key!==n.key||normalize(r.name)!==normalize(f.resultName))return false;const value=convertNumber(r.raw.value,text(r.raw.unit),f.resultUnit);const c=r.raw.conditions||{};return inRange(value,f.resultMin,f.resultMax)&&conditionsMatch(c,f.resultTemperature,f.resultFrequency)})}return true}))return false}
+if(f.hasFile!=='any'){const has=n.kind==='파일'||n.downstream.some(k=>index.byKey.get(k)?.kind==='파일')||measures.some(m=>m.downstream.some(k=>index.byKey.get(k)?.kind==='파일'));if(f.hasFile==='yes'&&!has||f.hasFile==='no'&&has)return false}if(f.processKind||f.temperatureMin||f.temperatureMax){const processes=n.kind==='공정 기록'?[n]:n.downstream.map(k=>index.byKey.get(k)).filter((x):x is Result=>x?.kind==='공정 기록');if(!processes.some(p=>(!f.processKind||normalize(p.raw.kind||p.name).includes(normalize(f.processKind)))&&inRange(numberValue(p.raw.actual?.temperature??p.raw.conditions?.temperature),f.temperatureMin,f.temperatureMax)))return false}return true});
+const effectiveSort=f.sort==='relevance'&&!keyword&&(auto||range)?'new':f.sort;matches.sort((a,b)=>{const d1=a.dates[f.dateType],d2=b.dates[f.dateType];const date=!d1?(!d2?0:1):!d2?-1:(effectiveSort==='old'?d1.localeCompare(d2):d2.localeCompare(d1));if(effectiveSort==='new'||effectiveSort==='old')return date||a.key.localeCompare(b.key);if(effectiveSort==='name'||effectiveSort==='nameDesc')return (effectiveSort==='nameDesc'?-1:1)*a.name.localeCompare(b.name,'ko')||a.key.localeCompare(b.key);if(effectiveSort==='id')return a.id.localeCompare(b.id,undefined,{numeric:true})||a.key.localeCompare(b.key);return (relevance.get(b.key)?.score||0)-(relevance.get(a.key)?.score||0)||date||a.key.localeCompare(b.key)});return matches.map(n=>({...n,match:relevance.get(n.key)?.via?'연결 관계 일치':keyword?relevance.get(n.key)!.score>=100?'ID 정확 일치':relevance.get(n.key)!.score>=75?'이름 일치':'메타데이터 일치':'필터 일치',via:relevance.get(n.key)?.via,relevance:relevance.get(n.key)?.score||0}))}
+export function hasCriteria(f:SearchFilters){return Object.entries(f).some(([key,value])=>!['page','pageSize','sort','dateType','dateMode','queryMode','archive','weightBasis','thicknessUnit','thicknessBasis','stretchBasis','analysisCompletion','hasFile','resultUnit','includeExamples','scope','dateValue','start','end'].includes(key)&&(Array.isArray(value)?value.length:typeof value==='boolean'?value:!!value))||f.includeExamples||f.scope!=='all'||f.dateMode!=='all'||f.archive!=='active'||f.analysisCompletion!=='any'||f.hasFile!=='any'}
+export interface SearchRepository{query(filters:SearchFilters,signal?:AbortSignal):Promise<{items:Result[];total:number;page:number;pages:number;warnings:string[];dateHint:string}>;detail(key:string,signal?:AbortSignal):Promise<Result|null>;related(key:string,signal?:AbortSignal):Promise<Result[]>;facets():Promise<{projects:{id:string;name:string}[];people:string[];statuses:string[];equipment:string[];modes:string[]}>}
+export function summaryOf(r:Result):Result{return {...r,rows:undefined,fields:[],raw:{role:r.raw.role,shape:r.raw.shape,formulationId:r.raw.formulationId,synthesisId:r.raw.synthesisId,equipment:r.raw.equipment,mode:r.raw.mode},terms:[]}}
+export function createLocalSearchRepository(projects:SearchProject[]=[],storage:Pick<Storage,'getItem'>=localStorage):SearchRepository{let cached:SearchIndex|null=null;const index=()=>{const fp=fingerprint(storage);if(!cached||cached.fingerprint!==fp)cached=buildSearch(projects,storage);return cached};const check=(signal?:AbortSignal)=>{if(signal?.aborted)throw new DOMException('검색이 취소되었습니다.','AbortError')};return {async query(filters,signal){check(signal);const data=index(),all=performSearch(data,filters);check(signal);const pages=Math.max(1,Math.ceil(all.length/filters.pageSize));const page=Math.min(filters.page,pages);return {items:all.slice((page-1)*filters.pageSize,page*filters.pageSize).map(summaryOf),total:all.length,page,pages,warnings:data.warnings,dateHint:parseDateQuery(filters.query,filters.queryMode)?.label||''}},async detail(key,signal){check(signal);return index().byKey.get(key)||null},async related(key,signal){check(signal);const data=index(),node=data.byKey.get(key);return (node?.links||[]).map(k=>data.byKey.get(k)).filter((x):x is Result=>!!x&&!x.archived).map(summaryOf)},async facets(){const data=index();return {projects:data.results.filter(r=>r.kind==='프로젝트').map(r=>({id:r.projects[0],name:r.name})),people:[...new Set(data.results.flatMap(r=>r.researcher?[r.researcher]:[]))].sort(),statuses:[...new Set(data.results.flatMap(r=>r.status?[r.status]:[]))].sort(),equipment:[...new Set(['DMA','DSC','UTM','GPC','FT-IR','NMR','Optical Microscope','Thermal Imaging','Other'].concat(data.results.filter(r=>r.kind==='측정 기록').map(r=>text(r.raw.equipment)).concat((()=>{try{return arr(JSON.parse(storage.getItem('isnm-equipment-v1')||'[]'))}catch{return []}})().map(e=>text(e.name))).filter(Boolean)))].sort(),modes:[...new Set(data.results.filter(r=>r.kind==='측정 기록').map(r=>text(r.raw.mode)).filter(Boolean))].sort()}}}}
+// 기존 호출부와의 호환용. 새 UI는 SearchRepository의 페이지 응답을 사용합니다.
+export function searchResults(results:Result[],filters:SearchFilters){const index:SearchIndex={results,byKey:new Map(results.map(r=>[r.key,r])),warnings:[],fingerprint:''};return performSearch(index,filters)}
