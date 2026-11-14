@@ -1,8 +1,8 @@
-.mi-page { background: #f4f9fd; border-radius: 14px; padding: clamp(10px, 1.5vw, 22px); min-width: 0; }
+.mi-page { background: #F7FAFD; border-radius: 14px; padding: clamp(10px, 1.5vw, 22px); min-width: 0; }
 .mi-page .ob-heading { margin-bottom: 20px; }
-.mi-page .ob-filters { background: #fff; }
+.mi-page .ob-filters { background: #F7FAFD; }
 .mi-page table { min-width: 1060px; }
-.mi-page th, .mi-page td { border-right: 1px solid #e8eef5; }
+.mi-page th, .mi-page td { border-right: 1px solid #E7EFF8; }
 .mi-page th small, .mi-page td small { display: block; color: var(--ob-muted); font-weight: 450; }
 .mi-page th, .mi-page td { text-align: left; }
 .mi-page :is(td, th):is(:nth-child(5), :nth-child(6), :nth-child(7), :nth-child(9), :nth-child(10)) { text-align: right; }
@@ -18,7 +18,7 @@
 .mi-properties > .mi-card { border: 0; padding: 0; }
 .mi-card h3 { margin-bottom: 10px; }
 .mi-card dl { margin: 0; font-size: var(--text-small); }
-.mi-card dl > div { display: grid; grid-template-columns: 1fr 1.1fr; gap: 7px; border-top: 1px solid #e9eff6; padding: 7px 0; }
+.mi-card dl > div { display: grid; grid-template-columns: 1fr 1.1fr; gap: 7px; border-top: 1px solid #E7EFF8; padding: 7px 0; }
 .mi-card dt { color: var(--ob-muted); }
 .mi-card dd { margin: 0; overflow-wrap: anywhere; white-space: pre-wrap; }
 .mi-card > .ob-field, .mi-card > .mi-pair, .mi-card > .ob-drop { margin-top: 10px; }
@@ -31,8 +31,8 @@
 .mi-properties .mi-no-document { margin-top: 8px; }
 .mi-menu { position: relative; }
 .mi-menu summary { cursor: pointer; list-style: none; border: 1px solid var(--ob-line); border-radius: 8px; padding: 7px 10px; }
-.mi-menu > div { position: absolute; right: 0; z-index: 2; display: grid; gap: 4px; background: white; border: 1px solid var(--ob-line); border-radius: 8px; padding: 6px; box-shadow: 0 5px 18px #17365a18; }
+.mi-menu > div { position: absolute; right: 0; z-index: 2; display: grid; gap: 4px; background: white; border: 1px solid var(--ob-line); border-radius: 8px; padding: 6px; box-shadow: 0 5px 18px #155FB418; }
 .mi-page .mi-message { margin-top: 12px; color: #17684e; }
-.mi-draft-row { background: #f4f9ff; }
+.mi-draft-row { background: #F7FAFD; }
 .mi-page [aria-invalid=true] { border-color: #ba4151 !important; }
 @media (max-width: 1060px) { .mi-grid { grid-template-columns: 1fr; } }
