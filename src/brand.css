@@ -323,3 +323,5 @@ footer{border-top-color:var(--brand-line);color:#607C9C;align-items:center;gap:1
 .app.sidebar-collapsed>aside>.sidebar-toggle{top:16px;left:50%;right:auto;transform:translateX(-50%);background:#EDF1F6}
 .app.sidebar-collapsed>aside>.brand{margin-top:44px}
 @media(max-width:650px){.app>aside>.sidebar-toggle{top:12px}.app.sidebar-collapsed>aside>.sidebar-toggle{top:12px}}
+
+.quick-reservation{width:540px;max-height:90dvh;overflow-y:auto}.quick-reservation label{margin-top:14px}.quick-reservation textarea{min-height:75px}.quick-reservation .reservation-error{color:#A12239}.quick-reservation form>small{line-height:1.6}
