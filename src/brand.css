@@ -308,3 +308,10 @@ footer{border-top-color:var(--brand-line);color:#607C9C;align-items:center;gap:1
  header{flex-wrap:wrap;height:auto;min-height:60px;gap:8px;padding-top:10px;padding-bottom:10px}
  header .header-right{margin-left:auto}
 }
+
+/* Keep the navigation control attached to the sidebar edge, outside its scroll area. */
+.app{--sidebar-edge:246px}
+.app>.sidebar-toggle{position:fixed;left:var(--sidebar-edge);top:96px;transform:translateX(-50%);z-index:11;width:36px;height:36px;margin:0;border-radius:50%;box-shadow:0 2px 8px #19365114}
+.app.sidebar-collapsed{--sidebar-edge:74px}
+@media(max-width:1150px) and (min-width:901px){.app.sidebar-expanded{--sidebar-edge:210px}}
+@media(max-width:650px){.app.sidebar-expanded{--sidebar-edge:210px}.app.sidebar-collapsed{--sidebar-edge:60px}.app>.sidebar-toggle{top:80px}}
