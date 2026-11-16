@@ -262,3 +262,49 @@ footer{border-top-color:var(--brand-line);color:#607C9C;align-items:center;gap:1
 .calendar-grid button.selected:hover{background:var(--brand-hover);color:#fff}
 .lab-hero-wordmark>span{color:#4D719D}
 .lab-hero-wordmark b{color:#285F9C}
+
+/* Reserve normal-flow space for identity and tagline at every banner height. */
+.welcome{display:grid;grid-template-columns:minmax(0,1fr) 240px;column-gap:24px;align-items:center}
+.welcome-copy{max-width:none;min-width:0}
+.lab-hero-identity{position:relative;inset:auto;transform:none;width:100%;min-height:0;padding:0 0 10px}
+.lab-hero-identity>img{width:150px}
+.lab-hero-wordmark{margin-top:10px}
+.lab-hero-wordmark>span{line-height:1.65}
+.welcome .banner-number{position:static;grid-column:2;justify-self:center;text-align:center;line-height:1.6;letter-spacing:.06em;font-size:var(--text-caption);margin:8px 0 0;max-width:100%}
+.workspace-title{display:block;word-break:keep-all;line-height:1.55}
+.workspace>div{flex:1}
+.sidebar-toggle{display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;width:40px;height:40px;border:1px solid var(--brand-line);border-radius:9px;background:#fff;color:var(--brand-primary);margin-right:12px}
+.sidebar-toggle:hover{background:#E7F0FC}
+.app>aside{overflow-y:auto;overflow-x:hidden}
+.app.sidebar-collapsed>aside{width:74px;padding:25px 10px}
+.app.sidebar-collapsed>.main-shell{margin-left:74px}
+.sidebar-collapsed aside .brand{padding:0;justify-content:center;gap:0}
+.sidebar-collapsed aside .lab-logo-text,.sidebar-collapsed aside .workspace,.sidebar-collapsed aside .nav-label,.sidebar-collapsed aside .lab-note,.sidebar-collapsed aside .settings,.sidebar-collapsed aside .profile>div,.sidebar-collapsed aside .profile>button{display:none}
+.sidebar-collapsed aside nav{margin-top:32px}
+.sidebar-collapsed aside nav button{font-size:0;padding:14px;gap:0;justify-content:center}
+.sidebar-collapsed aside nav button svg{flex-shrink:0}
+.sidebar-collapsed aside .active-dot{display:none}
+.sidebar-collapsed aside .profile{justify-content:center}
+@media(max-width:1100px){.welcome{grid-template-columns:minmax(0,1fr) 210px;column-gap:18px}.lab-hero-identity>img{width:140px}}
+@media(max-width:900px){
+ .app.sidebar-expanded>aside{width:246px;padding:25px 21px 0}
+ .app.sidebar-expanded>.main-shell{margin-left:246px}
+ .sidebar-expanded aside .brand{gap:10px;justify-content:flex-start}
+ .sidebar-expanded aside .lab-logo-text{display:block}
+ .sidebar-expanded aside .workspace{display:flex}
+ .sidebar-expanded aside .nav-label{display:block}
+ .sidebar-expanded aside nav{margin-top:0}
+ .sidebar-expanded aside nav button{font-size:var(--text-label);gap:13px;padding:13px 15px}
+ .sidebar-expanded aside .settings{display:flex}
+ .sidebar-expanded aside .profile>div,.sidebar-expanded aside .profile>button{display:block}
+}
+@media(max-width:750px){.welcome{grid-template-columns:minmax(0,1fr)}.welcome .banner-number{grid-column:1;justify-self:start;margin-top:1.4rem}.lab-hero-identity{display:none}}
+@media(max-width:650px){
+ .app.sidebar-expanded>aside{width:210px;padding-left:14px;padding-right:14px}
+ .app.sidebar-expanded>.main-shell{margin-left:210px}
+ .app.sidebar-collapsed>aside{width:60px;padding:22px 6px}
+ .app.sidebar-collapsed>.main-shell{margin-left:60px}
+ .sidebar-collapsed aside nav button{padding:13px}
+ header{flex-wrap:wrap;height:auto;min-height:60px;gap:8px;padding-top:10px;padding-bottom:10px}
+ header .header-right{margin-left:auto}
+}
