@@ -315,3 +315,11 @@ footer{border-top-color:var(--brand-line);color:#607C9C;align-items:center;gap:1
 .app.sidebar-collapsed{--sidebar-edge:74px}
 @media(max-width:1150px) and (min-width:901px){.app.sidebar-expanded{--sidebar-edge:210px}}
 @media(max-width:650px){.app.sidebar-expanded{--sidebar-edge:210px}.app.sidebar-collapsed{--sidebar-edge:60px}.app>.sidebar-toggle{top:80px}}
+
+/* Sidebar-owned control: top right when expanded, top of the icon rail when collapsed. */
+.app>aside>.sidebar-toggle{position:absolute;top:18px;right:14px;left:auto;transform:none;z-index:1;width:36px;height:36px;margin:0;border:0;border-radius:9px;background:transparent;box-shadow:none;color:var(--brand-muted,#586F88)}
+.app>aside>.sidebar-toggle:hover{background:#E7EDF5;color:var(--brand-navy)}
+.app>aside>.brand{margin-top:38px}
+.app.sidebar-collapsed>aside>.sidebar-toggle{top:16px;left:50%;right:auto;transform:translateX(-50%);background:#EDF1F6}
+.app.sidebar-collapsed>aside>.brand{margin-top:44px}
+@media(max-width:650px){.app>aside>.sidebar-toggle{top:12px}.app.sidebar-collapsed>aside>.sidebar-toggle{top:12px}}
