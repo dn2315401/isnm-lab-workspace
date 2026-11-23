@@ -1,4 +1,4 @@
-# ISNM LAB Workspace · 2026-11-14 작업본
+# ISNM LAB Workspace · 2026-11-23 · v2
 
 연구 프로젝트, 조성 정보, 조성계산기, 합성 계획, 샘플 계획을 관리하는 React + TypeScript + Vite 웹앱입니다.
 
@@ -15,7 +15,7 @@ Node.js 22 이상이 필요합니다.
 ```bash
 git clone https://github.com/dn2315401/isnm-lab-workspace.git
 cd isnm-lab-workspace
-git switch work/2026-11-14-v1
+git switch work/2026-11-23-v2
 npm ci
 npm run dev
 ```

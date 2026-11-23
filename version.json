@@ -1,10 +1,10 @@
 {
-  "name": "ISNM LAB · 2026-11-14 작업본",
-  "date": "2026-11-14",
-  "version": "v1",
-  "branch": "work/2026-11-14-v1",
-  "tag": "2026-11-14-v1",
+  "name": "ISNM LAB · 2026-11-23 · v2",
+  "date": "2026-11-23",
+  "version": "v2",
+  "branch": "work/2026-11-23-v2",
+  "tag": "2026-11-23-v2",
   "repository": "https://github.com/dn2315401/isnm-lab-workspace",
-  "basedOnCommit": "258a1b05a89b6ed688c595e68fd75b456f7cd781",
-  "description": "지능형 연성 나노 소재 연구실 · 11-14 공동 작업본"
+  "basedOnCommit": "26fee922a39acc4449079390f560048647112a2f",
+  "description": "지능형 연성 나노 소재 연구실 · 프로젝트 관리 및 조성 계산기 업데이트"
 }
