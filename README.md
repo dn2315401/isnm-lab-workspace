@@ -1,10 +1,10 @@
-# ISNM LAB Workspace · 2026-11-23 · v2
+# ISNM LAB Workspace · 2026-11-23 · v3
 
 연구 프로젝트, 조성 정보, 조성계산기, 합성 계획, 샘플 계획을 관리하는 React + TypeScript + Vite 웹앱입니다.
 
-11-14 작업본 웹앱: https://isnm-lab-2026-11-14-v1.dn2315401.chatgpt.site
+현재 웹앱: https://isnm-lab-2026-11-14-v1.dn2315401.chatgpt.site
 
-현재 수정 내용은 `work/2026-11-14-v1` 브랜치에 계속 저장합니다. main은 별도 요청이 없으면 유지합니다. `2026-11-14-v1` 태그는 최초 시작본 보관용이며, 현재 수정본은 작업 브랜치에서 확인하세요.
+현재 수정본은 `work/2026-11-23-v3` 브랜치에 저장합니다. v2를 기반으로 연구실 공유 캘린더를 추가했습니다. main과 이전 작업 브랜치는 유지합니다.
 
 현재 작업본 다운로드, 수정, 재저장은 [공동 개발 가이드](docs/COLLABORATION.md)를 참고하세요.
 
@@ -15,7 +15,7 @@ Node.js 22 이상이 필요합니다.
 ```bash
 git clone https://github.com/dn2315401/isnm-lab-workspace.git
 cd isnm-lab-workspace
-git switch work/2026-11-23-v2
+git switch work/2026-11-23-v3
 npm ci
 npm run dev
 ```
@@ -94,3 +94,11 @@ git push -u origin feature/my-change
 ## 연구실 브랜드
 
 지능형 연성 나노 소재 연구실의 원본 심벌을 적용하고, 네이비·블루·흰색을 중심으로 로고의 노랑·분홍·초록을 강조색으로 사용했습니다. 로고 출처와 색상 기준은 [브랜드 적용 안내](docs/BRAND.md)에 정리했습니다.
+
+## 연구실 공유 캘린더 (v3)
+
+홈 상단 연구실 일정과 하단 장비 예약을 분리했습니다. 연구실 일정은 ChatGPT 로그인·구성원 승인·서버 D1 저장을 사용합니다. 개인 공개/비공개, 전체 일정, 반복 회차별 수정·취소, 월·주·일 보기와 수업 시간표를 지원합니다. 기존 실험 기록과 장비 예약은 기존 브라우저 저장 방식을 유지합니다.
+
+관리자는 캘린더의 구성원 관리에서 실제 계정 이메일을 허용하거나 로그인 대기 계정을 승인합니다. 배포 환경의 `CALENDAR_OWNER_EMAIL`은 Sites 설정에서 관리하며 저장소에는 넣지 않습니다. 로컬 Vite 개발 서버는 화면 개발용이며, 실제 인증·공유 API는 Sites Worker 배포에서 제공됩니다. 로컬 서버 로직은 `npm run test:calendar`로 SQLite를 사용해 검증할 수 있습니다.
+
+[구조·권한·반복 처리·운영 방법](docs/LAB_CALENDAR.md)
