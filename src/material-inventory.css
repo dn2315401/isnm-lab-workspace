@@ -38,3 +38,5 @@
 @media (max-width: 1060px) { .mi-grid { grid-template-columns: 1fr; } }
 
 .mi-page .mi-check{display:flex;align-items:center;justify-content:flex-start;gap:.5rem;white-space:nowrap}.mi-page .mi-check input[type=checkbox]{width:auto;flex:0 0 auto;margin:0}
+
+.mi-date-input{position:relative;width:100%}.mi-date-input>input[type=text]{padding-right:48px}.mi-date-input>button{position:absolute;right:4px;top:50%;transform:translateY(-50%);display:flex;align-items:center;justify-content:center;width:38px;height:36px;padding:0;border:0;background:transparent}.mi-date-input>.mi-date-picker{position:absolute;right:0;bottom:0;width:1px;height:1px;padding:0;border:0;opacity:0;pointer-events:none}.mi-date-input>button:disabled{opacity:.45;cursor:default}

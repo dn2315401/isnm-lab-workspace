@@ -1,3 +1,4 @@
+import MaterialDateInput from './MaterialDateInput';
 import { useEffect, useRef, useState } from 'react';
 import { Download, FileText, Pencil, Plus, Search, Upload } from 'lucide-react';
 import { components, type Saved, type Unit } from './formulation-model';
@@ -168,11 +169,11 @@ export default function MaterialInventory() {
     const disabled = (key === 'opened' && draft.unopened) || ((key === 'name' || key === 'cas') && !!draft.materialId && !draft.lotId);
     return <div className="ob-field mi-field">
       <label htmlFor={'mi-' + key}>{titles[key]}{required.includes(key) && <em> *</em>}</label>
-      <div className="ob-input"><input id={'mi-' + key} type={options.type === 'date' ? 'date' : 'text'}
+      {options.type === 'date' ? <MaterialDateInput id={'mi-'+key} value={String(draft[key])} disabled={disabled} invalid={!!errors[key]} describedBy={errors[key] ? 'mi-error-'+key : undefined} onChange={value=>patch({[key]:value})}/> : <div className="ob-input"><input id={'mi-' + key} type={options.type === 'date' ? 'date' : 'text'}
         inputMode={options.type === 'number' ? 'decimal' : undefined} value={draft[key]} disabled={disabled}
         aria-invalid={!!errors[key]} aria-describedby={errors[key] ? 'mi-error-' + key : undefined}
         placeholder={options.hint} list={options.chips ? 'mi-list-' + key : undefined}
-        onChange={event => patch({ [key]: event.target.value })}/>{options.unit && <span>{options.unit}</span>}</div>
+        onChange={event => patch({ [key]: event.target.value })}/>{options.unit && <span>{options.unit}</span>}</div>}
       {!!options.chips?.length && <><datalist id={'mi-list-' + key}>{Array.from(new Set([...options.chips, ...rows.map(row => row.values[key]).filter(Boolean)])).map(value => <option key={value} value={value}/>)}</datalist>
         <div className="ob-chips">{options.chips.map(value => <button key={value} type="button" onClick={() => patch({ [key]: value })}>{value}</button>)}</div></>}
       {errors[key] && <small className="ob-error" id={'mi-error-' + key}>{errors[key]}</small>}

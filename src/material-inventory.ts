@@ -1,3 +1,4 @@
+import {isMaterialDate} from './material-dates';
 import catalog from './material-catalog.json';
 import { library, type Material, type Unit } from './formulation-model';
 
@@ -120,6 +121,10 @@ export function validateMaterial(draft: MaterialDraft, temporary: boolean) {
     }
   }
   if (draft.phaseValue.trim() && !draft.phase) errors.phase = '상변화 유형을 선택해주세요.';
+  for (const key of ['purchased', 'opened'] as const) {
+    if (key === 'opened' && draft.unopened) continue;
+    if (draft[key] && !isMaterialDate(draft[key])) errors[key] = '날짜를 YYYYMMDD 형식의 8자리로 입력해주세요. 실제로 존재하는 날짜여야 합니다.';
+  }
   if (!draft.unopened && !temporary && !draft.opened) errors.opened = '개봉일을 입력해주세요.';
   if (!draft.unopened && draft.opened && draft.purchased && draft.opened < draft.purchased) errors.opened = '개봉일은 구매일 이후여야 합니다.';
   if (draft.remaining.trim() && draft.capacity.trim() && Number(draft.remaining) > Number(draft.capacity)) errors.remaining = '잔량은 용량 이하여야 합니다.';

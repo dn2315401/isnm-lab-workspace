@@ -32,3 +32,13 @@ assert.equal(readInventory().find(m=>m.id==='user-thf').lots[0].inventory.notes,
 const after=JSON.parse(storage.get(materialKey));after.find(m=>m.id==='user-thf').lots[0].inventory.notes='new user note';storage.set(materialKey,JSON.stringify(after));assert.equal(readInventory().find(m=>m.id==='user-thf').lots[0].inventory.notes,'new user note');
 storage.set(materialKey,'broken');assert.throws(()=>readInventory());assert.equal(storage.get(materialKey),'broken');
 console.log('원료 86종, 기존 Lot 보존, 비고 일회 초기화 및 이후 메모 보존 검증 통과');
+
+const dates=require('../work/test-material-catalog/material-dates.js');
+assert.equal(dates.materialDateInput('20261123'),'2026-11-23');
+assert.equal(dates.materialDateInput('2026. 11. 23'),'2026-11-23');
+assert.equal(dates.materialDateInput('2026112399'),'2026-11-23');
+assert.equal(dates.materialDateInput('20261'),'20261');
+assert.equal(dates.materialDateDisplay('2026-11-23'),'2026. 11. 23');
+assert.equal(dates.isMaterialDate('2024-02-29'),true);
+for(const invalid of ['2026-02-29','2026-04-31','202611-12-01','2026-13-01','0000-01-01','20261'])assert.equal(dates.isMaterialDate(invalid),false);
+console.log('8자리 날짜 입력·붙여넣기·표시·윤년·잘못된 날짜 검증 통과');
