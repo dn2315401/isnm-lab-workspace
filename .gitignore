@@ -8,3 +8,5 @@ work/
 !.env.example
 *.log
 .DS_Store
+
+.sites-runtime/

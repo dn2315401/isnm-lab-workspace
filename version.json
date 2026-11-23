@@ -1,10 +1,10 @@
 {
-  "name": "ISNM LAB · 2026-11-23 · v2",
+  "name": "ISNM LAB · 2026-11-23 · v3",
   "date": "2026-11-23",
-  "version": "v2",
-  "branch": "work/2026-11-23-v2",
-  "tag": "2026-11-23-v2",
+  "version": "v3",
+  "branch": "work/2026-11-23-v3",
+  "tag": "2026-11-23-v3",
   "repository": "https://github.com/dn2315401/isnm-lab-workspace",
-  "basedOnCommit": "26fee922a39acc4449079390f560048647112a2f",
-  "description": "지능형 연성 나노 소재 연구실 · 프로젝트 관리 및 조성 계산기 업데이트"
+  "basedOnCommit": "794bc8d0989ba20d253a18355edf5a779ce00324",
+  "description": "공유 연구실 캘린더 · 반복 일정 · 수업 시간표"
 }

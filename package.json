@@ -5,12 +5,14 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "build": "tsc -b && vite build && node scripts/build-calendar-worker.mjs",
     "preview": "vite preview",
     "test:calculator": "node scripts/test-calculator.mjs",
     "version:set": "node scripts/set-version.mjs",
     "test:search": "node scripts/test-search.mjs",
-    "test:materials": "node scripts/test-material-catalog.mjs"
+    "test:materials": "node scripts/test-material-catalog.mjs",
+    "test:calendar": "node tests/calendar.test.mjs",
+    "check:calendar": "tsc worker/calendar-api.ts worker/index.ts --target ES2022 --module ESNext --moduleResolution Bundler --lib ES2022,DOM --skipLibCheck --strict --noEmit"
   },
   "dependencies": {
     "react": "^19.0.0",
