@@ -15,6 +15,7 @@ export type BatchFields = {
 };
 export type BatchDraft = BatchFields & {
   id?: string; revision?: number; status: BatchStatus;
+  catalystUnit?: 'mg' | 'g' | 'kg' | 'wt%'; durationUnit?: 'h' | 'min'; washSolutions?: string[];
   ingredients: Ingredient[]; attachments: BatchAttachment[];
   projectIds: string[]; formulationRef: string; sampleIds: string; analysisRefs: string;
 };
@@ -31,7 +32,7 @@ export const researchers = ['김지원', '정유진', '이지원'];
 export function blankBatch(): BatchDraft {
   return {
     name: '', type: '', actualDate: '', plannedDate: '', researcher: researchers[0],
-    composition: '', basis: 'wt%', catalyst: '', catalystAmount: '', catalystBasis: '전체 조성',
+    composition: '', basis: 'wt%', catalyst: '', catalystAmount: '', catalystUnit: 'mg', durationUnit: 'h', washSolutions: [''], catalystBasis: '전체 조성',
     temperature: '', duration: '', solvent: '', wash: '', mn: '', pdi: '', tni: '', notes: '',
     status: '합성 중', ingredients: [], attachments: [], projectIds: [], formulationRef: '', sampleIds: '', analysisRefs: '',
   };
@@ -57,7 +58,22 @@ export function readBatches(): Batch[] {
   if (data === null) return examples;
   const records: unknown = JSON.parse(data);
   if (!Array.isArray(records)) throw new Error('배치 기록 형식을 확인해주세요.');
-  return records as Batch[];
+  return (records as Batch[]).map(batch => ({ ...batch, ...normalizeBatchOptions(batch) }));
+}
+
+export function normalizeBatchOptions(batch: BatchDraft) {
+  return { catalystUnit: batch.catalystUnit ?? 'wt%' as const, durationUnit: batch.durationUnit ?? 'h' as const,
+    washSolutions: batch.washSolutions?.length ? [...batch.washSolutions] : [batch.wash || ''] };
+}
+export function changeCatalystUnit(value: string, from: NonNullable<BatchDraft['catalystUnit']>, to: NonNullable<BatchDraft['catalystUnit']>) {
+  if (!value.trim() || from === to) return value;
+  if (from === 'wt%' || to === 'wt%') return '';
+  const grams = { mg: .001, g: 1, kg: 1000 };
+  return Number.isFinite(Number(value)) ? String(Number((Number(value) * grams[from] / grams[to]).toPrecision(12))) : value;
+}
+export function changeDurationUnit(value: string, from: NonNullable<BatchDraft['durationUnit']>, to: NonNullable<BatchDraft['durationUnit']>) {
+  if (!value.trim() || from === to || !Number.isFinite(Number(value))) return value;
+  return String(Number((Number(value) * (from === 'h' ? 60 : 1) / (to === 'h' ? 60 : 1)).toPrecision(12)));
 }
 
 export function countBatches(): number {
@@ -80,8 +96,10 @@ export function validateBatch(draft: BatchDraft, temporary: boolean): string {
     if (!draft.researcher.trim()) return '연구자를 선택해주세요.';
     if (draft.status === '작성 중') return '정식 기록의 상태를 선택하거나 임시저장해주세요.';
   }
+  if (!['mg', 'g', 'kg', 'wt%'].includes(draft.catalystUnit ?? 'wt%')) return '촉매 단위를 확인해주세요.';
+  if (!['h', 'min'].includes(draft.durationUnit ?? 'h')) return '시간 단위를 확인해주세요.';
   const numericFields = [
-    [draft.catalystAmount, '촉매 함량', 0, 100], [draft.temperature, '반응 온도', 0, 1000],
+    [draft.catalystAmount, '촉매 함량', 0, (draft.catalystUnit ?? 'wt%') === 'wt%' ? 100 : Infinity], [draft.temperature, '반응 온도', 0, 1000],
     [draft.duration, '반응 시간', 0, Infinity], [draft.mn, 'Mn', 0, Infinity],
     [draft.pdi, 'PDI', 0, Infinity], [draft.tni, 'Tni', -273.15, Infinity],
   ] as const;
@@ -117,7 +135,7 @@ export async function saveBatch(draft: BatchDraft, temporary: boolean) {
     const id = prior?.id ?? nextBatchId(records, draft.type);
     const { id: _id, revision: _revision, ...fields } = draft;
     const values = {
-      ...fields, name: fields.name.trim(), type: fields.type.trim(),
+      ...fields, ...normalizeBatchOptions(draft), wash: (draft.washSolutions ?? [draft.wash]).map(value => value.trim()).filter(Boolean).join(' / '), name: fields.name.trim(), type: fields.type.trim(),
       status: temporary ? '작성 중' as const : fields.status,
       attachments: fields.attachments.map(file => ({ ...file, batchId: id })),
     };

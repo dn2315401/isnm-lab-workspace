@@ -4,7 +4,7 @@ import { Plus, Search, Upload } from 'lucide-react';
 import { makeRow, units, type Material, type Saved, type Unit } from './formulation-model';
 import type { ResearchStore } from './calculator-model';
 import {
-  batchStatuses, batchTypes, blankBatch, readBatches, researchers, saveBatch,
+  batchStatuses, batchTypes, blankBatch, readBatches, researchers, saveBatch, changeCatalystUnit, changeDurationUnit,
   type Batch, type BatchDraft, type BatchFields, type Ingredient,
 } from './oligomer-batches';
 import './oligomer-batches.css';
@@ -17,7 +17,7 @@ const extensions = /\.(pdf|csv|xlsx|jpe?g|png)$/i;
 const titles: Partial<Record<keyof BatchDraft, string>> = {
   name: '올리고머명', type: '유형', actualDate: '합성일', plannedDate: '예정일',
   researcher: '연구자', composition: '모노머 조성비', basis: '조성 기준',
-  catalyst: '촉매', catalystAmount: '촉매 함량', catalystBasis: '촉매 기준',
+  catalystUnit: '촉매 단위', durationUnit: '시간 단위', washSolutions: '세척액 목록', catalyst: '촉매', catalystAmount: '촉매 함량', catalystBasis: '촉매 기준',
   temperature: '반응 온도', duration: '반응 시간', solvent: '용매', wash: '세척액',
   mn: 'Mn', pdi: 'PDI', tni: 'Tni', notes: '비고', status: '상태',
   ingredients: '원료 및 Lot', attachments: '첨부 파일', projectIds: '프로젝트',
@@ -192,7 +192,7 @@ export default function OligomerBatches({ projects }: { projects: Project[] }) {
     setPicker(false);
   }
 
-  function field(key: keyof BatchFields, options: { unit?: string; chips?: string[]; hint?: string; type?: string } = {}) {
+  function field(key: keyof BatchFields, options: { unit?: string; chips?: string[]; hint?: string; type?: string; choices?: string[]; onUnit?: (unit: string) => void } = {}) {
     if (!draft) return null;
     return <div className="ob-field">
       <label htmlFor={'ob-' + key}>{titles[key]}{['name', 'type'].includes(key) && <em> *</em>}</label>
@@ -200,7 +200,7 @@ export default function OligomerBatches({ projects }: { projects: Project[] }) {
         <input id={'ob-' + key} value={draft[key]} type={options.type === 'number' ? 'text' : options.type ?? 'text'}
           inputMode={options.type === 'number' ? 'decimal' : undefined} placeholder={options.hint}
           list={key === 'type' ? 'ob-types' : undefined} onChange={event => change({ [key]: event.target.value })}/>
-        {options.unit && <span>{options.unit}</span>}
+        {options.choices ? <select className="ob-unit-select" aria-label={titles[key]+' 단위'} value={options.unit} onChange={event => options.onUnit?.(event.target.value)}>{options.choices.map(unit => <option key={unit} value={unit}>{unit === 'min' ? 'min (분)' : unit}</option>)}</select> : options.unit && <span>{options.unit}</span>}
       </div>
       {options.chips && <div className="ob-chips"><small>자주 사용</small>{options.chips.map(value =>
         <button type="button" key={value} onClick={() => change({ [key]: value })}>{value}{options.unit && ' ' + options.unit}</button>)}</div>}
@@ -284,10 +284,10 @@ export default function OligomerBatches({ projects }: { projects: Project[] }) {
             {field('type', { hint: '검색 또는 직접 입력', chips: ['CLCE', 'SMP', 'Epoxy'] })}
             {field('composition', { hint: '예: RM82 / CM18', chips: ['RM82 / CM18', 'RM70 / CM30'] })}
             {field('catalyst', { chips: ['DBU', 'TBD', 'Sn(Oct)₂'] })}
-            {field('catalystAmount', { unit: 'wt%', type: 'number', chips: ['0.1', '0.5', '1.0'] })}
+            {field('catalystAmount', { unit: draft.catalystUnit ?? 'wt%', choices: ['mg', 'g', 'kg', 'wt%'], onUnit: unit => {const next = unit as NonNullable<BatchDraft['catalystUnit']>; const previous = draft.catalystUnit ?? 'wt%'; change({ catalystUnit: next, catalystAmount: changeCatalystUnit(draft.catalystAmount, previous, next) }); if (draft.catalystAmount && (previous === 'wt%' || next === 'wt%')) setMessage('질량과 wt% 간 변경 시 함량을 다시 입력해주세요.');}, type: 'number' })}
             {field('temperature', { unit: '°C', type: 'number', chips: ['60', '80', '100'] })}
-            {field('duration', { unit: 'h', type: 'number', chips: ['4', '6', '12'] })}
-            {field('solvent', { chips: ['THF', '에탄올'] })}{field('wash', { hint: '예: 에탄올 95%' })}
+            {field('duration', { unit: draft.durationUnit ?? 'h', choices: ['h', 'min'], onUnit: unit => {const next = unit as 'h' | 'min'; change({durationUnit: next, duration: changeDurationUnit(draft.duration, draft.durationUnit ?? 'h', next)})}, type: 'number', chips: draft.durationUnit === 'min' ? ['30', '60', '120'] : ['4', '6', '12'] })}
+            {field('solvent', { chips: ['THF', '에탄올'] })}<div className="ob-field ob-wash-solutions"><span>세척액</span>{(draft.washSolutions ?? [draft.wash]).map((value, index, list) => <div className="ob-wash-row" key={index}><input aria-label={'세척액 '+(index+1)} placeholder="예: 에탄올 95%" value={value} onChange={event => {const next = list.map((item, i) => i === index ? event.target.value : item); change({washSolutions: next, wash: next.filter(Boolean).join(' / ')})}}/>{list.length > 1 && <button type="button" aria-label={'세척액 '+(index+1)+' 삭제'} onClick={() => {const next = list.filter((_, i) => i !== index); change({washSolutions: next, wash: next.filter(Boolean).join(' / ')})}}>삭제</button>}</div>)}<button type="button" className="ob-wash-add" onClick={() => change({washSolutions: [...(draft.washSolutions ?? [draft.wash]), '']})}><Plus size={15}/> 세척액 추가</button></div>
             {field('plannedDate', { type: 'date' })}
             <label className="ob-field">조성 기준<select value={draft.basis} onChange={event => change({ basis: event.target.value })}>
               {['wt%', 'mol%', '작용기 당량', '미지정'].map(basis => <option key={basis}>{basis}</option>)}</select></label>

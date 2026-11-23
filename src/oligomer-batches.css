@@ -108,3 +108,5 @@
 @media (max-width: 500px) {
   .ob-editor-head, .ob-fields { grid-template-columns: minmax(0, 1fr); }
 }
+
+.ob-input .ob-unit-select{width:auto;min-width:4.5rem;flex:0 0 auto;border:0;border-left:1px solid #DCE6F0;border-radius:0;background:transparent;padding:.6rem;cursor:pointer}.ob-input:has(.ob-unit-select)>input{min-width:0}.ob-wash-row{display:flex;gap:.5rem;align-items:center}.ob-wash-row input{min-width:0;flex:1}.ob-wash-row button{flex-shrink:0;font-size:.875rem}.ob-wash-add{display:flex;align-items:center;gap:.3rem;align-self:flex-start;color:#155FB4;font-size:.875rem}
