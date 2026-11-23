@@ -11,7 +11,7 @@
     "version:set": "node scripts/set-version.mjs",
     "test:search": "node scripts/test-search.mjs",
     "test:materials": "node scripts/test-material-catalog.mjs",
-    "test:calendar": "node tests/calendar.test.mjs",
+    "test:calendar": "node tests/calendar.test.mjs && node tests/calendar-interactions.test.mjs",
     "check:calendar": "tsc worker/calendar-api.ts worker/index.ts --target ES2022 --module ESNext --moduleResolution Bundler --lib ES2022,DOM --skipLibCheck --strict --noEmit"
   },
   "dependencies": {

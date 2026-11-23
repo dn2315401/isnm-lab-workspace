@@ -1,5 +1,5 @@
 import {createContext,useContext,useEffect,useMemo,useState,type ReactNode} from 'react';
-import {calendarRange,expandEvents,todayKST,type EventInput,type LabEvent,type Member,type Occurrence} from './model';
+import {blankEvent,calendarRange,expandEvents,todayKST,type EventInput,type LabEvent,type Member,type Occurrence} from './model';
 export async function calendarRequest(path:string,options:RequestInit={}){const response=await fetch('/api/calendar'+path,{...options,headers:{'Content-Type':'application/json',...options.headers},credentials:'same-origin',cache:'no-store'});const data=await response.json();if(!response.ok)throw Error(data.error||'일정 서버에 연결하지 못했습니다.');return data}
 type Session={user:Member|null;members:Member[];pending:{id:string;name:string;email:string}[];invites:{email:string;can_create_lab:number}[]};
 function useCalendarState(){
@@ -10,8 +10,9 @@ function useCalendarState(){
  useEffect(()=>{if(!session.user?.approved){setEvents([]);return}const controller=new AbortController();setLoading(true);calendarRequest('/events?from='+range.from+'&to='+range.to,{signal:controller.signal}).then(data=>{setEvents(data.events);setError('')}).catch(e=>{if(e.name!=='AbortError')setError(e.message)}).finally(()=>{if(!controller.signal.aborted)setLoading(false)});return()=>controller.abort()},[session.user?.id,session.user?.approved,range.from,range.to,refresh]);
  const occurrences=useMemo(()=>expandEvents(events,range.from,range.to),[events,range.from,range.to]);
  const reload=()=>setRefresh(n=>n+1);
+ const openNewOnDate=(selectedDate:string,times:Partial<Pick<EventInput,'startTime'|'endTime'>>={})=>{if(!session.user?.approved||draft||detail||classes!==null||manage)return;setDate(selectedDate);openNew({...blankEvent(selectedDate),...times})};
  const openNew=(input:EventInput)=>{setEditing(null);setEditScope('all');setDetail(null);setDraft(input)};
- return {...session,ready,error,setError,date,setDate,events,occurrences,loading,reload,refreshSession,draft,setDraft,editing,setEditing,editScope,setEditScope,detail,setDetail,classes,setClasses,manage,setManage,openNew};
+ return {...session,ready,error,setError,date,setDate,events,occurrences,loading,reload,refreshSession,draft,setDraft,editing,setEditing,editScope,setEditScope,detail,setDetail,classes,setClasses,manage,setManage,openNew,openNewOnDate};
 }
 const CalendarContext=createContext<ReturnType<typeof useCalendarState>|null>(null);
 export function CalendarProvider({children}:{children:ReactNode}){const state=useCalendarState();return <CalendarContext.Provider value={state}>{children}</CalendarContext.Provider>}
