@@ -44,7 +44,7 @@ for(const invalid of ['2026-02-29','2026-04-31','202611-12-01','2026-13-01','000
 console.log('8자리 날짜 입력·붙여넣기·표시·윤년·잘못된 날짜 검증 통과');
 
 const inventoryModel=require('../work/test-material-catalog/material-inventory.js');
-assert.deepEqual(inventoryModel.lifecycle,['Active','Expired','Archived','Disposed']);
+assert.deepEqual(inventoryModel.lifecycle,['Active','Completed','Expired','Archived','Disposed']);
 const oldRecords=[{...custom,lots:[{...custom.lots[0],inventory:{lifecycle:'Depleted',notes:''}}]}];storage.set(materialKey,JSON.stringify(oldRecords));
 assert.equal(readInventory().find(m=>m.id==='user-thf').lots[0].inventory.lifecycle,'Archived');
 assert.equal(inventoryModel.lifecycleLabel('Disposed'),'폐기');

@@ -1,9 +1,9 @@
-import MaterialPicker from './materials/MaterialPicker';
+import MaterialPicker,{selectableReagents} from './materials/MaterialPicker';
 import MaterialBindingField from './materials/MaterialBindingField';
 import BatchOutput from './materials/BatchOutput';
 import {MaterialLink,MaterialSyncStatus,useMaterialLibrary} from './materials/shared';
 import {currentMaterial} from './materials/service';
-import {matchChemical,unregisteredLot,selectionRow,type MaterialSelection} from './materials/model';
+import {matchChemical,selectionRow,type MaterialSelection} from './materials/model';
 import {bindBatchMaterial,synchronizeBatchLinks,type BatchMaterialTarget} from './materials/batch-links';
 import { availableMaterials, readInventorySafely } from './material-inventory';
 import { useEffect, useRef, useState } from 'react';
@@ -27,7 +27,7 @@ const titles: Partial<Record<keyof BatchDraft, string>> = {
   catalystUnit: '촉매 단위', durationUnit: '시간 단위', washSolutions: '세척액 목록', catalyst: '촉매', catalystAmount: '촉매 함량', catalystBasis: '촉매 기준',
   temperature: '반응 온도', duration: '반응 시간', solvent: '용매', wash: '세척액',
   mn: 'Mn', pdi: 'PDI', tni: 'Tni', notes: '비고', status: '상태',
-  ingredients: '원료 및 Lot', attachments: '첨부 파일', projectIds: '프로젝트',
+  ingredients: '사용 원료', attachments: '첨부 파일', projectIds: '프로젝트',
   formulationRef: '조성 버전', sampleIds: '샘플 ID', analysisRefs: '분석 기록',
 };
 
@@ -191,7 +191,7 @@ export default function OligomerBatches({ projects }: { projects: Project[] }) {
   }
 
   function chooseMaterial(selection:MaterialSelection,target:BatchMaterialTarget) {if(!draft)return;setDraft(bindBatchMaterial(draft,selection,target));setDirty(true);setPicking(null)}
-  function shortcut(query:string,target:BatchMaterialTarget) {const match=matchChemical(shared.materials,query);if(shared.status==='ready'&&match.status==='linked'){chooseMaterial({materialId:match.material!.id,lotId:null,material:match.material!,lot:null},target);setMessage(query+' 원료 ID 연결됨. 실제 Lot과 사용량을 확인하세요.')}else setPicking({target,query})}
+  function shortcut(query:string,target:BatchMaterialTarget) {const match=matchChemical(shared.materials,query);if(shared.status==='ready'&&match.status==='linked'){const material=match.material!,available=selectableReagents(material);if(available.length===1){const lot=available[0];chooseMaterial({materialId:material.id,lotId:lot.id,reagentId:lot.reagentId||null,material,lot},target);setMessage(query+' 사용 시약이 연결되었습니다. 사용량을 확인하세요.')}else{setPicking({target,query});setMessage(available.length?'사용 중인 시약이 여러 개입니다. 사용할 시약을 선택하세요.':'사용 가능한 시약 없음. 새 시약을 등록하거나 미등록 기록으로 보존할 수 있습니다.')}}else setPicking({target,query})}
   function linkedMaterial(usageId?:string){return draft?.ingredients.find(row=>row.id===usageId)?.materialId}
   function addMaterial(material: Material, lotId: string) {
     if (!draft) return;
@@ -224,7 +224,7 @@ export default function OligomerBatches({ projects }: { projects: Project[] }) {
     </select>;
   }
 
-  return <section className="ob-page"><MaterialSyncStatus/>{picking&&<MaterialPicker defaultComponent={picking.target==='catalyst'?'Catalyst':picking.target==='solvent'||picking.target.startsWith('wash:')?'Solvent':'Other'} initialQuery={picking.query} onClose={()=>setPicking(null)} onSelect={selection=>chooseMaterial(selection,picking.target)}/>}
+  return <section className="ob-page"><MaterialSyncStatus/>{picking&&<MaterialPicker planning={false} defaultComponent={picking.target==='catalyst'?'Catalyst':picking.target==='solvent'||picking.target.startsWith('wash:')?'Solvent':'Other'} initialQuery={picking.query} onClose={()=>setPicking(null)} onSelect={selection=>chooseMaterial(selection,picking.target)}/>}
     <div className="ob-heading"><div><h1>올리고머 배치 관리</h1><p>합성 이력부터 분석 결과까지, 배치 단위로 관리하세요.</p></div>
       <button className="ob-primary" onClick={() => open(blankBatch(), false)} disabled={busy}><Plus size={17}/> 새 올리고머 합성</button></div>
     <datalist id="ob-types">{types.map(type => <option key={type} value={type}/>)}</datalist>
@@ -294,7 +294,7 @@ export default function OligomerBatches({ projects }: { projects: Project[] }) {
           <section className="ob-recipe"><h3>합성 레시피 요약</h3><div className="ob-fields">
             {field('type', { hint: '검색 또는 직접 입력', chips: ['CLCE', 'SMP', 'Epoxy'] })}
             {field('composition', { hint: '조성 설명 · 실제 원료 연결은 아래 원료 행에서 선택' })}
-            <MaterialBindingField label="촉매" name={draft.catalyst} materialId={linkedMaterial(draft.catalystUsageId)} onPick={()=>setPicking({target:'catalyst',query:draft.catalyst})} shortcuts={['DBU','TBD','Sn(Oct)₂']} onShortcut={query=>shortcut(query,'catalyst')}/>
+            <MaterialBindingField label="촉매" name={draft.catalyst} materialId={linkedMaterial(draft.catalystUsageId)} onPick={()=>setPicking({target:'catalyst',query:draft.catalyst})} shortcuts={['DBU','DPA']} onShortcut={query=>shortcut(query,'catalyst')}/>
             {field('catalystAmount', { unit: draft.catalystUnit ?? 'wt%', choices: ['mg', 'g', 'kg', 'wt%'], onUnit: unit => {const next = unit as NonNullable<BatchDraft['catalystUnit']>; const previous = draft.catalystUnit ?? 'wt%'; change({ catalystUnit: next, catalystAmount: changeCatalystUnit(draft.catalystAmount, previous, next) }); if (draft.catalystAmount && (previous === 'wt%' || next === 'wt%')) setMessage('질량과 wt% 간 변경 시 함량을 다시 입력해주세요.');}, type: 'number' })}
             {field('temperature', { unit: '°C', type: 'number', chips: ['60', '80', '100'] })}
             {field('duration', { unit: draft.durationUnit ?? 'h', choices: ['h', 'min'], onUnit: unit => {const next = unit as 'h' | 'min'; change({durationUnit: next, duration: changeDurationUnit(draft.duration, draft.durationUnit ?? 'h', next)})}, type: 'number', chips: draft.durationUnit === 'min' ? ['30', '60', '120'] : ['4', '6', '12'] })}
@@ -306,10 +306,10 @@ export default function OligomerBatches({ projects }: { projects: Project[] }) {
             <label className="ob-field">촉매 함량 기준<select value={draft.catalystBasis} onChange={event => change({ catalystBasis: event.target.value })}>
               {['전체 조성', '모노머', '수지'].map(basis => <option key={basis}>{basis}</option>)}</select></label>
           </div></section>
-          <section className="ob-materials"><h3>원료 물질 (Lot)</h3><p className="ob-muted">촉매·용매·세척액 요약과 이 목록은 동일한 사용 행을 공유합니다. Lot이 없으면 미지정으로 보존하며 실제 합성 시 확인해주세요.</p><div className="ob-chips"><small>빠른 원료 연결</small>{['RM82','EDDT','DMPA'].map(name=><button type="button" key={name} onClick={()=>shortcut(name,'ingredient')}>{name}</button>)}</div>
+          <section className="ob-materials"><h3>사용 원료</h3><p className="ob-muted">촉매·용매·세척액 요약과 이 목록은 동일한 사용 행을 공유합니다. 사용 시약이 없으면 미등록으로 보존하며 실제 합성 시 확인해주세요.</p><div className="ob-chips"><small>빠른 원료 연결</small>{['RM82','EDDT','DMPA'].map(name=><button type="button" key={name} onClick={()=>shortcut(name,'ingredient')}>{name}</button>)}</div>
             {!draft.ingredients.length && <p className="ob-muted">추가된 원료가 없습니다.</p>}
             <div className="ob-ingredients">{draft.ingredients.map(row => <div className="ob-ingredient" key={row.id}>
-              <div className="material-linked-identity"><MaterialLink materialId={row.materialId} snapshotName={row.name}/><small>기록 Lot: {row.lot||'미지정'}</small><select aria-label={row.name+' 실제 Lot'} value={row.lotId||''} onChange={event=>{const m=currentMaterial(row.materialId);const lot=m?.lots.find(l=>l.id===event.target.value);if(m)ingredient(row.id,{...selectionRow({materialId:m.id,lotId:lot?.id||null,material:m,lot:lot||null}),id:row.id,amount:row.amount,plannedAmount:row.plannedAmount,role:row.role})}}><option value="">Lot 미등록 / 미지정</option>{row.lotId&&!currentMaterial(row.materialId)?.lots.some(l=>l.id===row.lotId)&&<option value={row.lotId}>{row.lot||row.lotId} · 검토 필요</option>}{currentMaterial(row.materialId)?.lots.filter(l=>!unregisteredLot(l)).map(l=><option key={l.id} value={l.id}>{l.name}</option>)}</select></div>
+              <div className="material-linked-identity"><MaterialLink materialId={row.materialId} snapshotName={row.name}/><small>사용 시약: {row.lot||'미지정'}</small><select aria-label={row.name+' 사용 시약 선택'} value={row.lotId||''} onChange={event=>{const m=currentMaterial(row.materialId);const lot=m?selectableReagents(m).find(l=>l.id===event.target.value):undefined;if(m)ingredient(row.id,{...selectionRow({materialId:m.id,lotId:lot?.id||null,material:m,lot:lot||null}),id:row.id,amount:row.amount,plannedAmount:row.plannedAmount,role:row.role})}}><option value="">사용 시약 미등록</option>{row.lotId&&!(currentMaterial(row.materialId)?selectableReagents(currentMaterial(row.materialId)!):[]).some(l=>l.id===row.lotId)&&<option value={row.lotId}>{row.lot||row.lotId} · 과거 기록 / 상태 확인</option>}{(currentMaterial(row.materialId)?selectableReagents(currentMaterial(row.materialId)!):[]).map(l=><option key={l.id} value={l.id}>{l.name}</option>)}</select></div>
               <label>역할<select className="material-role" value={row.role} onChange={event=>ingredient(row.id,{role:event.target.value})}>{Array.from(new Set([row.role,'촉매','용매','세척액','단량체','가교제','광개시제','첨가제','올리고머','기타'])).map(role=><option key={role}>{role}</option>)}</select></label>{row.plannedRatio&&<small>계획 비율: {row.plannedRatio.amount} {row.plannedRatio.unit}</small>}<label>계획량<input inputMode="decimal" value={row.plannedAmount ?? ''} onChange={event => ingredient(row.id, { plannedAmount: event.target.value })}/></label>
               <label>실제량<input inputMode="decimal" value={row.amount} onChange={event => ingredient(row.id, { amount: event.target.value })}/></label>
               <label>단위<select value={row.unit} onChange={event => ingredient(row.id, { unit: event.target.value as Unit })}>

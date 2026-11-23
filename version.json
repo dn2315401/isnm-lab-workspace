@@ -6,5 +6,5 @@
   "tag": "2026-11-24-v1",
   "repository": "https://github.com/dn2315401/isnm-lab-workspace",
   "basedOnCommit": "ab76a24",
-  "description": "공용 원료 라이브러리 · 전역 물질·Lot 연결 및 사용 이력"
+  "description": "원료 라이브러리 · 구매 시약·재구매·사용 완료·폐기·발주 입고 관리"
 }

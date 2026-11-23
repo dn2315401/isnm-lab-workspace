@@ -3,18 +3,20 @@ import catalog from './material-catalog.json';
 import { library, type Material, type Unit } from './formulation-model';
 
 export const materialKey = 'isnm-material-library-v1';
-export const lifecycle = ['Active', 'Expired', 'Archived', 'Disposed'] as const;
+export const lifecycle = ['Active', 'Completed', 'Expired', 'Archived', 'Disposed'] as const;
 export type Lifecycle = typeof lifecycle[number];
-export const lifecycleLabels: Record<Lifecycle,string> = { Active: '사용 중', Expired: '유효기간 만료', Archived: '보관 중', Disposed: '폐기' };
+export const lifecycleLabels: Record<Lifecycle,string> = { Active: '사용 중', Completed: '사용 완료', Expired: '유효기간 만료', Archived: '보관 중', Disposed: '폐기' };
 export const lifecycleLabel = (value: string) => lifecycleLabels[value as Lifecycle] ?? (value === 'Depleted' ? '보관 중' : value);
 const notesCleanupKey = 'isnm-material-notes-cleared-2026-11-23';
 export type InventoryFields = {
+  productNumber?:string; supplier?:string; received?:string; expires?:string; completedDate?:string; disposedDate?:string; statusReason?:string; statusDate?:string;
   manufacturer: string; location: string; capacity: string; remaining: string; state: string;
   purchased: string; opened: string; unopened: boolean; notes: string; viscosity: string;
   measurementTemperature: string; measurementConditions: string; phase: string; phaseValue: string; purity: string;
   lifecycle: Lifecycle; msds?: { id: string; name: string; size: number; data: string; uploadedAt: string; uploadedBy: string };
 };
 export type InventoryLot = Material['lots'][number] & {
+  reagentId?:string; internalCode?:string; manufacturingLot?:string; sourceKind?:'purchased'|'synthesized'|'legacy'; reviewRequired?:boolean; orderId?:string;
   inventory?: InventoryFields; unit?: Unit; purity?: number | null; revision?: number; example?: boolean;
   history?: { date: string; changes: string[] }[];
 };

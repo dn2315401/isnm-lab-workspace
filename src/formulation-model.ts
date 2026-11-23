@@ -4,7 +4,7 @@ export const components=['Oligomer','Reactive Monomer','Crosslinker','Initiator'
 export const roles=['주 수지','올리고머','반응성 희석제','가교제','광개시제','열개시제','촉매','용매','첨가제','안정제','충전재','기타'];
 export type FunctionalGroup={type:string;count:number};
 export type Material={groups?:FunctionalGroup[];provenance?:string;id:string;name:string;component:string;role:string;mw:number|null;density:number|null;functionality:number|null;unit:Unit;lots:{id:string;name:string;stock:string;unit?:Unit;mw?:number|null;density?:number|null;groups?:FunctionalGroup[];provenance?:string}[]};
-export type Row={groups?:FunctionalGroup[];provenance?:string;id:string;materialId:string;lotId:string;name:string;lot:string;component:string;role:string;amount:string;unit:Unit;mw:number|null;density:number|null;functionality:number|null};
+export type Row={reagentId?:string|null;groups?:FunctionalGroup[];provenance?:string;id:string;materialId:string;lotId:string;name:string;lot:string;component:string;role:string;amount:string;unit:Unit;mw:number|null;density:number|null;functionality:number|null};
 export const library:Material[]=[
 {id:'olg',name:'OLG-A-023',component:'Oligomer',role:'주 수지',mw:null,density:null,functionality:null,unit:'g',lots:[{id:'olg-2404',name:'OLG-A-023-2404',stock:'재고 미등록'},{id:'olg-2405',name:'OLG-A-023-2405',stock:'재고 미등록'}]},
 {id:'rm82',name:'RM82',component:'Reactive Monomer',role:'반응성 희석제',mw:672.81,density:null,functionality:2,unit:'g',lots:[{id:'rm82-2404',name:'RM82-2404',stock:'재고 미등록'}]},
