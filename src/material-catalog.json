@@ -25,7 +25,7 @@
       "usage": "단관능 모노머",
       "meltingPoint": "약 −75",
       "boilingPoint": "약 80",
-      "notes": "밀도는 대체로 20–25°C 참고값. HPA, PETA, DPHA는 이성질체·상용 혼합물에 따라 다름. 고관능 물질의 미확인 상압 끓는점은 미등록."
+      "notes": ""
     },
     "lots": [
       {
@@ -62,7 +62,7 @@
       "usage": "유연성 부여",
       "meltingPoint": "약 −71",
       "boilingPoint": "약 99",
-      "notes": "밀도는 대체로 20–25°C 참고값. HPA, PETA, DPHA는 이성질체·상용 혼합물에 따라 다름. 고관능 물질의 미확인 상압 끓는점은 미등록."
+      "notes": ""
     },
     "lots": [
       {
@@ -99,7 +99,7 @@
       "usage": "연질 고분자",
       "meltingPoint": "약 −64",
       "boilingPoint": "약 145",
-      "notes": "밀도는 대체로 20–25°C 참고값. HPA, PETA, DPHA는 이성질체·상용 혼합물에 따라 다름. 고관능 물질의 미확인 상압 끓는점은 미등록."
+      "notes": ""
     },
     "lots": [
       {
@@ -136,7 +136,7 @@
       "usage": "저 Tg 고분자",
       "meltingPoint": "약 −90",
       "boilingPoint": "약 215",
-      "notes": "밀도는 대체로 20–25°C 참고값. HPA, PETA, DPHA는 이성질체·상용 혼합물에 따라 다름. 고관능 물질의 미확인 상압 끓는점은 미등록."
+      "notes": ""
     },
     "lots": [
       {
@@ -173,7 +173,7 @@
       "usage": "OH 작용기 도입",
       "meltingPoint": "약 −60 이하",
       "boilingPoint": "약 210",
-      "notes": "밀도는 대체로 20–25°C 참고값. HPA, PETA, DPHA는 이성질체·상용 혼합물에 따라 다름. 고관능 물질의 미확인 상압 끓는점은 미등록."
+      "notes": ""
     },
     "lots": [
       {
@@ -210,7 +210,7 @@
       "usage": "",
       "meltingPoint": "",
       "boilingPoint": "",
-      "notes": "밀도는 대체로 20–25°C 참고값. HPA, PETA, DPHA는 이성질체·상용 혼합물에 따라 다름. 고관능 물질의 미확인 상압 끓는점은 미등록."
+      "notes": ""
     },
     "lots": [
       {
@@ -247,7 +247,7 @@
       "usage": "",
       "meltingPoint": "",
       "boilingPoint": "",
-      "notes": "밀도는 대체로 20–25°C 참고값. HPA, PETA, DPHA는 이성질체·상용 혼합물에 따라 다름. 고관능 물질의 미확인 상압 끓는점은 미등록."
+      "notes": ""
     },
     "lots": [
       {
@@ -284,7 +284,7 @@
       "usage": "",
       "meltingPoint": "",
       "boilingPoint": "",
-      "notes": "밀도는 대체로 20–25°C 참고값. HPA, PETA, DPHA는 이성질체·상용 혼합물에 따라 다름. 고관능 물질의 미확인 상압 끓는점은 미등록."
+      "notes": ""
     },
     "lots": [
       {
@@ -321,7 +321,7 @@
       "usage": "이관능 가교",
       "meltingPoint": "제품별 확인",
       "boilingPoint": "약 295",
-      "notes": "밀도는 대체로 20–25°C 참고값. HPA, PETA, DPHA는 이성질체·상용 혼합물에 따라 다름. 고관능 물질의 미확인 상압 끓는점은 미등록."
+      "notes": ""
     },
     "lots": [
       {
@@ -358,7 +358,7 @@
       "usage": "",
       "meltingPoint": "",
       "boilingPoint": "",
-      "notes": "밀도는 대체로 20–25°C 참고값. HPA, PETA, DPHA는 이성질체·상용 혼합물에 따라 다름. 고관능 물질의 미확인 상압 끓는점은 미등록."
+      "notes": ""
     },
     "lots": [
       {
@@ -395,7 +395,7 @@
       "usage": "유연한 가교",
       "meltingPoint": "제품별 확인",
       "boilingPoint": "감압 증류·분해 주의",
-      "notes": "밀도는 대체로 20–25°C 참고값. HPA, PETA, DPHA는 이성질체·상용 혼합물에 따라 다름. 고관능 물질의 미확인 상압 끓는점은 미등록."
+      "notes": ""
     },
     "lots": [
       {
@@ -432,7 +432,7 @@
       "usage": "",
       "meltingPoint": "",
       "boilingPoint": "",
-      "notes": "밀도는 대체로 20–25°C 참고값. HPA, PETA, DPHA는 이성질체·상용 혼합물에 따라 다름. 고관능 물질의 미확인 상압 끓는점은 미등록."
+      "notes": ""
     },
     "lots": [
       {
@@ -469,7 +469,7 @@
       "usage": "유연한 가교 네트워크",
       "meltingPoint": "",
       "boilingPoint": "",
-      "notes": "밀도는 대체로 20–25°C 참고값. HPA, PETA, DPHA는 이성질체·상용 혼합물에 따라 다름. 고관능 물질의 미확인 상압 끓는점은 미등록. 제품의 평균 분자량 사용."
+      "notes": ""
     },
     "lots": [
       {
@@ -506,7 +506,7 @@
       "usage": "삼관능 가교",
       "meltingPoint": "제품별 확인",
       "boilingPoint": "고온 중합·분해 가능",
-      "notes": "밀도는 대체로 20–25°C 참고값. HPA, PETA, DPHA는 이성질체·상용 혼합물에 따라 다름. 고관능 물질의 미확인 상압 끓는점은 미등록."
+      "notes": ""
     },
     "lots": [
       {
@@ -543,7 +543,7 @@
       "usage": "",
       "meltingPoint": "",
       "boilingPoint": "",
-      "notes": "밀도는 대체로 20–25°C 참고값. HPA, PETA, DPHA는 이성질체·상용 혼합물에 따라 다름. 고관능 물질의 미확인 상압 끓는점은 미등록."
+      "notes": ""
     },
     "lots": [
       {
@@ -580,7 +580,7 @@
       "usage": "고밀도 가교",
       "meltingPoint": "제품별 확인",
       "boilingPoint": "고온 중합·분해 가능",
-      "notes": "밀도는 대체로 20–25°C 참고값. HPA, PETA, DPHA는 이성질체·상용 혼합물에 따라 다름. 고관능 물질의 미확인 상압 끓는점은 미등록."
+      "notes": ""
     },
     "lots": [
       {
@@ -617,7 +617,7 @@
       "usage": "고관능 가교",
       "meltingPoint": "혼합물별 상이",
       "boilingPoint": "분해 가능",
-      "notes": "밀도는 대체로 20–25°C 참고값. HPA, PETA, DPHA는 이성질체·상용 혼합물에 따라 다름. 고관능 물질의 미확인 상압 끓는점은 미등록."
+      "notes": ""
     },
     "lots": [
       {
@@ -654,7 +654,7 @@
       "usage": "유연한 사슬연장제",
       "meltingPoint": "자료 확인 필요",
       "boilingPoint": "감압 조건 확인 필요",
-      "notes": "DTT는 고체이며 밀도는 벌크 분말 밀도가 아닌 참고 물성. EDDT의 화학명과 유사 화합물 구분 필요. PETMP 275°C는 1 mmHg 감압 조건."
+      "notes": ""
     },
     "lots": [
       {
@@ -691,7 +691,7 @@
       "usage": "긴 알킬 사슬 도입",
       "meltingPoint": "제품별 확인",
       "boilingPoint": "약 270–275",
-      "notes": "DTT는 고체이며 밀도는 벌크 분말 밀도가 아닌 참고 물성. EDDT의 화학명과 유사 화합물 구분 필요. PETMP 275°C는 1 mmHg 감압 조건."
+      "notes": ""
     },
     "lots": [
       {
@@ -728,7 +728,7 @@
       "usage": "이관능 링커",
       "meltingPoint": "약 −50",
       "boilingPoint": "약 195",
-      "notes": "DTT는 고체이며 밀도는 벌크 분말 밀도가 아닌 참고 물성. EDDT의 화학명과 유사 화합물 구분 필요. PETMP 275°C는 1 mmHg 감압 조건."
+      "notes": ""
     },
     "lots": [
       {
@@ -765,7 +765,7 @@
       "usage": "유연한 사슬연장",
       "meltingPoint": "약 −20",
       "boilingPoint": "약 240",
-      "notes": "DTT는 고체이며 밀도는 벌크 분말 밀도가 아닌 참고 물성. EDDT의 화학명과 유사 화합물 구분 필요. PETMP 275°C는 1 mmHg 감압 조건."
+      "notes": ""
     },
     "lots": [
       {
@@ -802,7 +802,7 @@
       "usage": "짧은 이관능 링커",
       "meltingPoint": "약 −41",
       "boilingPoint": "약 146",
-      "notes": "DTT는 고체이며 밀도는 벌크 분말 밀도가 아닌 참고 물성. EDDT의 화학명과 유사 화합물 구분 필요. PETMP 275°C는 1 mmHg 감압 조건."
+      "notes": ""
     },
     "lots": [
       {
@@ -839,7 +839,7 @@
       "usage": "환원성 싸이올",
       "meltingPoint": "약 42–45",
       "boilingPoint": "분해",
-      "notes": "DTT는 고체이며 밀도는 벌크 분말 밀도가 아닌 참고 물성. EDDT의 화학명과 유사 화합물 구분 필요. PETMP 275°C는 1 mmHg 감압 조건."
+      "notes": ""
     },
     "lots": [
       {
@@ -876,7 +876,7 @@
       "usage": "",
       "meltingPoint": "",
       "boilingPoint": "",
-      "notes": "DTT는 고체이며 밀도는 벌크 분말 밀도가 아닌 참고 물성. EDDT의 화학명과 유사 화합물 구분 필요. PETMP 275°C는 1 mmHg 감압 조건."
+      "notes": ""
     },
     "lots": [
       {
@@ -913,7 +913,7 @@
       "usage": "사관능 가교제",
       "meltingPoint": "제품별 확인",
       "boilingPoint": "275 (1 mmHg)",
-      "notes": "DTT는 고체이며 밀도는 벌크 분말 밀도가 아닌 참고 물성. EDDT의 화학명과 유사 화합물 구분 필요. PETMP 275°C는 1 mmHg 감압 조건."
+      "notes": ""
     },
     "lots": [
       {
@@ -950,7 +950,7 @@
       "usage": "",
       "meltingPoint": "",
       "boilingPoint": "",
-      "notes": "DTT는 고체이며 밀도는 벌크 분말 밀도가 아닌 참고 물성. EDDT의 화학명과 유사 화합물 구분 필요. PETMP 275°C는 1 mmHg 감압 조건."
+      "notes": ""
     },
     "lots": [
       {
@@ -987,7 +987,7 @@
       "usage": "말단기 도입",
       "meltingPoint": "약 16–18",
       "boilingPoint": "약 208",
-      "notes": "DTT는 고체이며 밀도는 벌크 분말 밀도가 아닌 참고 물성. EDDT의 화학명과 유사 화합물 구분 필요. PETMP 275°C는 1 mmHg 감압 조건."
+      "notes": ""
     },
     "lots": [
       {
@@ -1024,7 +1024,7 @@
       "usage": "환원제·반응성 첨가제",
       "meltingPoint": "약 −100",
       "boilingPoint": "약 157",
-      "notes": "DTT는 고체이며 밀도는 벌크 분말 밀도가 아닌 참고 물성. EDDT의 화학명과 유사 화합물 구분 필요. PETMP 275°C는 1 mmHg 감압 조건."
+      "notes": ""
     },
     "lots": [
       {
@@ -1061,7 +1061,7 @@
       "usage": "",
       "meltingPoint": "",
       "boilingPoint": "",
-      "notes": "DTT는 고체이며 밀도는 벌크 분말 밀도가 아닌 참고 물성. EDDT의 화학명과 유사 화합물 구분 필요. PETMP 275°C는 1 mmHg 감압 조건."
+      "notes": ""
     },
     "lots": [
       {
@@ -1099,7 +1099,7 @@
       "meltingPoint": "",
       "boilingPoint": "",
       "phaseTransitions": "액정상 및 전이온도는 조성·측정 조건별 확인",
-      "notes": "RM 계열은 CAS 번호와 구조를 공급사 자료로 확인해야 함. 순수 물질의 상전이와 가교된 LCE의 Tni는 구분."
+      "notes": ""
     },
     "lots": [
       {
@@ -1137,7 +1137,7 @@
       "meltingPoint": "",
       "boilingPoint": "",
       "phaseTransitions": "액정성 diacrylate",
-      "notes": "RM 계열은 CAS 번호와 구조를 공급사 자료로 확인해야 함. 순수 물질의 상전이와 가교된 LCE의 Tni는 구분."
+      "notes": ""
     },
     "lots": [
       {
@@ -1175,7 +1175,7 @@
       "meltingPoint": "",
       "boilingPoint": "",
       "phaseTransitions": "단관능 reactive mesogen",
-      "notes": "RM 계열은 CAS 번호와 구조를 공급사 자료로 확인해야 함. 순수 물질의 상전이와 가교된 LCE의 Tni는 구분."
+      "notes": ""
     },
     "lots": [
       {
@@ -1213,7 +1213,7 @@
       "meltingPoint": "",
       "boilingPoint": "",
       "phaseTransitions": "단관능 reactive mesogen",
-      "notes": "RM 계열은 CAS 번호와 구조를 공급사 자료로 확인해야 함. 순수 물질의 상전이와 가교된 LCE의 Tni는 구분."
+      "notes": ""
     },
     "lots": [
       {
@@ -1246,7 +1246,7 @@
       "meltingPoint": "",
       "boilingPoint": "",
       "phaseTransitions": "N–I 약 35°C",
-      "notes": "RM 계열은 CAS 번호와 구조를 공급사 자료로 확인해야 함. 순수 물질의 상전이와 가교된 LCE의 Tni는 구분."
+      "notes": ""
     },
     "lots": [
       {
@@ -1279,7 +1279,7 @@
       "meltingPoint": "",
       "boilingPoint": "",
       "phaseTransitions": "SmA–N 약 33.5°C, N–I 약 40.5°C",
-      "notes": "RM 계열은 CAS 번호와 구조를 공급사 자료로 확인해야 함. 순수 물질의 상전이와 가교된 LCE의 Tni는 구분."
+      "notes": ""
     },
     "lots": [
       {
@@ -1312,7 +1312,7 @@
       "meltingPoint": "",
       "boilingPoint": "",
       "phaseTransitions": "N–I 약 42–43°C",
-      "notes": "RM 계열은 CAS 번호와 구조를 공급사 자료로 확인해야 함. 순수 물질의 상전이와 가교된 LCE의 Tni는 구분."
+      "notes": ""
     },
     "lots": [
       {
@@ -1345,7 +1345,7 @@
       "meltingPoint": "",
       "boilingPoint": "",
       "phaseTransitions": "상온 부근 네마틱 액정",
-      "notes": "RM 계열은 CAS 번호와 구조를 공급사 자료로 확인해야 함. 순수 물질의 상전이와 가교된 LCE의 Tni는 구분."
+      "notes": ""
     },
     "lots": [
       {
@@ -1377,7 +1377,7 @@
       "usage": "아크릴레이트–싸이올 합성, 추출",
       "meltingPoint": "−96.7",
       "boilingPoint": "39.6",
-      "notes": "휘발성·유해성 · 대체로 20–25°C 밀도 참고값. Hexane은 n-Hexane 순물질 기준이며 상용 이성질체 혼합물과 구분."
+      "notes": ""
     },
     "lots": [
       {
@@ -1409,7 +1409,7 @@
       "usage": "",
       "meltingPoint": "−63.5",
       "boilingPoint": "61.2",
-      "notes": "대체로 20–25°C 밀도 참고값. Hexane은 n-Hexane 순물질 기준이며 상용 이성질체 혼합물과 구분."
+      "notes": ""
     },
     "lots": [
       {
@@ -1441,7 +1441,7 @@
       "usage": "고분자 용해, 합성, GPC",
       "meltingPoint": "−108.4",
       "boilingPoint": "66.0",
-      "notes": "과산화물 형성 가능 · 대체로 20–25°C 밀도 참고값. Hexane은 n-Hexane 순물질 기준이며 상용 이성질체 혼합물과 구분."
+      "notes": ""
     },
     "lots": [
       {
@@ -1473,7 +1473,7 @@
       "usage": "극성 물질 용해",
       "meltingPoint": "−61",
       "boilingPoint": "153",
-      "notes": "고비점·생식독성 · 대체로 20–25°C 밀도 참고값. Hexane은 n-Hexane 순물질 기준이며 상용 이성질체 혼합물과 구분."
+      "notes": ""
     },
     "lots": [
       {
@@ -1505,7 +1505,7 @@
       "usage": "",
       "meltingPoint": "−20",
       "boilingPoint": "165",
-      "notes": "대체로 20–25°C 밀도 참고값. Hexane은 n-Hexane 순물질 기준이며 상용 이성질체 혼합물과 구분."
+      "notes": ""
     },
     "lots": [
       {
@@ -1537,7 +1537,7 @@
       "usage": "극성 화합물 용해",
       "meltingPoint": "18.5",
       "boilingPoint": "189",
-      "notes": "피부 투과 촉진 · 대체로 20–25°C 밀도 참고값. Hexane은 n-Hexane 순물질 기준이며 상용 이성질체 혼합물과 구분."
+      "notes": ""
     },
     "lots": [
       {
@@ -1569,7 +1569,7 @@
       "usage": "침전, 세척",
       "meltingPoint": "−97.6",
       "boilingPoint": "64.7",
-      "notes": "독성·인화성 · 대체로 20–25°C 밀도 참고값. Hexane은 n-Hexane 순물질 기준이며 상용 이성질체 혼합물과 구분."
+      "notes": ""
     },
     "lots": [
       {
@@ -1601,7 +1601,7 @@
       "usage": "",
       "meltingPoint": "−114.1",
       "boilingPoint": "78.4",
-      "notes": "대체로 20–25°C 밀도 참고값. Hexane은 n-Hexane 순물질 기준이며 상용 이성질체 혼합물과 구분."
+      "notes": ""
     },
     "lots": [
       {
@@ -1633,7 +1633,7 @@
       "usage": "",
       "meltingPoint": "−89.5",
       "boilingPoint": "82.6",
-      "notes": "대체로 20–25°C 밀도 참고값. Hexane은 n-Hexane 순물질 기준이며 상용 이성질체 혼합물과 구분."
+      "notes": ""
     },
     "lots": [
       {
@@ -1665,7 +1665,7 @@
       "usage": "기구 세척",
       "meltingPoint": "−94.7",
       "boilingPoint": "56.1",
-      "notes": "높은 휘발성 · 대체로 20–25°C 밀도 참고값. Hexane은 n-Hexane 순물질 기준이며 상용 이성질체 혼합물과 구분."
+      "notes": ""
     },
     "lots": [
       {
@@ -1697,7 +1697,7 @@
       "usage": "추출, 세척",
       "meltingPoint": "−83.6",
       "boilingPoint": "77.1",
-      "notes": "인화성 · 대체로 20–25°C 밀도 참고값. Hexane은 n-Hexane 순물질 기준이며 상용 이성질체 혼합물과 구분."
+      "notes": ""
     },
     "lots": [
       {
@@ -1729,7 +1729,7 @@
       "usage": "고분자 용해, 열처리",
       "meltingPoint": "−95",
       "boilingPoint": "110.6",
-      "notes": "인화성 · 대체로 20–25°C 밀도 참고값. Hexane은 n-Hexane 순물질 기준이며 상용 이성질체 혼합물과 구분."
+      "notes": ""
     },
     "lots": [
       {
@@ -1761,7 +1761,7 @@
       "usage": "침전, 비극성 세척",
       "meltingPoint": "−95",
       "boilingPoint": "68.7",
-      "notes": "인화성·신경독성 · 대체로 20–25°C 밀도 참고값. Hexane은 n-Hexane 순물질 기준이며 상용 이성질체 혼합물과 구분."
+      "notes": ""
     },
     "lots": [
       {
@@ -1793,7 +1793,7 @@
       "usage": "",
       "meltingPoint": "6.5",
       "boilingPoint": "80.7",
-      "notes": "대체로 20–25°C 밀도 참고값. Hexane은 n-Hexane 순물질 기준이며 상용 이성질체 혼합물과 구분."
+      "notes": ""
     },
     "lots": [
       {
@@ -1825,7 +1825,7 @@
       "usage": "분석용 이동상, 용해",
       "meltingPoint": "−45.7",
       "boilingPoint": "81.6",
-      "notes": "인화성·독성 · 대체로 20–25°C 밀도 참고값. Hexane은 n-Hexane 순물질 기준이며 상용 이성질체 혼합물과 구분."
+      "notes": ""
     },
     "lots": [
       {
@@ -1857,7 +1857,7 @@
       "usage": "",
       "meltingPoint": "−24",
       "boilingPoint": "202",
-      "notes": "대체로 20–25°C 밀도 참고값. Hexane은 n-Hexane 순물질 기준이며 상용 이성질체 혼합물과 구분."
+      "notes": ""
     },
     "lots": [
       {
@@ -1889,7 +1889,7 @@
       "usage": "",
       "meltingPoint": "11.8",
       "boilingPoint": "101.1",
-      "notes": "대체로 20–25°C 밀도 참고값. Hexane은 n-Hexane 순물질 기준이며 상용 이성질체 혼합물과 구분."
+      "notes": ""
     },
     "lots": [
       {
@@ -1921,7 +1921,7 @@
       "usage": "",
       "meltingPoint": "−109",
       "boilingPoint": "55.2",
-      "notes": "대체로 20–25°C 밀도 참고값. Hexane은 n-Hexane 순물질 기준이며 상용 이성질체 혼합물과 구분."
+      "notes": ""
     },
     "lots": [
       {
@@ -1953,7 +1953,7 @@
       "usage": "",
       "meltingPoint": "−116.3",
       "boilingPoint": "34.6",
-      "notes": "대체로 20–25°C 밀도 참고값. Hexane은 n-Hexane 순물질 기준이며 상용 이성질체 혼합물과 구분."
+      "notes": ""
     },
     "lots": [
       {
@@ -1985,7 +1985,7 @@
       "usage": "",
       "meltingPoint": "0",
       "boilingPoint": "100",
-      "notes": "대체로 20–25°C 밀도 참고값. Hexane은 n-Hexane 순물질 기준이며 상용 이성질체 혼합물과 구분."
+      "notes": ""
     },
     "lots": [
       {
@@ -2017,7 +2017,7 @@
       "usage": "염기 촉매",
       "meltingPoint": "약 −63",
       "boilingPoint": "약 110",
-      "notes": "DPA는 Dipropylamine 기준. 공급사 CAS 번호로 구분."
+      "notes": ""
     },
     "lots": [
       {
@@ -2049,7 +2049,7 @@
       "usage": "염기 촉매",
       "meltingPoint": "−114.7",
       "boilingPoint": "89.5",
-      "notes": "DPA는 Dipropylamine 기준. 공급사 CAS 번호로 구분."
+      "notes": ""
     },
     "lots": [
       {
@@ -2081,7 +2081,7 @@
       "usage": "강염기 촉매",
       "meltingPoint": "약 −70",
       "boilingPoint": "약 260",
-      "notes": "DPA는 Dipropylamine 기준. 공급사 CAS 번호로 구분."
+      "notes": ""
     },
     "lots": [
       {
@@ -2113,7 +2113,7 @@
       "usage": "염기 촉매",
       "meltingPoint": "약 158–160",
       "boilingPoint": "약 174",
-      "notes": "DPA는 Dipropylamine 기준. 공급사 CAS 번호로 구분."
+      "notes": ""
     },
     "lots": [
       {
@@ -2145,7 +2145,7 @@
       "usage": "친핵성 촉매",
       "meltingPoint": "약 109–113",
       "boilingPoint": "약 162 (감압)",
-      "notes": "DPA는 Dipropylamine 기준. 공급사 CAS 번호로 구분."
+      "notes": ""
     },
     "lots": [
       {
@@ -2177,7 +2177,7 @@
       "usage": "광개시제",
       "meltingPoint": "약 64–67",
       "boilingPoint": "분해 가능",
-      "notes": "DPA는 Dipropylamine 기준. 공급사 CAS 번호로 구분."
+      "notes": ""
     },
     "lots": [
       {
@@ -2209,7 +2209,7 @@
       "usage": "광개시제",
       "meltingPoint": "약 90–94",
       "boilingPoint": "분해 가능",
-      "notes": "DPA는 Dipropylamine 기준. 공급사 CAS 번호로 구분."
+      "notes": ""
     },
     "lots": [
       {
@@ -2241,7 +2241,7 @@
       "usage": "액상 광개시제",
       "meltingPoint": "",
       "boilingPoint": "",
-      "notes": "DPA는 Dipropylamine 기준. 공급사 CAS 번호로 구분."
+      "notes": ""
     },
     "lots": [
       {
@@ -2273,7 +2273,7 @@
       "usage": "광개시제",
       "meltingPoint": "",
       "boilingPoint": "",
-      "notes": "DPA는 Dipropylamine 기준. 공급사 CAS 번호로 구분."
+      "notes": ""
     },
     "lots": [
       {
@@ -2305,7 +2305,7 @@
       "usage": "열개시제",
       "meltingPoint": "약 100–105 (분해)",
       "boilingPoint": "해당 없음",
-      "notes": "DPA는 Dipropylamine 기준. 공급사 CAS 번호로 구분."
+      "notes": ""
     },
     "lots": [
       {
@@ -2337,7 +2337,7 @@
       "usage": "열개시제",
       "meltingPoint": "",
       "boilingPoint": "",
-      "notes": "DPA는 Dipropylamine 기준. 공급사 CAS 번호로 구분."
+      "notes": ""
     },
     "lots": [
       {
@@ -2369,7 +2369,7 @@
       "usage": "중합 억제·산화 방지",
       "meltingPoint": "약 69–71",
       "boilingPoint": "약 265",
-      "notes": "DPA는 Dipropylamine 기준. 공급사 CAS 번호로 구분."
+      "notes": ""
     },
     "lots": [
       {
@@ -2401,7 +2401,7 @@
       "usage": "아크릴레이트 중합 억제",
       "meltingPoint": "약 54–56",
       "boilingPoint": "약 243",
-      "notes": "DPA는 Dipropylamine 기준. 공급사 CAS 번호로 구분."
+      "notes": ""
     },
     "lots": [
       {
@@ -2433,7 +2433,7 @@
       "usage": "라디칼 억제·조절",
       "meltingPoint": "",
       "boilingPoint": "",
-      "notes": "DPA는 Dipropylamine 기준. 공급사 CAS 번호로 구분."
+      "notes": ""
     },
     "lots": [
       {
@@ -2465,7 +2465,7 @@
       "usage": "",
       "meltingPoint": "−114.2*",
       "boilingPoint": "−85.1*",
-      "notes": "HCl 열적 특성은 순수 염화수소 기준이며 염산 수용액과 다름. 고체 밀도 단위는 g/cm³. Brine 및 농도별 수용액은 별도 등록."
+      "notes": ""
     },
     "lots": [
       {
@@ -2497,7 +2497,7 @@
       "usage": "",
       "meltingPoint": "801",
       "boilingPoint": "1465",
-      "notes": "HCl 열적 특성은 순수 염화수소 기준이며 염산 수용액과 다름. 고체 밀도 단위는 g/cm³. Brine 및 농도별 수용액은 별도 등록."
+      "notes": ""
     },
     "lots": [
       {
@@ -2529,7 +2529,7 @@
       "usage": "",
       "meltingPoint": "분해",
       "boilingPoint": "분해",
-      "notes": "HCl 열적 특성은 순수 염화수소 기준이며 염산 수용액과 다름. 고체 밀도 단위는 g/cm³. Brine 및 농도별 수용액은 별도 등록."
+      "notes": ""
     },
     "lots": [
       {
@@ -2561,7 +2561,7 @@
       "usage": "",
       "meltingPoint": "318",
       "boilingPoint": "1388",
-      "notes": "HCl 열적 특성은 순수 염화수소 기준이며 염산 수용액과 다름. 고체 밀도 단위는 g/cm³. Brine 및 농도별 수용액은 별도 등록."
+      "notes": ""
     },
     "lots": [
       {
@@ -2593,7 +2593,7 @@
       "usage": "",
       "meltingPoint": "360",
       "boilingPoint": "약 1320",
-      "notes": "HCl 열적 특성은 순수 염화수소 기준이며 염산 수용액과 다름. 고체 밀도 단위는 g/cm³. Brine 및 농도별 수용액은 별도 등록."
+      "notes": ""
     },
     "lots": [
       {
@@ -2625,7 +2625,7 @@
       "usage": "",
       "meltingPoint": "약 1124 (분해)",
       "boilingPoint": "해당 없음",
-      "notes": "HCl 열적 특성은 순수 염화수소 기준이며 염산 수용액과 다름. 고체 밀도 단위는 g/cm³. Brine 및 농도별 수용액은 별도 등록."
+      "notes": ""
     },
     "lots": [
       {
@@ -2657,7 +2657,7 @@
       "usage": "",
       "meltingPoint": "884",
       "boilingPoint": "해당 없음",
-      "notes": "HCl 열적 특성은 순수 염화수소 기준이며 염산 수용액과 다름. 고체 밀도 단위는 g/cm³. Brine 및 농도별 수용액은 별도 등록."
+      "notes": ""
     },
     "lots": [
       {
@@ -2689,7 +2689,7 @@
       "usage": "",
       "meltingPoint": "16.6",
       "boilingPoint": "118.1",
-      "notes": "HCl 열적 특성은 순수 염화수소 기준이며 염산 수용액과 다름. 고체 밀도 단위는 g/cm³. Brine 및 농도별 수용액은 별도 등록."
+      "notes": ""
     },
     "lots": [
       {
@@ -2721,7 +2721,7 @@
       "usage": "유연성·친수성 조절",
       "meltingPoint": "",
       "boilingPoint": "",
-      "notes": "제품별 평균 분자량 사용. 범위에서 임의의 단일 분자량을 지정하지 않음."
+      "notes": ""
     },
     "lots": [
       {
@@ -2758,7 +2758,7 @@
       "usage": "단관능 고분자 모노머",
       "meltingPoint": "",
       "boilingPoint": "",
-      "notes": "제품별 평균 분자량 사용. 범위에서 임의의 단일 분자량을 지정하지 않음."
+      "notes": ""
     },
     "lots": [
       {
@@ -2790,7 +2790,7 @@
       "usage": "연질 세그먼트",
       "meltingPoint": "",
       "boilingPoint": "",
-      "notes": "제품별 평균 분자량 사용. 범위에서 임의의 단일 분자량을 지정하지 않음."
+      "notes": ""
     },
     "lots": [
       {
@@ -2822,7 +2822,7 @@
       "usage": "실리콘 탄성체",
       "meltingPoint": "",
       "boilingPoint": "",
-      "notes": "제품별 평균 분자량 사용. 범위에서 임의의 단일 분자량을 지정하지 않음."
+      "notes": ""
     },
     "lots": [
       {
@@ -2854,7 +2854,7 @@
       "usage": "결정성·형상기억 소재",
       "meltingPoint": "",
       "boilingPoint": "",
-      "notes": "제품별 평균 분자량 사용. 범위에서 임의의 단일 분자량을 지정하지 않음."
+      "notes": ""
     },
     "lots": [
       {
@@ -2886,7 +2886,7 @@
       "usage": "필름·고분자 블렌드",
       "meltingPoint": "",
       "boilingPoint": "",
-      "notes": "제품별 평균 분자량 사용. 범위에서 임의의 단일 분자량을 지정하지 않음."
+      "notes": ""
     },
     "lots": [
       {
@@ -2918,7 +2918,7 @@
       "usage": "비교용 고분자",
       "meltingPoint": "",
       "boilingPoint": "",
-      "notes": "제품별 평균 분자량 사용. 범위에서 임의의 단일 분자량을 지정하지 않음."
+      "notes": ""
     },
     "lots": [
       {

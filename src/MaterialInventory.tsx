@@ -4,7 +4,7 @@ import { components, type Saved, type Unit } from './formulation-model';
 import type { ResearchStore } from './calculator-model';
 import { readBatches } from './oligomer-batches';
 import {
-  companies, lifecycle, locations, makeMaterialDraft, materialDraftKey, phases, readInventory,
+  companies, lifecycle, lifecycleLabel, locations, makeMaterialDraft, materialDraftKey, phases, readInventory,
   saveMaterial, states, validateMaterial, type MaterialDraft, type InventoryMaterial, type InventoryLot,
 } from './material-inventory';
 import './material-inventory.css';
@@ -208,7 +208,7 @@ export default function MaterialInventory() {
       {(['location', 'state', 'manufacturer'] as const).map(key => <label key={key}>{titles[key]}
         <select value={filters[key]} onChange={event => { setFilters({ ...filters, [key]: event.target.value }); setPage(1); }}>
           <option value="">전체</option>
-          {Array.from(new Set([...rows.map(row => row.values[key]), ...(key === 'state' ? lifecycle : [])].filter(Boolean))).map(value => <option key={value}>{value}</option>)}
+          {Array.from(new Set([...rows.map(row => row.values[key]), ...(key === 'state' ? lifecycle : [])].filter(Boolean))).map(value => <option key={value} value={value}>{lifecycleLabel(value)}</option>)}
         </select></label>)}
       <button onClick={() => { setFilters(filtersInitial); setPage(1); }}>초기화</button>
     </div>
@@ -227,7 +227,7 @@ export default function MaterialInventory() {
             onChange={() => { if (checked.includes(lot.id)) setChecked(previous => previous.filter(id => id !== lot.id)); else openRow(material, lot); }}/></td>
           <td><button className="ob-link mi-name" onClick={() => openRow(material, lot)}><strong>{material.name}</strong>{material.chemicalName && <small>{material.chemicalName}</small>}{material.reference && <small>{categoryLabels[material.reference.category] ?? material.reference.category}</small>}<small>{lot.name}{(lot.example ?? material.example) && ' · 예시'}</small></button></td>
           {cellValues(values).map((value, index) => <td key={index}>{value || '—'}</td>)}
-          <td><span className="ob-badge">{values.state || values.lifecycle}</span>{values.state && values.lifecycle !== 'Active' && <small>{values.lifecycle}</small>}</td>
+          <td><span className="ob-badge">{values.state || lifecycleLabel(values.lifecycle)}</span>{values.state && values.lifecycle !== 'Active' && <small>{lifecycleLabel(values.lifecycle)}</small>}</td>
           <td>{values.purchased || '—'}</td><td>{values.opened || (lot.inventory && values.unopened ? '미개봉' : '—')}</td>
           <td>{values.msds ? <button className="ob-link mi-pdf" aria-label={material.name + ' MSDS 보기'} onClick={() => viewPdf(values.msds!)}><FileText size={19}/></button> : '—'}</td>
         </tr>)}
@@ -268,11 +268,11 @@ export default function MaterialInventory() {
               {components.map(component => <option key={component}>{component}</option>)}</select></label>
           </section>
           <section className="mi-card"><h3>보관 및 구매 정보</h3>
-            {field('location', { chips: locations, hint: '보관 위치 선택 또는 입력' })}
+            <label className="ob-field">보관 위치 <em>*</em><select required value={draft.location} aria-invalid={!!errors.location} onChange={event => patch({ location: event.target.value })}><option value="">보관 위치 선택</option>{draft.location && !locations.includes(draft.location) && <option value={draft.location}>{draft.location} (기존 위치)</option>}{locations.map(value => <option key={value} value={value}>{value}</option>)}</select>{errors.location && <small role="alert">{errors.location}</small>}</label>
             {field('purchased', { type: 'date' })}{field('opened', { type: 'date' })}
             <label className="mi-check"><input type="checkbox" checked={draft.unopened} onChange={event => patch({ unopened: event.target.checked })}/> 미개봉</label>
             <label className="ob-field">재고 상태<select value={draft.lifecycle} onChange={event => patch({ lifecycle: event.target.value as MaterialDraft['lifecycle'] })}>
-              {lifecycle.map(value => <option key={value}>{value}</option>)}</select></label>
+              {lifecycle.map(value => <option key={value} value={value}>{lifecycleLabel(value)}</option>)}</select></label>
             <label className="ob-field">비고<textarea rows={5} placeholder="제품 특이사항이나 관리 메모를 입력하세요."
               value={draft.notes} onChange={event => patch({ notes: event.target.value })}/></label>
           </section>
@@ -302,7 +302,7 @@ export default function MaterialInventory() {
       const hasUsage = linked && (linked.batches.length || linked.formulations.length || linked.syntheses.length || linked.samples.length);
       return <section className="ob-editor mi-detail" key={lot.id}>
         <div className="mi-detail-heading"><div className="mi-detail-name"><h2>{material.name}</h2><span>{lot.name}</span>
-          <span className="ob-badge">{values.state || values.lifecycle}</span>{(lot.example ?? material.example) && <small>예시 물질</small>}</div>
+          <span className="ob-badge">{values.state || lifecycleLabel(values.lifecycle)}</span>{(lot.example ?? material.example) && <small>예시 물질</small>}</div>
           <div className="mi-tools"><button className="ob-primary" onClick={() => edit(values)}><Pencil size={14}/> 수정</button>
             <details className="mi-menu"><summary aria-label="추가 작업">⋯</summary><div>
               <button onClick={() => edit({ ...values, lotId: '', lot: '', revision: 0, purchased: '', opened: '', unopened: true, remaining: '', lifecycle: 'Active', msds: undefined })}>복제하여 새 Lot 등록</button>
@@ -313,12 +313,12 @@ export default function MaterialInventory() {
             </div></details></div>
         </div>
         <div className="mi-grid">
-          {material.reference && detail('원료 기본 물성', [['영문 / 화학명', material.chemicalName ?? ''], ['분자식', material.formula ?? ''], ['분류', categoryLabels[material.reference.category] ?? material.reference.category], ['분자량 정보', material.reference.molecularWeightDescription], ['밀도 원문', material.reference.densityDescription], ['작용기 종류 / 수', material.groups?.map(g => g.type + ' ' + g.count).join(', ') || (material.functionality === 0 ? '반응성 Acrylate 없음 (0)' : '')], ['당량 (g/eq)', material.mw && material.functionality ? String(Number((material.mw / material.functionality).toPrecision(8))) : ''], ['녹는점 (°C)', material.reference.meltingPoint ?? ''], ['끓는점 (°C)', material.reference.boilingPoint ?? ''], ['순수 물질 상전이', material.reference.phaseTransitions ?? ''], ['주요 용도', material.reference.usage], ['출처', material.provenance ?? ''], ['물성 비고', material.reference.notes ?? '']])}
+          {material.reference && detail('원료 기본 물성', [['영문 / 화학명', material.chemicalName ?? ''], ['분자식', material.formula ?? ''], ['분류', categoryLabels[material.reference.category] ?? material.reference.category], ['분자량 정보', material.reference.molecularWeightDescription], ['밀도 원문', material.reference.densityDescription], ['작용기 종류 / 수', material.groups?.map(g => g.type + ' ' + g.count).join(', ') || (material.functionality === 0 ? '반응성 Acrylate 없음 (0)' : '')], ['당량 (g/eq)', material.mw && material.functionality ? String(Number((material.mw / material.functionality).toPrecision(8))) : ''], ['녹는점 (°C)', material.reference.meltingPoint ?? ''], ['끓는점 (°C)', material.reference.boilingPoint ?? ''], ['순수 물질 상전이', material.reference.phaseTransitions ?? ''], ['주요 용도', material.reference.usage], ['출처', material.provenance ?? '']])}
 
           {detail('기본 정보', [['물질명', material.name], ['CAS 번호', values.cas], ['회사명', values.manufacturer], ['Lot 번호', lot.name],
             ['용량', values.capacity && values.capacity + ' ' + values.unit], ['잔량', values.remaining && values.remaining + ' ' + values.unit]])}
           {detail('보관 및 사용', [['보관 위치', values.location], ['구매일', values.purchased], ['개봉일', values.opened || (values.unopened && lot.inventory ? '미개봉' : '')],
-            ['상태', values.state], ['재고 상태', values.lifecycle], ['비고', values.notes]])}
+            ['상태', values.state], ['재고 상태', lifecycleLabel(values.lifecycle)], ['비고', values.notes]])}
           <div className="mi-properties">
             {detail('물성 및 문서', [['분자량 (g/mol)', values.mw], ['밀도 (g/cm³)', values.density], ['점도 (mPa·s)', values.viscosity],
               ['상변화점 (°C)', values.phaseValue && values.phase + ' ' + values.phaseValue], ['측정 온도 (°C)', values.measurementTemperature], ['측정 조건', values.measurementConditions],

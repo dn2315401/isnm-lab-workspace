@@ -36,3 +36,5 @@
 .mi-draft-row { background: #F7FAFD; }
 .mi-page [aria-invalid=true] { border-color: #ba4151 !important; }
 @media (max-width: 1060px) { .mi-grid { grid-template-columns: 1fr; } }
+
+.mi-page .mi-check{display:flex;align-items:center;justify-content:flex-start;gap:.5rem;white-space:nowrap}.mi-page .mi-check input[type=checkbox]{width:auto;flex:0 0 auto;margin:0}

@@ -4,6 +4,9 @@ import { library, type Material, type Unit } from './formulation-model';
 export const materialKey = 'isnm-material-library-v1';
 export const lifecycle = ['Active', 'Depleted', 'Expired', 'Archived', 'Disposed'] as const;
 export type Lifecycle = typeof lifecycle[number];
+export const lifecycleLabels: Record<Lifecycle,string> = { Active: '사용 중', Depleted: '소진', Expired: '유효기간 만료', Archived: '보관 중', Disposed: '폐기' };
+export const lifecycleLabel = (value: string) => lifecycleLabels[value as Lifecycle] ?? value;
+const notesCleanupKey = 'isnm-material-notes-cleared-2026-11-23';
 export type InventoryFields = {
   manufacturer: string; location: string; capacity: string; remaining: string; state: string;
   purchased: string; opened: string; unopened: boolean; notes: string; viscosity: string;
@@ -22,7 +25,7 @@ export type MaterialDraft = InventoryFields & {
 export const materialDraftKey = 'isnm-material-draft-v1';
 export const states = ['powder', 'pellets', 'beads', 'pure liquid', 'solution'];
 export const companies = ['TCI', 'Sigma-Aldrich', 'Duksan'];
-export const locations = ['시약장 A-02', '시약장 B-01', '용매장 S-01'];
+export const locations = ['냉동실', '냉장고', '용매 시약장', '산염기 시약장', '상온 시약장 좌측', '상온 시약장 우측'];
 export const phases = ['융점', '끓는점', '유리전이온도', '기타'];
 
 const blankInventory = (): InventoryFields => ({
@@ -44,7 +47,7 @@ export function makeMaterialDraft(material?: InventoryMaterial, lot?: InventoryL
 
 export const catalogMaterials: InventoryMaterial[] = (catalog as unknown as InventoryMaterial[]).map(material => ({
   ...material, lots: material.lots.map(lot => ({ ...lot, inventory: { ...blankInventory(), unopened: false,
-    notes: material.reference?.notes ?? '' } })),
+    notes: '' } })),
 }));
 
 export function mergeMaterialCatalog(existing: InventoryMaterial[]): InventoryMaterial[] {
@@ -71,9 +74,17 @@ export function readInventory(): InventoryMaterial[] {
   const raw = localStorage.getItem(materialKey);
   const parsed: unknown = raw === null ? [] : JSON.parse(raw);
   if (!Array.isArray(parsed)) throw new Error('원료 라이브러리 형식을 확인해주세요.');
-  const records = mergeMaterialCatalog(parsed);
+  const cleanup = localStorage.getItem(notesCleanupKey) !== 'done';
+  const records = mergeMaterialCatalog(parsed).map(material => cleanup ? ({ ...material,
+    reference: material.reference ? { ...material.reference, notes: '' } : undefined,
+    lots: material.lots.map(lot => ({ ...lot, inventory: lot.inventory ? { ...lot.inventory, notes: '' } : undefined })) }) : material);
   const serialized = JSON.stringify(records);
   if (raw !== serialized) localStorage.setItem(materialKey, serialized);
+  if (cleanup) {
+    const draftRaw = localStorage.getItem(materialDraftKey);
+    if (draftRaw) { try { const draft = JSON.parse(draftRaw); if (draft && typeof draft === 'object') localStorage.setItem(materialDraftKey, JSON.stringify({ ...draft, notes: '' })); } catch { /* Leave unreadable drafts intact. */ } }
+    localStorage.setItem(notesCleanupKey, 'done');
+  }
   return records;
 }
 
