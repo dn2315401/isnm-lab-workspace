@@ -229,7 +229,7 @@ export default function MaterialInventory() {
             onChange={() => { if (checked.includes(lot.id)) setChecked(previous => previous.filter(id => id !== lot.id)); else openRow(material, lot); }}/></td>
           <td><button className="ob-link mi-name" onClick={() => openRow(material, lot)}><strong>{material.name}</strong>{material.chemicalName && <small>{material.chemicalName}</small>}{material.reference && <small>{categoryLabels[material.reference.category] ?? material.reference.category}</small>}<small>{lot.name}{(lot.example ?? material.example) && ' · 예시'}</small></button></td>
           {cellValues(values).map((value, index) => <td key={index}>{value || '—'}</td>)}
-          <td><span className={"ob-badge mi-status mi-status-"+values.lifecycle}>{lifecycleLabel(values.lifecycle)}</span>{values.state && <small>{values.state}</small>}</td>
+          <td><span className="ob-badge mi-table-status" data-inventory-status={values.lifecycle}>{lifecycleLabel(values.lifecycle)}</span>{values.state && <small>{values.state}</small>}</td>
           <td>{values.purchased || '—'}</td><td>{values.opened || (lot.inventory && values.unopened ? '미개봉' : '—')}</td>
           <td>{values.msds ? <button className="ob-link mi-pdf" aria-label={material.name + ' MSDS 보기'} onClick={() => viewPdf(values.msds!)}><FileText size={19}/></button> : '—'}</td>
         </tr>)}
@@ -273,7 +273,7 @@ export default function MaterialInventory() {
             <label className="ob-field">보관 위치 <em>*</em><select required value={draft.location} aria-invalid={!!errors.location} onChange={event => patch({ location: event.target.value })}><option value="">보관 위치 선택</option>{draft.location && !locations.includes(draft.location) && <option value={draft.location}>{draft.location} (기존 위치)</option>}{locations.map(value => <option key={value} value={value}>{value}</option>)}</select>{errors.location && <small role="alert">{errors.location}</small>}</label>
             {field('purchased', { type: 'date' })}{field('opened', { type: 'date' })}
             <label className="mi-check"><input type="checkbox" checked={draft.unopened} onChange={event => patch({ unopened: event.target.checked })}/> 미개봉</label>
-            <label className="ob-field">재고 상태<select className={"mi-status-select mi-status-"+draft.lifecycle} value={draft.lifecycle} onChange={event => patch({ lifecycle: event.target.value as MaterialDraft['lifecycle'] })}>
+            <label className="ob-field">재고 상태<select value={draft.lifecycle} onChange={event => patch({ lifecycle: event.target.value as MaterialDraft['lifecycle'] })}>
               {lifecycle.map(value => <option key={value} value={value}>{lifecycleLabel(value)}</option>)}</select></label>
             <label className="ob-field">비고<textarea rows={5} placeholder="제품 특이사항이나 관리 메모를 입력하세요."
               value={draft.notes} onChange={event => patch({ notes: event.target.value })}/></label>
@@ -304,7 +304,7 @@ export default function MaterialInventory() {
       const hasUsage = linked && (linked.batches.length || linked.formulations.length || linked.syntheses.length || linked.samples.length);
       return <section className="ob-editor mi-detail" key={lot.id}>
         <div className="mi-detail-heading"><div className="mi-detail-name"><h2>{material.name}</h2><span>{lot.name}</span>
-          <span className={"ob-badge mi-status mi-status-"+values.lifecycle}>{lifecycleLabel(values.lifecycle)}</span>{values.state && <small>{values.state}</small>}{(lot.example ?? material.example) && <small>예시 물질</small>}</div>
+          <span className="ob-badge">{values.state || lifecycleLabel(values.lifecycle)}</span>{(lot.example ?? material.example) && <small>예시 물질</small>}</div>
           <div className="mi-tools"><button className="ob-primary" onClick={() => edit(values)}><Pencil size={14}/> 수정</button>
             <details className="mi-menu"><summary aria-label="추가 작업">⋯</summary><div>
               <button onClick={() => edit({ ...values, lotId: '', lot: '', revision: 0, purchased: '', opened: '', unopened: true, remaining: '', lifecycle: 'Active', msds: undefined })}>복제하여 새 Lot 등록</button>
