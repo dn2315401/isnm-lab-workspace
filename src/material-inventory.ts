@@ -1,3 +1,4 @@
+import catalog from './material-catalog.json';
 import { library, type Material, type Unit } from './formulation-model';
 
 export const materialKey = 'isnm-material-library-v1';
@@ -13,7 +14,7 @@ export type InventoryLot = Material['lots'][number] & {
   inventory?: InventoryFields; unit?: Unit; purity?: number | null; revision?: number; example?: boolean;
   history?: { date: string; changes: string[] }[];
 };
-export type InventoryMaterial = Omit<Material, 'lots'> & { cas?: string; lots: InventoryLot[]; example?: boolean };
+export type InventoryMaterial = Omit<Material, 'lots'> & { cas?: string; chemicalName?: string; formula?: string; reference?: { category: string; molecularWeightDescription: string; densityDescription: string; usage: string; meltingPoint?: string; boilingPoint?: string; phaseTransitions?: string; notes?: string }; lots: InventoryLot[]; example?: boolean };
 export type MaterialDraft = InventoryFields & {
   materialId: string; lotId: string; revision: number; name: string; lot: string; cas: string; unit: Unit;
   component: string; mw: string; density: string; functionality: string;
@@ -41,25 +42,39 @@ export function makeMaterialDraft(material?: InventoryMaterial, lot?: InventoryL
   };
 }
 
-const demoDetails: Record<string, { manufacturer: string; location: string; capacity: string; state: string }> = {
-  rm82: { manufacturer: 'TCI', location: '시약장 A-02', capacity: '25', state: 'powder' },
-  thf: { manufacturer: 'Duksan', location: '용매장 S-01', capacity: '1000', state: 'pure liquid' },
-};
-const defaults: InventoryMaterial[] = library.map(material => ({
-  ...material, example: true, lots: material.lots.map(lot => ({
-    ...lot, inventory: { ...blankInventory(), ...demoDetails[material.id] },
-    ...(material.id === 'thf' ? { unit: 'mL' as const } : {}),
-  })),
+export const catalogMaterials: InventoryMaterial[] = (catalog as unknown as InventoryMaterial[]).map(material => ({
+  ...material, lots: material.lots.map(lot => ({ ...lot, inventory: { ...blankInventory(), unopened: false,
+    notes: material.reference?.notes ?? '' } })),
 }));
+
+export function mergeMaterialCatalog(existing: InventoryMaterial[]): InventoryMaterial[] {
+  // Retain edited legacy lots and all user-created records; hide untouched demo stock.
+  const records = existing.flatMap(material => {
+    const legacy = material.example ?? library.some(item => item.id === material.id);
+    if (!legacy) return [material];
+    const lots = material.lots.filter(lot => lot.example === false || (lot.revision ?? 0) > 0 || (lot.history?.length ?? 0) > 0);
+    return lots.length ? [{ ...material, lots }] : [];
+  });
+  for (const item of catalogMaterials) {
+    const index = records.findIndex(record => record.id === item.id || record.name.trim().toLowerCase() === item.name.toLowerCase());
+    if (index < 0) records.push(item);
+    else {
+      const old = records[index];
+      records[index] = { ...item, ...old, chemicalName: old.chemicalName ?? item.chemicalName,
+        formula: old.formula ?? item.formula, reference: old.reference ?? item.reference };
+    }
+  }
+  return records;
+}
 
 export function readInventory(): InventoryMaterial[] {
   const raw = localStorage.getItem(materialKey);
-  if (raw === null) return defaults;
-  const parsed: unknown = JSON.parse(raw);
+  const parsed: unknown = raw === null ? [] : JSON.parse(raw);
   if (!Array.isArray(parsed)) throw new Error('원료 라이브러리 형식을 확인해주세요.');
-  return parsed.map((material: InventoryMaterial) => ({
-    ...material, example: material.example ?? library.some(item => item.id === material.id),
-  }));
+  const records = mergeMaterialCatalog(parsed);
+  const serialized = JSON.stringify(records);
+  if (raw !== serialized) localStorage.setItem(materialKey, serialized);
+  return records;
 }
 
 export function readInventorySafely() {

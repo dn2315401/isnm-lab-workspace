@@ -9,7 +9,8 @@
     "preview": "vite preview",
     "test:calculator": "node scripts/test-calculator.mjs",
     "version:set": "node scripts/set-version.mjs",
-    "test:search": "node scripts/test-search.mjs"
+    "test:search": "node scripts/test-search.mjs",
+    "test:materials": "node scripts/test-material-catalog.mjs"
   },
   "dependencies": {
     "react": "^19.0.0",

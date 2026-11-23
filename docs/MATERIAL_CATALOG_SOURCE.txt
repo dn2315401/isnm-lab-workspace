@@ -1,0 +1,793 @@
+1. 라이브러리 기본 데이터 구조
+각 물질에 다음 정보를 저장하는 것을 권장합니다.
+구분
+저장 항목
+기본 정보
+약칭, 영문명, IUPAC/화학명, CAS No.
+분자 정보
+분자식, 분자량 (g/mol)
+물리적 특성
+밀도 (g/mL), 녹는점 (°C), 끓는점 (°C)
+반응 정보
+작용기 종류, 작용기 수, 당량 (g/eq)
+분류
+Acrylate, Thiol, Mesogen, Solvent, Initiator 등
+실험 정보
+순도, 보관 조건, 주요 용도, 비고
+관리 정보
+제조사, 제품번호, Lot No., 재고량, SDS
+특히 작용기 수(Functionality) 는 필수입니다. 아크릴레이트–싸이올 반응에서 당량비를 계산할 때 분자량과 함께 사용되기 때문입니다.
+아래 물질 목록에서는 대표값을 제시하되, 제조사와 순도에 따라 값이 달라질 수 있는 항목은 별도로 표시하겠습니다.
+2. 아크릴레이트 계열 (Acrylates)
+아크릴레이트 작용기 수에 따라 단관능, 이관능, 다관능 물질로 구분했습니다.
+약칭
+화학명
+분자식
+MW (g/mol)
+밀도 (g/mL)
+관능기 수
+MA
+Methyl acrylate
+C4H6O2
+86.09
+0.956
+1
+EA
+Ethyl acrylate
+C5H8O2
+100.12
+0.923
+1
+BA
+Butyl acrylate
+C7H12O2
+128.17
+0.894
+1
+2-EHA
+2-Ethylhexyl acrylate
+C11H20O2
+184.28
+0.885
+1
+HEA
+2-Hydroxyethyl acrylate
+C5H8O3
+116.12
+1.106
+1
+HPA
+Hydroxypropyl acrylate
+C6H10O3
+130.14
+약 1.05
+1
+IBOA
+Isobornyl acrylate
+C13H20O2
+208.30
+약 0.98
+1
+BZA
+Benzyl acrylate
+C10H10O2
+162.19
+약 1.05
+1
+HDDA
+1,6-Hexanediol diacrylate
+C12H18O4
+226.27
+1.01
+2
+BDDA
+1,4-Butanediol diacrylate
+C10H14O4
+198.22
+약 1.05
+2
+TEGDA
+Triethylene glycol diacrylate
+C12H18O6
+258.27
+약 1.12
+2
+TPGDA
+Tripropylene glycol diacrylate
+C15H24O6
+300.35
+약 1.03
+2
+PEGDA
+Poly(ethylene glycol) diacrylate
+가변
+가변
+가변
+2
+TMPTA
+Trimethylolpropane triacrylate
+C15H20O6
+296.32
+약 1.10
+3
+PETA
+Pentaerythritol triacrylate
+C14H18O7
+298.29
+약 1.16
+3
+PETTA
+Pentaerythritol tetraacrylate
+C17H20O8
+352.34
+약 1.19
+4
+DPHA
+Dipentaerythritol hexaacrylate
+C28H34O13
+578.57
+약 1.2
+6
+밀도는 대체로 20–25°C 부근의 참고값입니다. HPA, PETA, DPHA 등은 이성질체 또는 상용 혼합물에 따라 달라질 수 있습니다. PEGDA는 제품의 평균 분자량을 사용해야 합니다.
+녹는점·끓는점 및 특징
+물질
+녹는점 (°C)
+끓는점 (°C)
+주요 용도
+MA
+약 −75
+약 80
+단관능 모노머
+EA
+약 −71
+약 99
+유연성 부여
+BA
+약 −64
+약 145
+연질 고분자
+2-EHA
+약 −90
+약 215
+저 Tg 고분자
+HEA
+약 −60 이하
+약 210
+OH 작용기 도입
+HDDA
+제품별 확인
+약 295
+이관능 가교
+TEGDA
+제품별 확인
+감압 증류·분해 주의
+유연한 가교
+TMPTA
+제품별 확인
+고온 중합·분해 가능
+삼관능 가교
+PETTA
+제품별 확인
+고온 중합·분해 가능
+고밀도 가교
+DPHA
+혼합물별 상이
+분해 가능
+고관능 가교
+고관능 아크릴레이트는 일반적인 끓는점보다 열분해·중합 가능성이 중요하므로, 확인되지 않은 상압 끓는점을 임의로 입력하지 않는 편이 좋습니다.
+3. 싸이올 계열 (Thiols)
+LCE 합성에서 사슬연장제, 가교제, 말단기 도입 물질로 활용할 수 있는 물질입니다.
+약칭
+화학명
+분자식
+MW (g/mol)
+밀도 (g/mL)
+SH 수
+EDDT
+2,2′-(Ethylenedioxy)diethanethiol
+C6H14O2S2
+182.30
+약 1.12
+2
+DODT
+1,8-Octanedithiol
+C8H18S2
+178.36
+약 0.97
+2
+BDT
+1,4-Butanedithiol
+C4H10S2
+122.25
+약 1.03
+2
+HDT
+1,6-Hexanedithiol
+C6H14S2
+150.31
+약 0.98
+2
+EDT
+1,2-Ethanedithiol
+C2H6S2
+94.20
+약 1.12
+2
+DTT
+Dithiothreitol
+C4H10O2S2
+154.25
+약 1.04*
+2
+TMPMP
+Trimethylolpropane tris(3-mercaptopropionate)
+C15H26O6S3
+398.56
+약 1.2
+3
+PETMP
+Pentaerythritol tetrakis(3-mercaptopropionate)
+C17H28O8S4
+488.66
+1.28
+4
+GDMP
+Glycol di(3-mercaptopropionate)
+C8H14O4S2
+238.32
+약 1.2
+2
+3-MPA
+3-Mercaptopropionic acid
+C3H6O2S
+106.14
+약 1.22
+1
+2-ME
+2-Mercaptoethanol
+C2H6OS
+78.13
+약 1.11
+1
+1-DDT
+1-Dodecanethiol
+C12H26S
+202.40
+약 0.85
+1
+*DTT는 고체로, 밀도는 벌크 분말 밀도가 아닌 참고 물성입니다. EDDT의 정확한 화학명은 2,2′-(ethylenedioxy)diethanethiol로 관리해야 하며 유사 명칭의 다른 화합물과 혼동하지 않아야 합니다. PETMP의 분자량·밀도는 제조사 자료로 확인했습니다.
+시그마알드리히+1
+주요 싸이올의 열적 특성
+물질
+녹는점 (°C)
+끓는점 (°C)
+주요 용도
+EDDT
+자료 확인 필요
+감압 조건 확인 필요
+유연한 사슬연장제
+EDT
+약 −41
+약 146
+짧은 이관능 링커
+BDT
+약 −50
+약 195
+이관능 링커
+HDT
+약 −20
+약 240
+유연한 사슬연장
+DODT
+제품별 확인
+약 270–275
+긴 알킬 사슬 도입
+DTT
+약 42–45
+분해
+환원성 싸이올
+PETMP
+제품별 확인
+275 (1 mmHg)
+사관능 가교제
+3-MPA
+약 16–18
+약 208
+말단기 도입
+2-ME
+약 −100
+약 157
+환원제·반응성 첨가제
+PETMP의 275°C는 1 mmHg 감압 조건의 값으로, 상압 끓는점과 혼용하면 안 됩니다.
+시그마알드리히+1
+4. 액정성 모노머 및 메조젠 (Reactive Mesogens)
+LCE 연구에서 중요한 물질군입니다. 액정성 물질은 일반적인 녹는점·끓는점 외에도 액정상 전이온도(Tni), 액정상 종류, 반응성 말단기를 저장하는 것이 좋습니다.
+약칭
+물질명
+분자식
+MW (g/mol)
+Acrylate 수
+RM82
+Reactive Mesogen 82
+C39H44O10
+672.77
+2
+RM257
+Reactive Mesogen 257
+C33H32O10
+588.61
+2
+RM105
+Reactive Mesogen 105
+C23H26O6
+398.45
+1
+RM23
+Reactive Mesogen 23
+C22H21NO4
+363.41
+1
+5CB
+4-Cyano-4′-pentylbiphenyl
+C18H19N
+249.36
+0
+8CB
+4-Cyano-4′-octylbiphenyl
+C21H25N
+291.44
+0
+7CB
+4-Cyano-4′-heptylbiphenyl
+C20H23N
+277.41
+0
+MBBA
+N-(4-Methoxybenzylidene)-4-butylaniline
+C18H21NO
+267.37
+0
+RM 계열은 상용 약칭과 화학구조가 공급사별로 혼동될 수 있으므로 CAS 번호와 구조식을 함께 등록해야 합니다. 특히 RM82, RM257, RM105, RM23의 위 구조·분자식은 문헌에 보고된 대표 구조 기준입니다.
+Wiley Online Library+1
+액정상 관련 특성
+물질
+주요 상전이 특성
+용도
+RM82
+액정상 및 전이온도는 조성·측정 조건별 확인
+유연한 LCE 네트워크
+RM257
+액정성 diacrylate
+LCE 네트워크·액추에이터
+RM105
+단관능 reactive mesogen
+액정성 조절
+RM23
+단관능 reactive mesogen
+액정성·유전특성 조절
+5CB
+N–I 약 35°C
+대표 네마틱 액정
+8CB
+SmA–N 약 33.5°C, N–I 약 40.5°C
+스멕틱·네마틱 연구
+7CB
+N–I 약 42–43°C
+네마틱 액정
+MBBA
+상온 부근 네마틱 액정
+액정상 연구
+여기서 N은 Nematic, I는 Isotropic, SmA는 Smectic A를 의미합니다.
+RM 계열의 경우 순수 모노머의 전이온도와 가교된 LCE 네트워크의 Tni는 서로 다른 물성입니다. 따라서 라이브러리에는 순수 물질의 상전이 데이터만 저장하고, 합성된 샘플의 DSC·DMA 결과는 별도 측정 기록에 연결하는 구조를 추천합니다.
+5. 용매 (Solvents)
+합성, 희석, 세척, 추출, 침전, 건조 등에 자주 사용하는 용매입니다.
+약칭
+화학명
+분자식
+MW (g/mol)
+밀도 (g/mL)
+녹는점 (°C)
+끓는점 (°C)
+DCM
+Dichloromethane
+CH2Cl2
+84.93
+1.33
+−96.7
+39.6
+CHCl3
+Chloroform
+CHCl3
+119.38
+1.49
+−63.5
+61.2
+THF
+Tetrahydrofuran
+C4H8O
+72.11
+0.889
+−108.4
+66.0
+DMF
+N,N-Dimethylformamide
+C3H7NO
+73.09
+0.944
+−61
+153
+DMAc
+N,N-Dimethylacetamide
+C4H9NO
+87.12
+0.937
+−20
+165
+DMSO
+Dimethyl sulfoxide
+C2H6OS
+78.13
+1.10
+18.5
+189
+MeOH
+Methanol
+CH4O
+32.04
+0.792
+−97.6
+64.7
+EtOH
+Ethanol
+C2H6O
+46.07
+0.789
+−114.1
+78.4
+IPA
+Isopropanol
+C3H8O
+60.10
+0.785
+−89.5
+82.6
+Acetone
+Acetone
+C3H6O
+58.08
+0.791
+−94.7
+56.1
+EtOAc
+Ethyl acetate
+C4H8O2
+88.11
+0.902
+−83.6
+77.1
+Toluene
+Toluene
+C7H8
+92.14
+0.867
+−95
+110.6
+Hexane
+n-Hexane
+C6H14
+86.18
+0.659
+−95
+68.7
+Cyclohexane
+Cyclohexane
+C6H12
+84.16
+0.779
+6.5
+80.7
+ACN
+Acetonitrile
+C2H3N
+41.05
+0.786
+−45.7
+81.6
+NMP
+N-Methyl-2-pyrrolidone
+C5H9NO
+99.13
+1.03
+−24
+202
+1,4-Dioxane
+1,4-Dioxane
+C4H8O2
+88.11
+1.03
+11.8
+101.1
+MTBE
+Methyl tert-butyl ether
+C5H12O
+88.15
+0.740
+−109
+55.2
+Diethyl ether
+Diethyl ether
+C4H10O
+74.12
+0.713
+−116.3
+34.6
+Water
+Water
+H2O
+18.02
+0.997
+0
+100
+대표적인 순수 물질의 상압 물성으로, 밀도는 대체로 20–25°C 기준의 반올림값입니다. 실험실에서 판매하는 Hexane은 n-Hexane 순물질이 아니라 이성질체 혼합물일 수 있으므로 별도 항목으로 구분해야 합니다.
+용매별 연구실 활용
+용매
+주요 용도
+주의사항
+DCM
+아크릴레이트–싸이올 합성, 추출
+휘발성·유해성
+THF
+고분자 용해, 합성, GPC
+과산화물 형성 가능
+DMF
+극성 물질 용해
+고비점·생식독성
+DMSO
+극성 화합물 용해
+피부 투과 촉진
+Toluene
+고분자 용해, 열처리
+인화성
+EtOAc
+추출, 세척
+인화성
+Hexane
+침전, 비극성 세척
+인화성·신경독성
+MeOH
+침전, 세척
+독성·인화성
+Acetone
+기구 세척
+높은 휘발성
+ACN
+분석용 이동상, 용해
+인화성·독성
+6. 개시제·촉매·중합 억제제
+아크릴레이트–싸이올 Michael addition 및 광중합 공정에 사용할 수 있는 물질입니다.
+약칭
+화학명
+분자식
+MW (g/mol)
+주요 역할
+DPA
+Dipropylamine
+C6H15N
+101.19
+염기 촉매
+TEA
+Triethylamine
+C6H15N
+101.19
+염기 촉매
+DBU
+1,8-Diazabicyclo[5.4.0]undec-7-ene
+C9H16N2
+152.24
+강염기 촉매
+DABCO
+1,4-Diazabicyclo[2.2.2]octane
+C6H12N2
+112.17
+염기 촉매
+DMAP
+4-Dimethylaminopyridine
+C7H10N2
+122.17
+친핵성 촉매
+DMPA
+2,2-Dimethoxy-2-phenylacetophenone
+C16H16O3
+256.30
+광개시제
+TPO
+Diphenyl(2,4,6-trimethylbenzoyl)phosphine oxide
+C22H21O2P
+348.38
+광개시제
+TPO-L
+Ethyl (2,4,6-trimethylbenzoyl)phenylphosphinate
+C18H21O3P
+316.33
+액상 광개시제
+BAPO
+Phenylbis(2,4,6-trimethylbenzoyl)phosphine oxide
+C26H27O3P
+418.47
+광개시제
+AIBN
+Azobisisobutyronitrile
+C8H12N4
+164.21
+열개시제
+BPO
+Benzoyl peroxide
+C14H10O4
+242.23
+열개시제
+BHT
+Butylated hydroxytoluene
+C15H24O
+220.35
+중합 억제·산화 방지
+MEHQ
+4-Methoxyphenol
+C7H8O2
+124.14
+아크릴레이트 중합 억제
+TEMPO
+(2,2,6,6-Tetramethylpiperidin-1-yl)oxyl
+C9H18NO
+156.25
+라디칼 억제·조절
+DPA는 약칭이 다른 물질에도 사용되므로, 라이브러리에서 반드시 Dipropylamine이라는 정식 명칭과 CAS 번호로 구분해야 합니다.
+주요 촉매·개시제의 물성
+물질
+밀도 (g/mL)
+녹는점 (°C)
+끓는점 (°C)
+DPA
+약 0.74
+약 −63
+약 110
+TEA
+0.726
+−114.7
+89.5
+DBU
+약 1.02
+약 −70
+약 260
+DABCO
+고체
+약 158–160
+약 174
+DMAP
+고체
+약 109–113
+약 162 (감압)
+DMPA
+고체
+약 64–67
+분해 가능
+TPO
+고체
+약 90–94
+분해 가능
+BHT
+고체
+약 69–71
+약 265
+MEHQ
+고체
+약 54–56
+약 243
+AIBN
+고체
+약 100–105 (분해)
+해당 없음
+7. 세척·중화·후처리용 물질
+약칭
+화학명
+분자식
+MW (g/mol)
+밀도 (g/mL)
+녹는점 (°C)
+끓는점 (°C)
+HCl
+Hydrogen chloride
+HCl
+36.46
+수용액 농도별 상이
+−114.2*
+−85.1*
+NaCl
+Sodium chloride
+NaCl
+58.44
+2.16 (g/cm³)
+801
+1465
+NaHCO3
+Sodium bicarbonate
+NaHCO3
+84.01
+약 2.20 (g/cm³)
+분해
+분해
+NaOH
+Sodium hydroxide
+NaOH
+40.00
+2.13 (g/cm³)
+318
+1388
+KOH
+Potassium hydroxide
+KOH
+56.11
+2.04 (g/cm³)
+360
+약 1320
+MgSO4
+Magnesium sulfate (anhydrous)
+MgSO4
+120.37
+2.66 (g/cm³)
+약 1124 (분해)
+해당 없음
+Na2SO4
+Sodium sulfate (anhydrous)
+Na2SO4
+142.04
+2.66 (g/cm³)
+884
+해당 없음
+AcOH
+Acetic acid
+C2H4O2
+60.05
+1.049
+16.6
+118.1
+*HCl의 녹는점·끓는점은 순수 염화수소 기준입니다. 실험에 사용하는 염산 수용액의 물성과는 다릅니다. NaCl 등 고체의 밀도 단위는 g/cm³로 표시했습니다.
+실제 합성기록에서는 HCl과 HCl 수용액(예: 1 M, 2 M), NaCl과 포화 NaCl 수용액(Brine)을 별도 물질로 관리하는 것이 정확합니다.
+8. 라이브러리에 추가할 고분자·올리고머
+일반적인 저분자 시약과 달리 고분자·올리고머는 분자량이 단일값이 아닐 수 있습니다.
+약칭
+물질명
+대표 분자량
+주요 용도
+PEG
+Polyethylene glycol
+Mn 200–20,000+
+유연성·친수성 조절
+PEGDA
+Polyethylene glycol diacrylate
+Mn 250–1,000+
+유연한 가교 네트워크
+PEGMA
+Polyethylene glycol methacrylate
+제품별 상이
+단관능 고분자 모노머
+PPG
+Polypropylene glycol
+Mn 400–4,000+
+연질 세그먼트
+PDMS
+Polydimethylsiloxane
+제품별 상이
+실리콘 탄성체
+PCL
+Polycaprolactone
+Mn 1,000–80,000+
+결정성·형상기억 소재
+PVA
+Polyvinyl alcohol
+제품별 상이
+필름·고분자 블렌드
+PMMA
+Polymethyl methacrylate
+제품별 상이
+비교용 고분자
+연구실에서 자체 합성한 PBB-TA, PBB-TT 같은 물질도 등록할 수 있지만, 상용 시약과 구분하여 Custom Material 유형으로 관리하는 것이 적절합니다.

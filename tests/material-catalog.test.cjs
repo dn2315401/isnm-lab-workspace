@@ -1,0 +1,31 @@
+const assert = require('node:assert/strict');
+const { catalogMaterials, mergeMaterialCatalog, readInventory, materialKey } = require('../work/test-material-catalog/material-inventory.js');
+const { library } = require('../work/test-material-catalog/formulation-model.js');
+assert.equal(catalogMaterials.length, 86);
+assert.equal(new Set(catalogMaterials.map(m => m.name)).size, 86);
+for (const m of catalogMaterials) {
+ assert.equal(m.example, false);
+ assert.ok(m.lots.every(l => l.name === 'Lot 미등록' && l.stock === '재고 미등록' && !l.inventory.manufacturer && !l.inventory.capacity));
+ if(m.groups.length) assert.equal(m.groups[0].count,m.functionality);
+}
+const find = name => catalogMaterials.find(m => m.name === name);
+assert.equal(find('PEGDA').mw,null);
+assert.equal(find('PEG').mw,null);
+assert.equal(find('PETMP').reference.boilingPoint,'275 (1 mmHg)');
+assert.equal(find('RM82').mw,672.77);
+assert.equal(find('EDDT').groups[0].type,'Thiol');
+assert.equal(find('5CB').functionality,0);
+const custom={...find('THF'),id:'user-thf',mw:72.12,lots:[{id:'user-lot',name:'LOT-REAL',stock:'20 g',example:false}]};
+const demo=library.map(m=>({...m,example:true}));
+const merged=mergeMaterialCatalog([...demo,custom]);
+assert.equal(merged.length,86);
+assert.deepEqual(merged.find(m=>m.id==='user-thf').lots,custom.lots);
+assert.equal(merged.find(m=>m.id==='user-thf').mw,72.12);
+assert.ok(!merged.some(m=>m.name==='Additive X'||m.id==='olg'));
+assert.deepEqual(mergeMaterialCatalog(merged),merged);
+const edited={...library[1],example:true,lots:[{...library[1].lots[0],revision:1,history:[{date:'2026-11-23',changes:['edited']}]}]};
+assert.equal(mergeMaterialCatalog([edited]).find(m=>m.id==='rm82').lots[0].revision,1);
+let stored=null;global.localStorage={getItem:()=>stored,setItem:(key,value)=>{assert.equal(key,materialKey);stored=value}};
+assert.equal(readInventory().length,86);const once=stored;readInventory();assert.equal(stored,once);
+stored='broken';assert.throws(()=>readInventory());assert.equal(stored,'broken');
+console.log('원료 86종, 중복·가변 물성·기존 Lot 보존·반복 로딩 검증 통과');

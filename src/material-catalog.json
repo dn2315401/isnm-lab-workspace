@@ -1,0 +1,2932 @@
+[
+  {
+    "id": "catalog-ma",
+    "name": "MA",
+    "chemicalName": "Methyl acrylate",
+    "formula": "C4H6O2",
+    "component": "Reactive Monomer",
+    "role": "반응성 희석제",
+    "mw": 86.09,
+    "density": 0.956,
+    "functionality": 1,
+    "unit": "g",
+    "groups": [
+      {
+        "type": "Acrylate",
+        "count": 1
+      }
+    ],
+    "provenance": "사용자 제공 원료 자료 · 대표 물성",
+    "example": false,
+    "reference": {
+      "category": "Acrylate",
+      "molecularWeightDescription": "86.09",
+      "densityDescription": "0.956",
+      "usage": "단관능 모노머",
+      "meltingPoint": "약 −75",
+      "boilingPoint": "약 80",
+      "notes": "밀도는 대체로 20–25°C 참고값. HPA, PETA, DPHA는 이성질체·상용 혼합물에 따라 다름. 고관능 물질의 미확인 상압 끓는점은 미등록."
+    },
+    "lots": [
+      {
+        "id": "catalog-ma-unregistered",
+        "name": "Lot 미등록",
+        "stock": "재고 미등록",
+        "example": false
+      }
+    ]
+  },
+  {
+    "id": "catalog-ea",
+    "name": "EA",
+    "chemicalName": "Ethyl acrylate",
+    "formula": "C5H8O2",
+    "component": "Reactive Monomer",
+    "role": "반응성 희석제",
+    "mw": 100.12,
+    "density": 0.923,
+    "functionality": 1,
+    "unit": "g",
+    "groups": [
+      {
+        "type": "Acrylate",
+        "count": 1
+      }
+    ],
+    "provenance": "사용자 제공 원료 자료 · 대표 물성",
+    "example": false,
+    "reference": {
+      "category": "Acrylate",
+      "molecularWeightDescription": "100.12",
+      "densityDescription": "0.923",
+      "usage": "유연성 부여",
+      "meltingPoint": "약 −71",
+      "boilingPoint": "약 99",
+      "notes": "밀도는 대체로 20–25°C 참고값. HPA, PETA, DPHA는 이성질체·상용 혼합물에 따라 다름. 고관능 물질의 미확인 상압 끓는점은 미등록."
+    },
+    "lots": [
+      {
+        "id": "catalog-ea-unregistered",
+        "name": "Lot 미등록",
+        "stock": "재고 미등록",
+        "example": false
+      }
+    ]
+  },
+  {
+    "id": "catalog-ba",
+    "name": "BA",
+    "chemicalName": "Butyl acrylate",
+    "formula": "C7H12O2",
+    "component": "Reactive Monomer",
+    "role": "반응성 희석제",
+    "mw": 128.17,
+    "density": 0.894,
+    "functionality": 1,
+    "unit": "g",
+    "groups": [
+      {
+        "type": "Acrylate",
+        "count": 1
+      }
+    ],
+    "provenance": "사용자 제공 원료 자료 · 대표 물성",
+    "example": false,
+    "reference": {
+      "category": "Acrylate",
+      "molecularWeightDescription": "128.17",
+      "densityDescription": "0.894",
+      "usage": "연질 고분자",
+      "meltingPoint": "약 −64",
+      "boilingPoint": "약 145",
+      "notes": "밀도는 대체로 20–25°C 참고값. HPA, PETA, DPHA는 이성질체·상용 혼합물에 따라 다름. 고관능 물질의 미확인 상압 끓는점은 미등록."
+    },
+    "lots": [
+      {
+        "id": "catalog-ba-unregistered",
+        "name": "Lot 미등록",
+        "stock": "재고 미등록",
+        "example": false
+      }
+    ]
+  },
+  {
+    "id": "catalog-2-eha",
+    "name": "2-EHA",
+    "chemicalName": "2-Ethylhexyl acrylate",
+    "formula": "C11H20O2",
+    "component": "Reactive Monomer",
+    "role": "반응성 희석제",
+    "mw": 184.28,
+    "density": 0.885,
+    "functionality": 1,
+    "unit": "g",
+    "groups": [
+      {
+        "type": "Acrylate",
+        "count": 1
+      }
+    ],
+    "provenance": "사용자 제공 원료 자료 · 대표 물성",
+    "example": false,
+    "reference": {
+      "category": "Acrylate",
+      "molecularWeightDescription": "184.28",
+      "densityDescription": "0.885",
+      "usage": "저 Tg 고분자",
+      "meltingPoint": "약 −90",
+      "boilingPoint": "약 215",
+      "notes": "밀도는 대체로 20–25°C 참고값. HPA, PETA, DPHA는 이성질체·상용 혼합물에 따라 다름. 고관능 물질의 미확인 상압 끓는점은 미등록."
+    },
+    "lots": [
+      {
+        "id": "catalog-2-eha-unregistered",
+        "name": "Lot 미등록",
+        "stock": "재고 미등록",
+        "example": false
+      }
+    ]
+  },
+  {
+    "id": "catalog-hea",
+    "name": "HEA",
+    "chemicalName": "2-Hydroxyethyl acrylate",
+    "formula": "C5H8O3",
+    "component": "Reactive Monomer",
+    "role": "반응성 희석제",
+    "mw": 116.12,
+    "density": 1.106,
+    "functionality": 1,
+    "unit": "g",
+    "groups": [
+      {
+        "type": "Acrylate",
+        "count": 1
+      }
+    ],
+    "provenance": "사용자 제공 원료 자료 · 대표 물성",
+    "example": false,
+    "reference": {
+      "category": "Acrylate",
+      "molecularWeightDescription": "116.12",
+      "densityDescription": "1.106",
+      "usage": "OH 작용기 도입",
+      "meltingPoint": "약 −60 이하",
+      "boilingPoint": "약 210",
+      "notes": "밀도는 대체로 20–25°C 참고값. HPA, PETA, DPHA는 이성질체·상용 혼합물에 따라 다름. 고관능 물질의 미확인 상압 끓는점은 미등록."
+    },
+    "lots": [
+      {
+        "id": "catalog-hea-unregistered",
+        "name": "Lot 미등록",
+        "stock": "재고 미등록",
+        "example": false
+      }
+    ]
+  },
+  {
+    "id": "catalog-hpa",
+    "name": "HPA",
+    "chemicalName": "Hydroxypropyl acrylate",
+    "formula": "C6H10O3",
+    "component": "Reactive Monomer",
+    "role": "반응성 희석제",
+    "mw": 130.14,
+    "density": 1.05,
+    "functionality": 1,
+    "unit": "g",
+    "groups": [
+      {
+        "type": "Acrylate",
+        "count": 1
+      }
+    ],
+    "provenance": "사용자 제공 원료 자료 · 대표 물성",
+    "example": false,
+    "reference": {
+      "category": "Acrylate",
+      "molecularWeightDescription": "130.14",
+      "densityDescription": "약 1.05",
+      "usage": "",
+      "meltingPoint": "",
+      "boilingPoint": "",
+      "notes": "밀도는 대체로 20–25°C 참고값. HPA, PETA, DPHA는 이성질체·상용 혼합물에 따라 다름. 고관능 물질의 미확인 상압 끓는점은 미등록."
+    },
+    "lots": [
+      {
+        "id": "catalog-hpa-unregistered",
+        "name": "Lot 미등록",
+        "stock": "재고 미등록",
+        "example": false
+      }
+    ]
+  },
+  {
+    "id": "catalog-iboa",
+    "name": "IBOA",
+    "chemicalName": "Isobornyl acrylate",
+    "formula": "C13H20O2",
+    "component": "Reactive Monomer",
+    "role": "반응성 희석제",
+    "mw": 208.3,
+    "density": 0.98,
+    "functionality": 1,
+    "unit": "g",
+    "groups": [
+      {
+        "type": "Acrylate",
+        "count": 1
+      }
+    ],
+    "provenance": "사용자 제공 원료 자료 · 대표 물성",
+    "example": false,
+    "reference": {
+      "category": "Acrylate",
+      "molecularWeightDescription": "208.30",
+      "densityDescription": "약 0.98",
+      "usage": "",
+      "meltingPoint": "",
+      "boilingPoint": "",
+      "notes": "밀도는 대체로 20–25°C 참고값. HPA, PETA, DPHA는 이성질체·상용 혼합물에 따라 다름. 고관능 물질의 미확인 상압 끓는점은 미등록."
+    },
+    "lots": [
+      {
+        "id": "catalog-iboa-unregistered",
+        "name": "Lot 미등록",
+        "stock": "재고 미등록",
+        "example": false
+      }
+    ]
+  },
+  {
+    "id": "catalog-bza",
+    "name": "BZA",
+    "chemicalName": "Benzyl acrylate",
+    "formula": "C10H10O2",
+    "component": "Reactive Monomer",
+    "role": "반응성 희석제",
+    "mw": 162.19,
+    "density": 1.05,
+    "functionality": 1,
+    "unit": "g",
+    "groups": [
+      {
+        "type": "Acrylate",
+        "count": 1
+      }
+    ],
+    "provenance": "사용자 제공 원료 자료 · 대표 물성",
+    "example": false,
+    "reference": {
+      "category": "Acrylate",
+      "molecularWeightDescription": "162.19",
+      "densityDescription": "약 1.05",
+      "usage": "",
+      "meltingPoint": "",
+      "boilingPoint": "",
+      "notes": "밀도는 대체로 20–25°C 참고값. HPA, PETA, DPHA는 이성질체·상용 혼합물에 따라 다름. 고관능 물질의 미확인 상압 끓는점은 미등록."
+    },
+    "lots": [
+      {
+        "id": "catalog-bza-unregistered",
+        "name": "Lot 미등록",
+        "stock": "재고 미등록",
+        "example": false
+      }
+    ]
+  },
+  {
+    "id": "catalog-hdda",
+    "name": "HDDA",
+    "chemicalName": "1,6-Hexanediol diacrylate",
+    "formula": "C12H18O4",
+    "component": "Reactive Monomer",
+    "role": "반응성 희석제",
+    "mw": 226.27,
+    "density": 1.01,
+    "functionality": 2,
+    "unit": "g",
+    "groups": [
+      {
+        "type": "Acrylate",
+        "count": 2
+      }
+    ],
+    "provenance": "사용자 제공 원료 자료 · 대표 물성",
+    "example": false,
+    "reference": {
+      "category": "Acrylate",
+      "molecularWeightDescription": "226.27",
+      "densityDescription": "1.01",
+      "usage": "이관능 가교",
+      "meltingPoint": "제품별 확인",
+      "boilingPoint": "약 295",
+      "notes": "밀도는 대체로 20–25°C 참고값. HPA, PETA, DPHA는 이성질체·상용 혼합물에 따라 다름. 고관능 물질의 미확인 상압 끓는점은 미등록."
+    },
+    "lots": [
+      {
+        "id": "catalog-hdda-unregistered",
+        "name": "Lot 미등록",
+        "stock": "재고 미등록",
+        "example": false
+      }
+    ]
+  },
+  {
+    "id": "catalog-bdda",
+    "name": "BDDA",
+    "chemicalName": "1,4-Butanediol diacrylate",
+    "formula": "C10H14O4",
+    "component": "Reactive Monomer",
+    "role": "반응성 희석제",
+    "mw": 198.22,
+    "density": 1.05,
+    "functionality": 2,
+    "unit": "g",
+    "groups": [
+      {
+        "type": "Acrylate",
+        "count": 2
+      }
+    ],
+    "provenance": "사용자 제공 원료 자료 · 대표 물성",
+    "example": false,
+    "reference": {
+      "category": "Acrylate",
+      "molecularWeightDescription": "198.22",
+      "densityDescription": "약 1.05",
+      "usage": "",
+      "meltingPoint": "",
+      "boilingPoint": "",
+      "notes": "밀도는 대체로 20–25°C 참고값. HPA, PETA, DPHA는 이성질체·상용 혼합물에 따라 다름. 고관능 물질의 미확인 상압 끓는점은 미등록."
+    },
+    "lots": [
+      {
+        "id": "catalog-bdda-unregistered",
+        "name": "Lot 미등록",
+        "stock": "재고 미등록",
+        "example": false
+      }
+    ]
+  },
+  {
+    "id": "catalog-tegda",
+    "name": "TEGDA",
+    "chemicalName": "Triethylene glycol diacrylate",
+    "formula": "C12H18O6",
+    "component": "Reactive Monomer",
+    "role": "반응성 희석제",
+    "mw": 258.27,
+    "density": 1.12,
+    "functionality": 2,
+    "unit": "g",
+    "groups": [
+      {
+        "type": "Acrylate",
+        "count": 2
+      }
+    ],
+    "provenance": "사용자 제공 원료 자료 · 대표 물성",
+    "example": false,
+    "reference": {
+      "category": "Acrylate",
+      "molecularWeightDescription": "258.27",
+      "densityDescription": "약 1.12",
+      "usage": "유연한 가교",
+      "meltingPoint": "제품별 확인",
+      "boilingPoint": "감압 증류·분해 주의",
+      "notes": "밀도는 대체로 20–25°C 참고값. HPA, PETA, DPHA는 이성질체·상용 혼합물에 따라 다름. 고관능 물질의 미확인 상압 끓는점은 미등록."
+    },
+    "lots": [
+      {
+        "id": "catalog-tegda-unregistered",
+        "name": "Lot 미등록",
+        "stock": "재고 미등록",
+        "example": false
+      }
+    ]
+  },
+  {
+    "id": "catalog-tpgda",
+    "name": "TPGDA",
+    "chemicalName": "Tripropylene glycol diacrylate",
+    "formula": "C15H24O6",
+    "component": "Reactive Monomer",
+    "role": "반응성 희석제",
+    "mw": 300.35,
+    "density": 1.03,
+    "functionality": 2,
+    "unit": "g",
+    "groups": [
+      {
+        "type": "Acrylate",
+        "count": 2
+      }
+    ],
+    "provenance": "사용자 제공 원료 자료 · 대표 물성",
+    "example": false,
+    "reference": {
+      "category": "Acrylate",
+      "molecularWeightDescription": "300.35",
+      "densityDescription": "약 1.03",
+      "usage": "",
+      "meltingPoint": "",
+      "boilingPoint": "",
+      "notes": "밀도는 대체로 20–25°C 참고값. HPA, PETA, DPHA는 이성질체·상용 혼합물에 따라 다름. 고관능 물질의 미확인 상압 끓는점은 미등록."
+    },
+    "lots": [
+      {
+        "id": "catalog-tpgda-unregistered",
+        "name": "Lot 미등록",
+        "stock": "재고 미등록",
+        "example": false
+      }
+    ]
+  },
+  {
+    "id": "catalog-pegda",
+    "name": "PEGDA",
+    "chemicalName": "Poly(ethylene glycol) diacrylate",
+    "formula": "가변",
+    "component": "Reactive Monomer",
+    "role": "반응성 희석제",
+    "mw": null,
+    "density": null,
+    "functionality": 2,
+    "unit": "g",
+    "groups": [
+      {
+        "type": "Acrylate",
+        "count": 2
+      }
+    ],
+    "provenance": "사용자 제공 원료 자료 · 대표 물성",
+    "example": false,
+    "reference": {
+      "category": "Acrylate",
+      "molecularWeightDescription": "Mn 250–1,000+",
+      "densityDescription": "가변",
+      "usage": "유연한 가교 네트워크",
+      "meltingPoint": "",
+      "boilingPoint": "",
+      "notes": "밀도는 대체로 20–25°C 참고값. HPA, PETA, DPHA는 이성질체·상용 혼합물에 따라 다름. 고관능 물질의 미확인 상압 끓는점은 미등록. 제품의 평균 분자량 사용."
+    },
+    "lots": [
+      {
+        "id": "catalog-pegda-unregistered",
+        "name": "Lot 미등록",
+        "stock": "재고 미등록",
+        "example": false
+      }
+    ]
+  },
+  {
+    "id": "catalog-tmpta",
+    "name": "TMPTA",
+    "chemicalName": "Trimethylolpropane triacrylate",
+    "formula": "C15H20O6",
+    "component": "Reactive Monomer",
+    "role": "반응성 희석제",
+    "mw": 296.32,
+    "density": 1.1,
+    "functionality": 3,
+    "unit": "g",
+    "groups": [
+      {
+        "type": "Acrylate",
+        "count": 3
+      }
+    ],
+    "provenance": "사용자 제공 원료 자료 · 대표 물성",
+    "example": false,
+    "reference": {
+      "category": "Acrylate",
+      "molecularWeightDescription": "296.32",
+      "densityDescription": "약 1.10",
+      "usage": "삼관능 가교",
+      "meltingPoint": "제품별 확인",
+      "boilingPoint": "고온 중합·분해 가능",
+      "notes": "밀도는 대체로 20–25°C 참고값. HPA, PETA, DPHA는 이성질체·상용 혼합물에 따라 다름. 고관능 물질의 미확인 상압 끓는점은 미등록."
+    },
+    "lots": [
+      {
+        "id": "catalog-tmpta-unregistered",
+        "name": "Lot 미등록",
+        "stock": "재고 미등록",
+        "example": false
+      }
+    ]
+  },
+  {
+    "id": "catalog-peta",
+    "name": "PETA",
+    "chemicalName": "Pentaerythritol triacrylate",
+    "formula": "C14H18O7",
+    "component": "Reactive Monomer",
+    "role": "반응성 희석제",
+    "mw": 298.29,
+    "density": 1.16,
+    "functionality": 3,
+    "unit": "g",
+    "groups": [
+      {
+        "type": "Acrylate",
+        "count": 3
+      }
+    ],
+    "provenance": "사용자 제공 원료 자료 · 대표 물성",
+    "example": false,
+    "reference": {
+      "category": "Acrylate",
+      "molecularWeightDescription": "298.29",
+      "densityDescription": "약 1.16",
+      "usage": "",
+      "meltingPoint": "",
+      "boilingPoint": "",
+      "notes": "밀도는 대체로 20–25°C 참고값. HPA, PETA, DPHA는 이성질체·상용 혼합물에 따라 다름. 고관능 물질의 미확인 상압 끓는점은 미등록."
+    },
+    "lots": [
+      {
+        "id": "catalog-peta-unregistered",
+        "name": "Lot 미등록",
+        "stock": "재고 미등록",
+        "example": false
+      }
+    ]
+  },
+  {
+    "id": "catalog-petta",
+    "name": "PETTA",
+    "chemicalName": "Pentaerythritol tetraacrylate",
+    "formula": "C17H20O8",
+    "component": "Reactive Monomer",
+    "role": "반응성 희석제",
+    "mw": 352.34,
+    "density": 1.19,
+    "functionality": 4,
+    "unit": "g",
+    "groups": [
+      {
+        "type": "Acrylate",
+        "count": 4
+      }
+    ],
+    "provenance": "사용자 제공 원료 자료 · 대표 물성",
+    "example": false,
+    "reference": {
+      "category": "Acrylate",
+      "molecularWeightDescription": "352.34",
+      "densityDescription": "약 1.19",
+      "usage": "고밀도 가교",
+      "meltingPoint": "제품별 확인",
+      "boilingPoint": "고온 중합·분해 가능",
+      "notes": "밀도는 대체로 20–25°C 참고값. HPA, PETA, DPHA는 이성질체·상용 혼합물에 따라 다름. 고관능 물질의 미확인 상압 끓는점은 미등록."
+    },
+    "lots": [
+      {
+        "id": "catalog-petta-unregistered",
+        "name": "Lot 미등록",
+        "stock": "재고 미등록",
+        "example": false
+      }
+    ]
+  },
+  {
+    "id": "catalog-dpha",
+    "name": "DPHA",
+    "chemicalName": "Dipentaerythritol hexaacrylate",
+    "formula": "C28H34O13",
+    "component": "Reactive Monomer",
+    "role": "반응성 희석제",
+    "mw": 578.57,
+    "density": 1.2,
+    "functionality": 6,
+    "unit": "g",
+    "groups": [
+      {
+        "type": "Acrylate",
+        "count": 6
+      }
+    ],
+    "provenance": "사용자 제공 원료 자료 · 대표 물성",
+    "example": false,
+    "reference": {
+      "category": "Acrylate",
+      "molecularWeightDescription": "578.57",
+      "densityDescription": "약 1.2",
+      "usage": "고관능 가교",
+      "meltingPoint": "혼합물별 상이",
+      "boilingPoint": "분해 가능",
+      "notes": "밀도는 대체로 20–25°C 참고값. HPA, PETA, DPHA는 이성질체·상용 혼합물에 따라 다름. 고관능 물질의 미확인 상압 끓는점은 미등록."
+    },
+    "lots": [
+      {
+        "id": "catalog-dpha-unregistered",
+        "name": "Lot 미등록",
+        "stock": "재고 미등록",
+        "example": false
+      }
+    ]
+  },
+  {
+    "id": "catalog-eddt",
+    "name": "EDDT",
+    "chemicalName": "2,2′-(Ethylenedioxy)diethanethiol",
+    "formula": "C6H14O2S2",
+    "component": "Reactive Monomer",
+    "role": "반응성 희석제",
+    "mw": 182.3,
+    "density": 1.12,
+    "functionality": 2,
+    "unit": "g",
+    "groups": [
+      {
+        "type": "Thiol",
+        "count": 2
+      }
+    ],
+    "provenance": "사용자 제공 원료 자료 · 대표 물성",
+    "example": false,
+    "reference": {
+      "category": "Thiol",
+      "molecularWeightDescription": "182.30",
+      "densityDescription": "약 1.12",
+      "usage": "유연한 사슬연장제",
+      "meltingPoint": "자료 확인 필요",
+      "boilingPoint": "감압 조건 확인 필요",
+      "notes": "DTT는 고체이며 밀도는 벌크 분말 밀도가 아닌 참고 물성. EDDT의 화학명과 유사 화합물 구분 필요. PETMP 275°C는 1 mmHg 감압 조건."
+    },
+    "lots": [
+      {
+        "id": "catalog-eddt-unregistered",
+        "name": "Lot 미등록",
+        "stock": "재고 미등록",
+        "example": false
+      }
+    ]
+  },
+  {
+    "id": "catalog-dodt",
+    "name": "DODT",
+    "chemicalName": "1,8-Octanedithiol",
+    "formula": "C8H18S2",
+    "component": "Reactive Monomer",
+    "role": "반응성 희석제",
+    "mw": 178.36,
+    "density": 0.97,
+    "functionality": 2,
+    "unit": "g",
+    "groups": [
+      {
+        "type": "Thiol",
+        "count": 2
+      }
+    ],
+    "provenance": "사용자 제공 원료 자료 · 대표 물성",
+    "example": false,
+    "reference": {
+      "category": "Thiol",
+      "molecularWeightDescription": "178.36",
+      "densityDescription": "약 0.97",
+      "usage": "긴 알킬 사슬 도입",
+      "meltingPoint": "제품별 확인",
+      "boilingPoint": "약 270–275",
+      "notes": "DTT는 고체이며 밀도는 벌크 분말 밀도가 아닌 참고 물성. EDDT의 화학명과 유사 화합물 구분 필요. PETMP 275°C는 1 mmHg 감압 조건."
+    },
+    "lots": [
+      {
+        "id": "catalog-dodt-unregistered",
+        "name": "Lot 미등록",
+        "stock": "재고 미등록",
+        "example": false
+      }
+    ]
+  },
+  {
+    "id": "catalog-bdt",
+    "name": "BDT",
+    "chemicalName": "1,4-Butanedithiol",
+    "formula": "C4H10S2",
+    "component": "Reactive Monomer",
+    "role": "반응성 희석제",
+    "mw": 122.25,
+    "density": 1.03,
+    "functionality": 2,
+    "unit": "g",
+    "groups": [
+      {
+        "type": "Thiol",
+        "count": 2
+      }
+    ],
+    "provenance": "사용자 제공 원료 자료 · 대표 물성",
+    "example": false,
+    "reference": {
+      "category": "Thiol",
+      "molecularWeightDescription": "122.25",
+      "densityDescription": "약 1.03",
+      "usage": "이관능 링커",
+      "meltingPoint": "약 −50",
+      "boilingPoint": "약 195",
+      "notes": "DTT는 고체이며 밀도는 벌크 분말 밀도가 아닌 참고 물성. EDDT의 화학명과 유사 화합물 구분 필요. PETMP 275°C는 1 mmHg 감압 조건."
+    },
+    "lots": [
+      {
+        "id": "catalog-bdt-unregistered",
+        "name": "Lot 미등록",
+        "stock": "재고 미등록",
+        "example": false
+      }
+    ]
+  },
+  {
+    "id": "catalog-hdt",
+    "name": "HDT",
+    "chemicalName": "1,6-Hexanedithiol",
+    "formula": "C6H14S2",
+    "component": "Reactive Monomer",
+    "role": "반응성 희석제",
+    "mw": 150.31,
+    "density": 0.98,
+    "functionality": 2,
+    "unit": "g",
+    "groups": [
+      {
+        "type": "Thiol",
+        "count": 2
+      }
+    ],
+    "provenance": "사용자 제공 원료 자료 · 대표 물성",
+    "example": false,
+    "reference": {
+      "category": "Thiol",
+      "molecularWeightDescription": "150.31",
+      "densityDescription": "약 0.98",
+      "usage": "유연한 사슬연장",
+      "meltingPoint": "약 −20",
+      "boilingPoint": "약 240",
+      "notes": "DTT는 고체이며 밀도는 벌크 분말 밀도가 아닌 참고 물성. EDDT의 화학명과 유사 화합물 구분 필요. PETMP 275°C는 1 mmHg 감압 조건."
+    },
+    "lots": [
+      {
+        "id": "catalog-hdt-unregistered",
+        "name": "Lot 미등록",
+        "stock": "재고 미등록",
+        "example": false
+      }
+    ]
+  },
+  {
+    "id": "catalog-edt",
+    "name": "EDT",
+    "chemicalName": "1,2-Ethanedithiol",
+    "formula": "C2H6S2",
+    "component": "Reactive Monomer",
+    "role": "반응성 희석제",
+    "mw": 94.2,
+    "density": 1.12,
+    "functionality": 2,
+    "unit": "g",
+    "groups": [
+      {
+        "type": "Thiol",
+        "count": 2
+      }
+    ],
+    "provenance": "사용자 제공 원료 자료 · 대표 물성",
+    "example": false,
+    "reference": {
+      "category": "Thiol",
+      "molecularWeightDescription": "94.20",
+      "densityDescription": "약 1.12",
+      "usage": "짧은 이관능 링커",
+      "meltingPoint": "약 −41",
+      "boilingPoint": "약 146",
+      "notes": "DTT는 고체이며 밀도는 벌크 분말 밀도가 아닌 참고 물성. EDDT의 화학명과 유사 화합물 구분 필요. PETMP 275°C는 1 mmHg 감압 조건."
+    },
+    "lots": [
+      {
+        "id": "catalog-edt-unregistered",
+        "name": "Lot 미등록",
+        "stock": "재고 미등록",
+        "example": false
+      }
+    ]
+  },
+  {
+    "id": "catalog-dtt",
+    "name": "DTT",
+    "chemicalName": "Dithiothreitol",
+    "formula": "C4H10O2S2",
+    "component": "Reactive Monomer",
+    "role": "반응성 희석제",
+    "mw": 154.25,
+    "density": 1.04,
+    "functionality": 2,
+    "unit": "g",
+    "groups": [
+      {
+        "type": "Thiol",
+        "count": 2
+      }
+    ],
+    "provenance": "사용자 제공 원료 자료 · 대표 물성",
+    "example": false,
+    "reference": {
+      "category": "Thiol",
+      "molecularWeightDescription": "154.25",
+      "densityDescription": "약 1.04*",
+      "usage": "환원성 싸이올",
+      "meltingPoint": "약 42–45",
+      "boilingPoint": "분해",
+      "notes": "DTT는 고체이며 밀도는 벌크 분말 밀도가 아닌 참고 물성. EDDT의 화학명과 유사 화합물 구분 필요. PETMP 275°C는 1 mmHg 감압 조건."
+    },
+    "lots": [
+      {
+        "id": "catalog-dtt-unregistered",
+        "name": "Lot 미등록",
+        "stock": "재고 미등록",
+        "example": false
+      }
+    ]
+  },
+  {
+    "id": "catalog-tmpmp",
+    "name": "TMPMP",
+    "chemicalName": "Trimethylolpropane tris(3-mercaptopropionate)",
+    "formula": "C15H26O6S3",
+    "component": "Crosslinker",
+    "role": "가교제",
+    "mw": 398.56,
+    "density": 1.2,
+    "functionality": 3,
+    "unit": "g",
+    "groups": [
+      {
+        "type": "Thiol",
+        "count": 3
+      }
+    ],
+    "provenance": "사용자 제공 원료 자료 · 대표 물성",
+    "example": false,
+    "reference": {
+      "category": "Thiol",
+      "molecularWeightDescription": "398.56",
+      "densityDescription": "약 1.2",
+      "usage": "",
+      "meltingPoint": "",
+      "boilingPoint": "",
+      "notes": "DTT는 고체이며 밀도는 벌크 분말 밀도가 아닌 참고 물성. EDDT의 화학명과 유사 화합물 구분 필요. PETMP 275°C는 1 mmHg 감압 조건."
+    },
+    "lots": [
+      {
+        "id": "catalog-tmpmp-unregistered",
+        "name": "Lot 미등록",
+        "stock": "재고 미등록",
+        "example": false
+      }
+    ]
+  },
+  {
+    "id": "catalog-petmp",
+    "name": "PETMP",
+    "chemicalName": "Pentaerythritol tetrakis(3-mercaptopropionate)",
+    "formula": "C17H28O8S4",
+    "component": "Crosslinker",
+    "role": "가교제",
+    "mw": 488.66,
+    "density": 1.28,
+    "functionality": 4,
+    "unit": "g",
+    "groups": [
+      {
+        "type": "Thiol",
+        "count": 4
+      }
+    ],
+    "provenance": "사용자 제공 원료 자료 · 대표 물성",
+    "example": false,
+    "reference": {
+      "category": "Thiol",
+      "molecularWeightDescription": "488.66",
+      "densityDescription": "1.28",
+      "usage": "사관능 가교제",
+      "meltingPoint": "제품별 확인",
+      "boilingPoint": "275 (1 mmHg)",
+      "notes": "DTT는 고체이며 밀도는 벌크 분말 밀도가 아닌 참고 물성. EDDT의 화학명과 유사 화합물 구분 필요. PETMP 275°C는 1 mmHg 감압 조건."
+    },
+    "lots": [
+      {
+        "id": "catalog-petmp-unregistered",
+        "name": "Lot 미등록",
+        "stock": "재고 미등록",
+        "example": false
+      }
+    ]
+  },
+  {
+    "id": "catalog-gdmp",
+    "name": "GDMP",
+    "chemicalName": "Glycol di(3-mercaptopropionate)",
+    "formula": "C8H14O4S2",
+    "component": "Reactive Monomer",
+    "role": "반응성 희석제",
+    "mw": 238.32,
+    "density": 1.2,
+    "functionality": 2,
+    "unit": "g",
+    "groups": [
+      {
+        "type": "Thiol",
+        "count": 2
+      }
+    ],
+    "provenance": "사용자 제공 원료 자료 · 대표 물성",
+    "example": false,
+    "reference": {
+      "category": "Thiol",
+      "molecularWeightDescription": "238.32",
+      "densityDescription": "약 1.2",
+      "usage": "",
+      "meltingPoint": "",
+      "boilingPoint": "",
+      "notes": "DTT는 고체이며 밀도는 벌크 분말 밀도가 아닌 참고 물성. EDDT의 화학명과 유사 화합물 구분 필요. PETMP 275°C는 1 mmHg 감압 조건."
+    },
+    "lots": [
+      {
+        "id": "catalog-gdmp-unregistered",
+        "name": "Lot 미등록",
+        "stock": "재고 미등록",
+        "example": false
+      }
+    ]
+  },
+  {
+    "id": "catalog-3-mpa",
+    "name": "3-MPA",
+    "chemicalName": "3-Mercaptopropionic acid",
+    "formula": "C3H6O2S",
+    "component": "Reactive Monomer",
+    "role": "반응성 희석제",
+    "mw": 106.14,
+    "density": 1.22,
+    "functionality": 1,
+    "unit": "g",
+    "groups": [
+      {
+        "type": "Thiol",
+        "count": 1
+      }
+    ],
+    "provenance": "사용자 제공 원료 자료 · 대표 물성",
+    "example": false,
+    "reference": {
+      "category": "Thiol",
+      "molecularWeightDescription": "106.14",
+      "densityDescription": "약 1.22",
+      "usage": "말단기 도입",
+      "meltingPoint": "약 16–18",
+      "boilingPoint": "약 208",
+      "notes": "DTT는 고체이며 밀도는 벌크 분말 밀도가 아닌 참고 물성. EDDT의 화학명과 유사 화합물 구분 필요. PETMP 275°C는 1 mmHg 감압 조건."
+    },
+    "lots": [
+      {
+        "id": "catalog-3-mpa-unregistered",
+        "name": "Lot 미등록",
+        "stock": "재고 미등록",
+        "example": false
+      }
+    ]
+  },
+  {
+    "id": "catalog-2-me",
+    "name": "2-ME",
+    "chemicalName": "2-Mercaptoethanol",
+    "formula": "C2H6OS",
+    "component": "Reactive Monomer",
+    "role": "반응성 희석제",
+    "mw": 78.13,
+    "density": 1.11,
+    "functionality": 1,
+    "unit": "g",
+    "groups": [
+      {
+        "type": "Thiol",
+        "count": 1
+      }
+    ],
+    "provenance": "사용자 제공 원료 자료 · 대표 물성",
+    "example": false,
+    "reference": {
+      "category": "Thiol",
+      "molecularWeightDescription": "78.13",
+      "densityDescription": "약 1.11",
+      "usage": "환원제·반응성 첨가제",
+      "meltingPoint": "약 −100",
+      "boilingPoint": "약 157",
+      "notes": "DTT는 고체이며 밀도는 벌크 분말 밀도가 아닌 참고 물성. EDDT의 화학명과 유사 화합물 구분 필요. PETMP 275°C는 1 mmHg 감압 조건."
+    },
+    "lots": [
+      {
+        "id": "catalog-2-me-unregistered",
+        "name": "Lot 미등록",
+        "stock": "재고 미등록",
+        "example": false
+      }
+    ]
+  },
+  {
+    "id": "catalog-1-ddt",
+    "name": "1-DDT",
+    "chemicalName": "1-Dodecanethiol",
+    "formula": "C12H26S",
+    "component": "Reactive Monomer",
+    "role": "반응성 희석제",
+    "mw": 202.4,
+    "density": 0.85,
+    "functionality": 1,
+    "unit": "g",
+    "groups": [
+      {
+        "type": "Thiol",
+        "count": 1
+      }
+    ],
+    "provenance": "사용자 제공 원료 자료 · 대표 물성",
+    "example": false,
+    "reference": {
+      "category": "Thiol",
+      "molecularWeightDescription": "202.40",
+      "densityDescription": "약 0.85",
+      "usage": "",
+      "meltingPoint": "",
+      "boilingPoint": "",
+      "notes": "DTT는 고체이며 밀도는 벌크 분말 밀도가 아닌 참고 물성. EDDT의 화학명과 유사 화합물 구분 필요. PETMP 275°C는 1 mmHg 감압 조건."
+    },
+    "lots": [
+      {
+        "id": "catalog-1-ddt-unregistered",
+        "name": "Lot 미등록",
+        "stock": "재고 미등록",
+        "example": false
+      }
+    ]
+  },
+  {
+    "id": "catalog-rm82",
+    "name": "RM82",
+    "chemicalName": "Reactive Mesogen 82",
+    "formula": "C39H44O10",
+    "component": "Reactive Monomer",
+    "role": "반응성 희석제",
+    "mw": 672.77,
+    "density": null,
+    "functionality": 2,
+    "unit": "g",
+    "groups": [
+      {
+        "type": "Acrylate",
+        "count": 2
+      }
+    ],
+    "provenance": "사용자 제공 원료 자료 · 대표 물성",
+    "example": false,
+    "reference": {
+      "category": "Mesogen",
+      "molecularWeightDescription": "672.77",
+      "densityDescription": "",
+      "usage": "유연한 LCE 네트워크",
+      "meltingPoint": "",
+      "boilingPoint": "",
+      "phaseTransitions": "액정상 및 전이온도는 조성·측정 조건별 확인",
+      "notes": "RM 계열은 CAS 번호와 구조를 공급사 자료로 확인해야 함. 순수 물질의 상전이와 가교된 LCE의 Tni는 구분."
+    },
+    "lots": [
+      {
+        "id": "catalog-rm82-unregistered",
+        "name": "Lot 미등록",
+        "stock": "재고 미등록",
+        "example": false
+      }
+    ]
+  },
+  {
+    "id": "catalog-rm257",
+    "name": "RM257",
+    "chemicalName": "Reactive Mesogen 257",
+    "formula": "C33H32O10",
+    "component": "Reactive Monomer",
+    "role": "반응성 희석제",
+    "mw": 588.61,
+    "density": null,
+    "functionality": 2,
+    "unit": "g",
+    "groups": [
+      {
+        "type": "Acrylate",
+        "count": 2
+      }
+    ],
+    "provenance": "사용자 제공 원료 자료 · 대표 물성",
+    "example": false,
+    "reference": {
+      "category": "Mesogen",
+      "molecularWeightDescription": "588.61",
+      "densityDescription": "",
+      "usage": "LCE 네트워크·액추에이터",
+      "meltingPoint": "",
+      "boilingPoint": "",
+      "phaseTransitions": "액정성 diacrylate",
+      "notes": "RM 계열은 CAS 번호와 구조를 공급사 자료로 확인해야 함. 순수 물질의 상전이와 가교된 LCE의 Tni는 구분."
+    },
+    "lots": [
+      {
+        "id": "catalog-rm257-unregistered",
+        "name": "Lot 미등록",
+        "stock": "재고 미등록",
+        "example": false
+      }
+    ]
+  },
+  {
+    "id": "catalog-rm105",
+    "name": "RM105",
+    "chemicalName": "Reactive Mesogen 105",
+    "formula": "C23H26O6",
+    "component": "Reactive Monomer",
+    "role": "반응성 희석제",
+    "mw": 398.45,
+    "density": null,
+    "functionality": 1,
+    "unit": "g",
+    "groups": [
+      {
+        "type": "Acrylate",
+        "count": 1
+      }
+    ],
+    "provenance": "사용자 제공 원료 자료 · 대표 물성",
+    "example": false,
+    "reference": {
+      "category": "Mesogen",
+      "molecularWeightDescription": "398.45",
+      "densityDescription": "",
+      "usage": "액정성 조절",
+      "meltingPoint": "",
+      "boilingPoint": "",
+      "phaseTransitions": "단관능 reactive mesogen",
+      "notes": "RM 계열은 CAS 번호와 구조를 공급사 자료로 확인해야 함. 순수 물질의 상전이와 가교된 LCE의 Tni는 구분."
+    },
+    "lots": [
+      {
+        "id": "catalog-rm105-unregistered",
+        "name": "Lot 미등록",
+        "stock": "재고 미등록",
+        "example": false
+      }
+    ]
+  },
+  {
+    "id": "catalog-rm23",
+    "name": "RM23",
+    "chemicalName": "Reactive Mesogen 23",
+    "formula": "C22H21NO4",
+    "component": "Reactive Monomer",
+    "role": "반응성 희석제",
+    "mw": 363.41,
+    "density": null,
+    "functionality": 1,
+    "unit": "g",
+    "groups": [
+      {
+        "type": "Acrylate",
+        "count": 1
+      }
+    ],
+    "provenance": "사용자 제공 원료 자료 · 대표 물성",
+    "example": false,
+    "reference": {
+      "category": "Mesogen",
+      "molecularWeightDescription": "363.41",
+      "densityDescription": "",
+      "usage": "액정성·유전특성 조절",
+      "meltingPoint": "",
+      "boilingPoint": "",
+      "phaseTransitions": "단관능 reactive mesogen",
+      "notes": "RM 계열은 CAS 번호와 구조를 공급사 자료로 확인해야 함. 순수 물질의 상전이와 가교된 LCE의 Tni는 구분."
+    },
+    "lots": [
+      {
+        "id": "catalog-rm23-unregistered",
+        "name": "Lot 미등록",
+        "stock": "재고 미등록",
+        "example": false
+      }
+    ]
+  },
+  {
+    "id": "catalog-5cb",
+    "name": "5CB",
+    "chemicalName": "4-Cyano-4′-pentylbiphenyl",
+    "formula": "C18H19N",
+    "component": "Reactive Monomer",
+    "role": "반응성 희석제",
+    "mw": 249.36,
+    "density": null,
+    "functionality": 0,
+    "unit": "g",
+    "groups": [],
+    "provenance": "사용자 제공 원료 자료 · 대표 물성",
+    "example": false,
+    "reference": {
+      "category": "Mesogen",
+      "molecularWeightDescription": "249.36",
+      "densityDescription": "",
+      "usage": "대표 네마틱 액정",
+      "meltingPoint": "",
+      "boilingPoint": "",
+      "phaseTransitions": "N–I 약 35°C",
+      "notes": "RM 계열은 CAS 번호와 구조를 공급사 자료로 확인해야 함. 순수 물질의 상전이와 가교된 LCE의 Tni는 구분."
+    },
+    "lots": [
+      {
+        "id": "catalog-5cb-unregistered",
+        "name": "Lot 미등록",
+        "stock": "재고 미등록",
+        "example": false
+      }
+    ]
+  },
+  {
+    "id": "catalog-8cb",
+    "name": "8CB",
+    "chemicalName": "4-Cyano-4′-octylbiphenyl",
+    "formula": "C21H25N",
+    "component": "Reactive Monomer",
+    "role": "반응성 희석제",
+    "mw": 291.44,
+    "density": null,
+    "functionality": 0,
+    "unit": "g",
+    "groups": [],
+    "provenance": "사용자 제공 원료 자료 · 대표 물성",
+    "example": false,
+    "reference": {
+      "category": "Mesogen",
+      "molecularWeightDescription": "291.44",
+      "densityDescription": "",
+      "usage": "스멕틱·네마틱 연구",
+      "meltingPoint": "",
+      "boilingPoint": "",
+      "phaseTransitions": "SmA–N 약 33.5°C, N–I 약 40.5°C",
+      "notes": "RM 계열은 CAS 번호와 구조를 공급사 자료로 확인해야 함. 순수 물질의 상전이와 가교된 LCE의 Tni는 구분."
+    },
+    "lots": [
+      {
+        "id": "catalog-8cb-unregistered",
+        "name": "Lot 미등록",
+        "stock": "재고 미등록",
+        "example": false
+      }
+    ]
+  },
+  {
+    "id": "catalog-7cb",
+    "name": "7CB",
+    "chemicalName": "4-Cyano-4′-heptylbiphenyl",
+    "formula": "C20H23N",
+    "component": "Reactive Monomer",
+    "role": "반응성 희석제",
+    "mw": 277.41,
+    "density": null,
+    "functionality": 0,
+    "unit": "g",
+    "groups": [],
+    "provenance": "사용자 제공 원료 자료 · 대표 물성",
+    "example": false,
+    "reference": {
+      "category": "Mesogen",
+      "molecularWeightDescription": "277.41",
+      "densityDescription": "",
+      "usage": "네마틱 액정",
+      "meltingPoint": "",
+      "boilingPoint": "",
+      "phaseTransitions": "N–I 약 42–43°C",
+      "notes": "RM 계열은 CAS 번호와 구조를 공급사 자료로 확인해야 함. 순수 물질의 상전이와 가교된 LCE의 Tni는 구분."
+    },
+    "lots": [
+      {
+        "id": "catalog-7cb-unregistered",
+        "name": "Lot 미등록",
+        "stock": "재고 미등록",
+        "example": false
+      }
+    ]
+  },
+  {
+    "id": "catalog-mbba",
+    "name": "MBBA",
+    "chemicalName": "N-(4-Methoxybenzylidene)-4-butylaniline",
+    "formula": "C18H21NO",
+    "component": "Reactive Monomer",
+    "role": "반응성 희석제",
+    "mw": 267.37,
+    "density": null,
+    "functionality": 0,
+    "unit": "g",
+    "groups": [],
+    "provenance": "사용자 제공 원료 자료 · 대표 물성",
+    "example": false,
+    "reference": {
+      "category": "Mesogen",
+      "molecularWeightDescription": "267.37",
+      "densityDescription": "",
+      "usage": "액정상 연구",
+      "meltingPoint": "",
+      "boilingPoint": "",
+      "phaseTransitions": "상온 부근 네마틱 액정",
+      "notes": "RM 계열은 CAS 번호와 구조를 공급사 자료로 확인해야 함. 순수 물질의 상전이와 가교된 LCE의 Tni는 구분."
+    },
+    "lots": [
+      {
+        "id": "catalog-mbba-unregistered",
+        "name": "Lot 미등록",
+        "stock": "재고 미등록",
+        "example": false
+      }
+    ]
+  },
+  {
+    "id": "catalog-dcm",
+    "name": "DCM",
+    "chemicalName": "Dichloromethane",
+    "formula": "CH2Cl2",
+    "component": "Solvent",
+    "role": "용매",
+    "mw": 84.93,
+    "density": 1.33,
+    "functionality": null,
+    "unit": "g",
+    "groups": [],
+    "provenance": "사용자 제공 원료 자료 · 대표 물성",
+    "example": false,
+    "reference": {
+      "category": "Solvent",
+      "molecularWeightDescription": "84.93",
+      "densityDescription": "1.33",
+      "usage": "아크릴레이트–싸이올 합성, 추출",
+      "meltingPoint": "−96.7",
+      "boilingPoint": "39.6",
+      "notes": "휘발성·유해성 · 대체로 20–25°C 밀도 참고값. Hexane은 n-Hexane 순물질 기준이며 상용 이성질체 혼합물과 구분."
+    },
+    "lots": [
+      {
+        "id": "catalog-dcm-unregistered",
+        "name": "Lot 미등록",
+        "stock": "재고 미등록",
+        "example": false
+      }
+    ]
+  },
+  {
+    "id": "catalog-chcl3",
+    "name": "CHCl3",
+    "chemicalName": "Chloroform",
+    "formula": "CHCl3",
+    "component": "Solvent",
+    "role": "용매",
+    "mw": 119.38,
+    "density": 1.49,
+    "functionality": null,
+    "unit": "g",
+    "groups": [],
+    "provenance": "사용자 제공 원료 자료 · 대표 물성",
+    "example": false,
+    "reference": {
+      "category": "Solvent",
+      "molecularWeightDescription": "119.38",
+      "densityDescription": "1.49",
+      "usage": "",
+      "meltingPoint": "−63.5",
+      "boilingPoint": "61.2",
+      "notes": "대체로 20–25°C 밀도 참고값. Hexane은 n-Hexane 순물질 기준이며 상용 이성질체 혼합물과 구분."
+    },
+    "lots": [
+      {
+        "id": "catalog-chcl3-unregistered",
+        "name": "Lot 미등록",
+        "stock": "재고 미등록",
+        "example": false
+      }
+    ]
+  },
+  {
+    "id": "catalog-thf",
+    "name": "THF",
+    "chemicalName": "Tetrahydrofuran",
+    "formula": "C4H8O",
+    "component": "Solvent",
+    "role": "용매",
+    "mw": 72.11,
+    "density": 0.889,
+    "functionality": null,
+    "unit": "g",
+    "groups": [],
+    "provenance": "사용자 제공 원료 자료 · 대표 물성",
+    "example": false,
+    "reference": {
+      "category": "Solvent",
+      "molecularWeightDescription": "72.11",
+      "densityDescription": "0.889",
+      "usage": "고분자 용해, 합성, GPC",
+      "meltingPoint": "−108.4",
+      "boilingPoint": "66.0",
+      "notes": "과산화물 형성 가능 · 대체로 20–25°C 밀도 참고값. Hexane은 n-Hexane 순물질 기준이며 상용 이성질체 혼합물과 구분."
+    },
+    "lots": [
+      {
+        "id": "catalog-thf-unregistered",
+        "name": "Lot 미등록",
+        "stock": "재고 미등록",
+        "example": false
+      }
+    ]
+  },
+  {
+    "id": "catalog-dmf",
+    "name": "DMF",
+    "chemicalName": "N,N-Dimethylformamide",
+    "formula": "C3H7NO",
+    "component": "Solvent",
+    "role": "용매",
+    "mw": 73.09,
+    "density": 0.944,
+    "functionality": null,
+    "unit": "g",
+    "groups": [],
+    "provenance": "사용자 제공 원료 자료 · 대표 물성",
+    "example": false,
+    "reference": {
+      "category": "Solvent",
+      "molecularWeightDescription": "73.09",
+      "densityDescription": "0.944",
+      "usage": "극성 물질 용해",
+      "meltingPoint": "−61",
+      "boilingPoint": "153",
+      "notes": "고비점·생식독성 · 대체로 20–25°C 밀도 참고값. Hexane은 n-Hexane 순물질 기준이며 상용 이성질체 혼합물과 구분."
+    },
+    "lots": [
+      {
+        "id": "catalog-dmf-unregistered",
+        "name": "Lot 미등록",
+        "stock": "재고 미등록",
+        "example": false
+      }
+    ]
+  },
+  {
+    "id": "catalog-dmac",
+    "name": "DMAc",
+    "chemicalName": "N,N-Dimethylacetamide",
+    "formula": "C4H9NO",
+    "component": "Solvent",
+    "role": "용매",
+    "mw": 87.12,
+    "density": 0.937,
+    "functionality": null,
+    "unit": "g",
+    "groups": [],
+    "provenance": "사용자 제공 원료 자료 · 대표 물성",
+    "example": false,
+    "reference": {
+      "category": "Solvent",
+      "molecularWeightDescription": "87.12",
+      "densityDescription": "0.937",
+      "usage": "",
+      "meltingPoint": "−20",
+      "boilingPoint": "165",
+      "notes": "대체로 20–25°C 밀도 참고값. Hexane은 n-Hexane 순물질 기준이며 상용 이성질체 혼합물과 구분."
+    },
+    "lots": [
+      {
+        "id": "catalog-dmac-unregistered",
+        "name": "Lot 미등록",
+        "stock": "재고 미등록",
+        "example": false
+      }
+    ]
+  },
+  {
+    "id": "catalog-dmso",
+    "name": "DMSO",
+    "chemicalName": "Dimethyl sulfoxide",
+    "formula": "C2H6OS",
+    "component": "Solvent",
+    "role": "용매",
+    "mw": 78.13,
+    "density": 1.1,
+    "functionality": null,
+    "unit": "g",
+    "groups": [],
+    "provenance": "사용자 제공 원료 자료 · 대표 물성",
+    "example": false,
+    "reference": {
+      "category": "Solvent",
+      "molecularWeightDescription": "78.13",
+      "densityDescription": "1.10",
+      "usage": "극성 화합물 용해",
+      "meltingPoint": "18.5",
+      "boilingPoint": "189",
+      "notes": "피부 투과 촉진 · 대체로 20–25°C 밀도 참고값. Hexane은 n-Hexane 순물질 기준이며 상용 이성질체 혼합물과 구분."
+    },
+    "lots": [
+      {
+        "id": "catalog-dmso-unregistered",
+        "name": "Lot 미등록",
+        "stock": "재고 미등록",
+        "example": false
+      }
+    ]
+  },
+  {
+    "id": "catalog-meoh",
+    "name": "MeOH",
+    "chemicalName": "Methanol",
+    "formula": "CH4O",
+    "component": "Solvent",
+    "role": "용매",
+    "mw": 32.04,
+    "density": 0.792,
+    "functionality": null,
+    "unit": "g",
+    "groups": [],
+    "provenance": "사용자 제공 원료 자료 · 대표 물성",
+    "example": false,
+    "reference": {
+      "category": "Solvent",
+      "molecularWeightDescription": "32.04",
+      "densityDescription": "0.792",
+      "usage": "침전, 세척",
+      "meltingPoint": "−97.6",
+      "boilingPoint": "64.7",
+      "notes": "독성·인화성 · 대체로 20–25°C 밀도 참고값. Hexane은 n-Hexane 순물질 기준이며 상용 이성질체 혼합물과 구분."
+    },
+    "lots": [
+      {
+        "id": "catalog-meoh-unregistered",
+        "name": "Lot 미등록",
+        "stock": "재고 미등록",
+        "example": false
+      }
+    ]
+  },
+  {
+    "id": "catalog-etoh",
+    "name": "EtOH",
+    "chemicalName": "Ethanol",
+    "formula": "C2H6O",
+    "component": "Solvent",
+    "role": "용매",
+    "mw": 46.07,
+    "density": 0.789,
+    "functionality": null,
+    "unit": "g",
+    "groups": [],
+    "provenance": "사용자 제공 원료 자료 · 대표 물성",
+    "example": false,
+    "reference": {
+      "category": "Solvent",
+      "molecularWeightDescription": "46.07",
+      "densityDescription": "0.789",
+      "usage": "",
+      "meltingPoint": "−114.1",
+      "boilingPoint": "78.4",
+      "notes": "대체로 20–25°C 밀도 참고값. Hexane은 n-Hexane 순물질 기준이며 상용 이성질체 혼합물과 구분."
+    },
+    "lots": [
+      {
+        "id": "catalog-etoh-unregistered",
+        "name": "Lot 미등록",
+        "stock": "재고 미등록",
+        "example": false
+      }
+    ]
+  },
+  {
+    "id": "catalog-ipa",
+    "name": "IPA",
+    "chemicalName": "Isopropanol",
+    "formula": "C3H8O",
+    "component": "Solvent",
+    "role": "용매",
+    "mw": 60.1,
+    "density": 0.785,
+    "functionality": null,
+    "unit": "g",
+    "groups": [],
+    "provenance": "사용자 제공 원료 자료 · 대표 물성",
+    "example": false,
+    "reference": {
+      "category": "Solvent",
+      "molecularWeightDescription": "60.10",
+      "densityDescription": "0.785",
+      "usage": "",
+      "meltingPoint": "−89.5",
+      "boilingPoint": "82.6",
+      "notes": "대체로 20–25°C 밀도 참고값. Hexane은 n-Hexane 순물질 기준이며 상용 이성질체 혼합물과 구분."
+    },
+    "lots": [
+      {
+        "id": "catalog-ipa-unregistered",
+        "name": "Lot 미등록",
+        "stock": "재고 미등록",
+        "example": false
+      }
+    ]
+  },
+  {
+    "id": "catalog-acetone",
+    "name": "Acetone",
+    "chemicalName": "Acetone",
+    "formula": "C3H6O",
+    "component": "Solvent",
+    "role": "용매",
+    "mw": 58.08,
+    "density": 0.791,
+    "functionality": null,
+    "unit": "g",
+    "groups": [],
+    "provenance": "사용자 제공 원료 자료 · 대표 물성",
+    "example": false,
+    "reference": {
+      "category": "Solvent",
+      "molecularWeightDescription": "58.08",
+      "densityDescription": "0.791",
+      "usage": "기구 세척",
+      "meltingPoint": "−94.7",
+      "boilingPoint": "56.1",
+      "notes": "높은 휘발성 · 대체로 20–25°C 밀도 참고값. Hexane은 n-Hexane 순물질 기준이며 상용 이성질체 혼합물과 구분."
+    },
+    "lots": [
+      {
+        "id": "catalog-acetone-unregistered",
+        "name": "Lot 미등록",
+        "stock": "재고 미등록",
+        "example": false
+      }
+    ]
+  },
+  {
+    "id": "catalog-etoac",
+    "name": "EtOAc",
+    "chemicalName": "Ethyl acetate",
+    "formula": "C4H8O2",
+    "component": "Solvent",
+    "role": "용매",
+    "mw": 88.11,
+    "density": 0.902,
+    "functionality": null,
+    "unit": "g",
+    "groups": [],
+    "provenance": "사용자 제공 원료 자료 · 대표 물성",
+    "example": false,
+    "reference": {
+      "category": "Solvent",
+      "molecularWeightDescription": "88.11",
+      "densityDescription": "0.902",
+      "usage": "추출, 세척",
+      "meltingPoint": "−83.6",
+      "boilingPoint": "77.1",
+      "notes": "인화성 · 대체로 20–25°C 밀도 참고값. Hexane은 n-Hexane 순물질 기준이며 상용 이성질체 혼합물과 구분."
+    },
+    "lots": [
+      {
+        "id": "catalog-etoac-unregistered",
+        "name": "Lot 미등록",
+        "stock": "재고 미등록",
+        "example": false
+      }
+    ]
+  },
+  {
+    "id": "catalog-toluene",
+    "name": "Toluene",
+    "chemicalName": "Toluene",
+    "formula": "C7H8",
+    "component": "Solvent",
+    "role": "용매",
+    "mw": 92.14,
+    "density": 0.867,
+    "functionality": null,
+    "unit": "g",
+    "groups": [],
+    "provenance": "사용자 제공 원료 자료 · 대표 물성",
+    "example": false,
+    "reference": {
+      "category": "Solvent",
+      "molecularWeightDescription": "92.14",
+      "densityDescription": "0.867",
+      "usage": "고분자 용해, 열처리",
+      "meltingPoint": "−95",
+      "boilingPoint": "110.6",
+      "notes": "인화성 · 대체로 20–25°C 밀도 참고값. Hexane은 n-Hexane 순물질 기준이며 상용 이성질체 혼합물과 구분."
+    },
+    "lots": [
+      {
+        "id": "catalog-toluene-unregistered",
+        "name": "Lot 미등록",
+        "stock": "재고 미등록",
+        "example": false
+      }
+    ]
+  },
+  {
+    "id": "catalog-hexane",
+    "name": "Hexane",
+    "chemicalName": "n-Hexane",
+    "formula": "C6H14",
+    "component": "Solvent",
+    "role": "용매",
+    "mw": 86.18,
+    "density": 0.659,
+    "functionality": null,
+    "unit": "g",
+    "groups": [],
+    "provenance": "사용자 제공 원료 자료 · 대표 물성",
+    "example": false,
+    "reference": {
+      "category": "Solvent",
+      "molecularWeightDescription": "86.18",
+      "densityDescription": "0.659",
+      "usage": "침전, 비극성 세척",
+      "meltingPoint": "−95",
+      "boilingPoint": "68.7",
+      "notes": "인화성·신경독성 · 대체로 20–25°C 밀도 참고값. Hexane은 n-Hexane 순물질 기준이며 상용 이성질체 혼합물과 구분."
+    },
+    "lots": [
+      {
+        "id": "catalog-hexane-unregistered",
+        "name": "Lot 미등록",
+        "stock": "재고 미등록",
+        "example": false
+      }
+    ]
+  },
+  {
+    "id": "catalog-cyclohexane",
+    "name": "Cyclohexane",
+    "chemicalName": "Cyclohexane",
+    "formula": "C6H12",
+    "component": "Solvent",
+    "role": "용매",
+    "mw": 84.16,
+    "density": 0.779,
+    "functionality": null,
+    "unit": "g",
+    "groups": [],
+    "provenance": "사용자 제공 원료 자료 · 대표 물성",
+    "example": false,
+    "reference": {
+      "category": "Solvent",
+      "molecularWeightDescription": "84.16",
+      "densityDescription": "0.779",
+      "usage": "",
+      "meltingPoint": "6.5",
+      "boilingPoint": "80.7",
+      "notes": "대체로 20–25°C 밀도 참고값. Hexane은 n-Hexane 순물질 기준이며 상용 이성질체 혼합물과 구분."
+    },
+    "lots": [
+      {
+        "id": "catalog-cyclohexane-unregistered",
+        "name": "Lot 미등록",
+        "stock": "재고 미등록",
+        "example": false
+      }
+    ]
+  },
+  {
+    "id": "catalog-acn",
+    "name": "ACN",
+    "chemicalName": "Acetonitrile",
+    "formula": "C2H3N",
+    "component": "Solvent",
+    "role": "용매",
+    "mw": 41.05,
+    "density": 0.786,
+    "functionality": null,
+    "unit": "g",
+    "groups": [],
+    "provenance": "사용자 제공 원료 자료 · 대표 물성",
+    "example": false,
+    "reference": {
+      "category": "Solvent",
+      "molecularWeightDescription": "41.05",
+      "densityDescription": "0.786",
+      "usage": "분석용 이동상, 용해",
+      "meltingPoint": "−45.7",
+      "boilingPoint": "81.6",
+      "notes": "인화성·독성 · 대체로 20–25°C 밀도 참고값. Hexane은 n-Hexane 순물질 기준이며 상용 이성질체 혼합물과 구분."
+    },
+    "lots": [
+      {
+        "id": "catalog-acn-unregistered",
+        "name": "Lot 미등록",
+        "stock": "재고 미등록",
+        "example": false
+      }
+    ]
+  },
+  {
+    "id": "catalog-nmp",
+    "name": "NMP",
+    "chemicalName": "N-Methyl-2-pyrrolidone",
+    "formula": "C5H9NO",
+    "component": "Solvent",
+    "role": "용매",
+    "mw": 99.13,
+    "density": 1.03,
+    "functionality": null,
+    "unit": "g",
+    "groups": [],
+    "provenance": "사용자 제공 원료 자료 · 대표 물성",
+    "example": false,
+    "reference": {
+      "category": "Solvent",
+      "molecularWeightDescription": "99.13",
+      "densityDescription": "1.03",
+      "usage": "",
+      "meltingPoint": "−24",
+      "boilingPoint": "202",
+      "notes": "대체로 20–25°C 밀도 참고값. Hexane은 n-Hexane 순물질 기준이며 상용 이성질체 혼합물과 구분."
+    },
+    "lots": [
+      {
+        "id": "catalog-nmp-unregistered",
+        "name": "Lot 미등록",
+        "stock": "재고 미등록",
+        "example": false
+      }
+    ]
+  },
+  {
+    "id": "catalog-1,4-dioxane",
+    "name": "1,4-Dioxane",
+    "chemicalName": "1,4-Dioxane",
+    "formula": "C4H8O2",
+    "component": "Solvent",
+    "role": "용매",
+    "mw": 88.11,
+    "density": 1.03,
+    "functionality": null,
+    "unit": "g",
+    "groups": [],
+    "provenance": "사용자 제공 원료 자료 · 대표 물성",
+    "example": false,
+    "reference": {
+      "category": "Solvent",
+      "molecularWeightDescription": "88.11",
+      "densityDescription": "1.03",
+      "usage": "",
+      "meltingPoint": "11.8",
+      "boilingPoint": "101.1",
+      "notes": "대체로 20–25°C 밀도 참고값. Hexane은 n-Hexane 순물질 기준이며 상용 이성질체 혼합물과 구분."
+    },
+    "lots": [
+      {
+        "id": "catalog-1,4-dioxane-unregistered",
+        "name": "Lot 미등록",
+        "stock": "재고 미등록",
+        "example": false
+      }
+    ]
+  },
+  {
+    "id": "catalog-mtbe",
+    "name": "MTBE",
+    "chemicalName": "Methyl tert-butyl ether",
+    "formula": "C5H12O",
+    "component": "Solvent",
+    "role": "용매",
+    "mw": 88.15,
+    "density": 0.74,
+    "functionality": null,
+    "unit": "g",
+    "groups": [],
+    "provenance": "사용자 제공 원료 자료 · 대표 물성",
+    "example": false,
+    "reference": {
+      "category": "Solvent",
+      "molecularWeightDescription": "88.15",
+      "densityDescription": "0.740",
+      "usage": "",
+      "meltingPoint": "−109",
+      "boilingPoint": "55.2",
+      "notes": "대체로 20–25°C 밀도 참고값. Hexane은 n-Hexane 순물질 기준이며 상용 이성질체 혼합물과 구분."
+    },
+    "lots": [
+      {
+        "id": "catalog-mtbe-unregistered",
+        "name": "Lot 미등록",
+        "stock": "재고 미등록",
+        "example": false
+      }
+    ]
+  },
+  {
+    "id": "catalog-diethyl-ether",
+    "name": "Diethyl ether",
+    "chemicalName": "Diethyl ether",
+    "formula": "C4H10O",
+    "component": "Solvent",
+    "role": "용매",
+    "mw": 74.12,
+    "density": 0.713,
+    "functionality": null,
+    "unit": "g",
+    "groups": [],
+    "provenance": "사용자 제공 원료 자료 · 대표 물성",
+    "example": false,
+    "reference": {
+      "category": "Solvent",
+      "molecularWeightDescription": "74.12",
+      "densityDescription": "0.713",
+      "usage": "",
+      "meltingPoint": "−116.3",
+      "boilingPoint": "34.6",
+      "notes": "대체로 20–25°C 밀도 참고값. Hexane은 n-Hexane 순물질 기준이며 상용 이성질체 혼합물과 구분."
+    },
+    "lots": [
+      {
+        "id": "catalog-diethyl-ether-unregistered",
+        "name": "Lot 미등록",
+        "stock": "재고 미등록",
+        "example": false
+      }
+    ]
+  },
+  {
+    "id": "catalog-water",
+    "name": "Water",
+    "chemicalName": "Water",
+    "formula": "H2O",
+    "component": "Solvent",
+    "role": "용매",
+    "mw": 18.02,
+    "density": 0.997,
+    "functionality": null,
+    "unit": "g",
+    "groups": [],
+    "provenance": "사용자 제공 원료 자료 · 대표 물성",
+    "example": false,
+    "reference": {
+      "category": "Solvent",
+      "molecularWeightDescription": "18.02",
+      "densityDescription": "0.997",
+      "usage": "",
+      "meltingPoint": "0",
+      "boilingPoint": "100",
+      "notes": "대체로 20–25°C 밀도 참고값. Hexane은 n-Hexane 순물질 기준이며 상용 이성질체 혼합물과 구분."
+    },
+    "lots": [
+      {
+        "id": "catalog-water-unregistered",
+        "name": "Lot 미등록",
+        "stock": "재고 미등록",
+        "example": false
+      }
+    ]
+  },
+  {
+    "id": "catalog-dpa",
+    "name": "DPA",
+    "chemicalName": "Dipropylamine",
+    "formula": "C6H15N",
+    "component": "Catalyst",
+    "role": "촉매",
+    "mw": 101.19,
+    "density": 0.74,
+    "functionality": null,
+    "unit": "g",
+    "groups": [],
+    "provenance": "사용자 제공 원료 자료 · 대표 물성",
+    "example": false,
+    "reference": {
+      "category": "Initiator / Catalyst / Stabilizer",
+      "molecularWeightDescription": "101.19",
+      "densityDescription": "약 0.74",
+      "usage": "염기 촉매",
+      "meltingPoint": "약 −63",
+      "boilingPoint": "약 110",
+      "notes": "DPA는 Dipropylamine 기준. 공급사 CAS 번호로 구분."
+    },
+    "lots": [
+      {
+        "id": "catalog-dpa-unregistered",
+        "name": "Lot 미등록",
+        "stock": "재고 미등록",
+        "example": false
+      }
+    ]
+  },
+  {
+    "id": "catalog-tea",
+    "name": "TEA",
+    "chemicalName": "Triethylamine",
+    "formula": "C6H15N",
+    "component": "Catalyst",
+    "role": "촉매",
+    "mw": 101.19,
+    "density": 0.726,
+    "functionality": null,
+    "unit": "g",
+    "groups": [],
+    "provenance": "사용자 제공 원료 자료 · 대표 물성",
+    "example": false,
+    "reference": {
+      "category": "Initiator / Catalyst / Stabilizer",
+      "molecularWeightDescription": "101.19",
+      "densityDescription": "0.726",
+      "usage": "염기 촉매",
+      "meltingPoint": "−114.7",
+      "boilingPoint": "89.5",
+      "notes": "DPA는 Dipropylamine 기준. 공급사 CAS 번호로 구분."
+    },
+    "lots": [
+      {
+        "id": "catalog-tea-unregistered",
+        "name": "Lot 미등록",
+        "stock": "재고 미등록",
+        "example": false
+      }
+    ]
+  },
+  {
+    "id": "catalog-dbu",
+    "name": "DBU",
+    "chemicalName": "1,8-Diazabicyclo[5.4.0]undec-7-ene",
+    "formula": "C9H16N2",
+    "component": "Catalyst",
+    "role": "촉매",
+    "mw": 152.24,
+    "density": 1.02,
+    "functionality": null,
+    "unit": "g",
+    "groups": [],
+    "provenance": "사용자 제공 원료 자료 · 대표 물성",
+    "example": false,
+    "reference": {
+      "category": "Initiator / Catalyst / Stabilizer",
+      "molecularWeightDescription": "152.24",
+      "densityDescription": "약 1.02",
+      "usage": "강염기 촉매",
+      "meltingPoint": "약 −70",
+      "boilingPoint": "약 260",
+      "notes": "DPA는 Dipropylamine 기준. 공급사 CAS 번호로 구분."
+    },
+    "lots": [
+      {
+        "id": "catalog-dbu-unregistered",
+        "name": "Lot 미등록",
+        "stock": "재고 미등록",
+        "example": false
+      }
+    ]
+  },
+  {
+    "id": "catalog-dabco",
+    "name": "DABCO",
+    "chemicalName": "1,4-Diazabicyclo[2.2.2]octane",
+    "formula": "C6H12N2",
+    "component": "Catalyst",
+    "role": "촉매",
+    "mw": 112.17,
+    "density": null,
+    "functionality": null,
+    "unit": "g",
+    "groups": [],
+    "provenance": "사용자 제공 원료 자료 · 대표 물성",
+    "example": false,
+    "reference": {
+      "category": "Initiator / Catalyst / Stabilizer",
+      "molecularWeightDescription": "112.17",
+      "densityDescription": "고체",
+      "usage": "염기 촉매",
+      "meltingPoint": "약 158–160",
+      "boilingPoint": "약 174",
+      "notes": "DPA는 Dipropylamine 기준. 공급사 CAS 번호로 구분."
+    },
+    "lots": [
+      {
+        "id": "catalog-dabco-unregistered",
+        "name": "Lot 미등록",
+        "stock": "재고 미등록",
+        "example": false
+      }
+    ]
+  },
+  {
+    "id": "catalog-dmap",
+    "name": "DMAP",
+    "chemicalName": "4-Dimethylaminopyridine",
+    "formula": "C7H10N2",
+    "component": "Catalyst",
+    "role": "촉매",
+    "mw": 122.17,
+    "density": null,
+    "functionality": null,
+    "unit": "g",
+    "groups": [],
+    "provenance": "사용자 제공 원료 자료 · 대표 물성",
+    "example": false,
+    "reference": {
+      "category": "Initiator / Catalyst / Stabilizer",
+      "molecularWeightDescription": "122.17",
+      "densityDescription": "고체",
+      "usage": "친핵성 촉매",
+      "meltingPoint": "약 109–113",
+      "boilingPoint": "약 162 (감압)",
+      "notes": "DPA는 Dipropylamine 기준. 공급사 CAS 번호로 구분."
+    },
+    "lots": [
+      {
+        "id": "catalog-dmap-unregistered",
+        "name": "Lot 미등록",
+        "stock": "재고 미등록",
+        "example": false
+      }
+    ]
+  },
+  {
+    "id": "catalog-dmpa",
+    "name": "DMPA",
+    "chemicalName": "2,2-Dimethoxy-2-phenylacetophenone",
+    "formula": "C16H16O3",
+    "component": "Initiator",
+    "role": "광개시제",
+    "mw": 256.3,
+    "density": null,
+    "functionality": null,
+    "unit": "g",
+    "groups": [],
+    "provenance": "사용자 제공 원료 자료 · 대표 물성",
+    "example": false,
+    "reference": {
+      "category": "Initiator / Catalyst / Stabilizer",
+      "molecularWeightDescription": "256.30",
+      "densityDescription": "고체",
+      "usage": "광개시제",
+      "meltingPoint": "약 64–67",
+      "boilingPoint": "분해 가능",
+      "notes": "DPA는 Dipropylamine 기준. 공급사 CAS 번호로 구분."
+    },
+    "lots": [
+      {
+        "id": "catalog-dmpa-unregistered",
+        "name": "Lot 미등록",
+        "stock": "재고 미등록",
+        "example": false
+      }
+    ]
+  },
+  {
+    "id": "catalog-tpo",
+    "name": "TPO",
+    "chemicalName": "Diphenyl(2,4,6-trimethylbenzoyl)phosphine oxide",
+    "formula": "C22H21O2P",
+    "component": "Initiator",
+    "role": "광개시제",
+    "mw": 348.38,
+    "density": null,
+    "functionality": null,
+    "unit": "g",
+    "groups": [],
+    "provenance": "사용자 제공 원료 자료 · 대표 물성",
+    "example": false,
+    "reference": {
+      "category": "Initiator / Catalyst / Stabilizer",
+      "molecularWeightDescription": "348.38",
+      "densityDescription": "고체",
+      "usage": "광개시제",
+      "meltingPoint": "약 90–94",
+      "boilingPoint": "분해 가능",
+      "notes": "DPA는 Dipropylamine 기준. 공급사 CAS 번호로 구분."
+    },
+    "lots": [
+      {
+        "id": "catalog-tpo-unregistered",
+        "name": "Lot 미등록",
+        "stock": "재고 미등록",
+        "example": false
+      }
+    ]
+  },
+  {
+    "id": "catalog-tpo-l",
+    "name": "TPO-L",
+    "chemicalName": "Ethyl (2,4,6-trimethylbenzoyl)phenylphosphinate",
+    "formula": "C18H21O3P",
+    "component": "Initiator",
+    "role": "광개시제",
+    "mw": 316.33,
+    "density": null,
+    "functionality": null,
+    "unit": "g",
+    "groups": [],
+    "provenance": "사용자 제공 원료 자료 · 대표 물성",
+    "example": false,
+    "reference": {
+      "category": "Initiator / Catalyst / Stabilizer",
+      "molecularWeightDescription": "316.33",
+      "densityDescription": "",
+      "usage": "액상 광개시제",
+      "meltingPoint": "",
+      "boilingPoint": "",
+      "notes": "DPA는 Dipropylamine 기준. 공급사 CAS 번호로 구분."
+    },
+    "lots": [
+      {
+        "id": "catalog-tpo-l-unregistered",
+        "name": "Lot 미등록",
+        "stock": "재고 미등록",
+        "example": false
+      }
+    ]
+  },
+  {
+    "id": "catalog-bapo",
+    "name": "BAPO",
+    "chemicalName": "Phenylbis(2,4,6-trimethylbenzoyl)phosphine oxide",
+    "formula": "C26H27O3P",
+    "component": "Initiator",
+    "role": "광개시제",
+    "mw": 418.47,
+    "density": null,
+    "functionality": null,
+    "unit": "g",
+    "groups": [],
+    "provenance": "사용자 제공 원료 자료 · 대표 물성",
+    "example": false,
+    "reference": {
+      "category": "Initiator / Catalyst / Stabilizer",
+      "molecularWeightDescription": "418.47",
+      "densityDescription": "",
+      "usage": "광개시제",
+      "meltingPoint": "",
+      "boilingPoint": "",
+      "notes": "DPA는 Dipropylamine 기준. 공급사 CAS 번호로 구분."
+    },
+    "lots": [
+      {
+        "id": "catalog-bapo-unregistered",
+        "name": "Lot 미등록",
+        "stock": "재고 미등록",
+        "example": false
+      }
+    ]
+  },
+  {
+    "id": "catalog-aibn",
+    "name": "AIBN",
+    "chemicalName": "Azobisisobutyronitrile",
+    "formula": "C8H12N4",
+    "component": "Initiator",
+    "role": "열개시제",
+    "mw": 164.21,
+    "density": null,
+    "functionality": null,
+    "unit": "g",
+    "groups": [],
+    "provenance": "사용자 제공 원료 자료 · 대표 물성",
+    "example": false,
+    "reference": {
+      "category": "Initiator / Catalyst / Stabilizer",
+      "molecularWeightDescription": "164.21",
+      "densityDescription": "고체",
+      "usage": "열개시제",
+      "meltingPoint": "약 100–105 (분해)",
+      "boilingPoint": "해당 없음",
+      "notes": "DPA는 Dipropylamine 기준. 공급사 CAS 번호로 구분."
+    },
+    "lots": [
+      {
+        "id": "catalog-aibn-unregistered",
+        "name": "Lot 미등록",
+        "stock": "재고 미등록",
+        "example": false
+      }
+    ]
+  },
+  {
+    "id": "catalog-bpo",
+    "name": "BPO",
+    "chemicalName": "Benzoyl peroxide",
+    "formula": "C14H10O4",
+    "component": "Initiator",
+    "role": "열개시제",
+    "mw": 242.23,
+    "density": null,
+    "functionality": null,
+    "unit": "g",
+    "groups": [],
+    "provenance": "사용자 제공 원료 자료 · 대표 물성",
+    "example": false,
+    "reference": {
+      "category": "Initiator / Catalyst / Stabilizer",
+      "molecularWeightDescription": "242.23",
+      "densityDescription": "",
+      "usage": "열개시제",
+      "meltingPoint": "",
+      "boilingPoint": "",
+      "notes": "DPA는 Dipropylamine 기준. 공급사 CAS 번호로 구분."
+    },
+    "lots": [
+      {
+        "id": "catalog-bpo-unregistered",
+        "name": "Lot 미등록",
+        "stock": "재고 미등록",
+        "example": false
+      }
+    ]
+  },
+  {
+    "id": "catalog-bht",
+    "name": "BHT",
+    "chemicalName": "Butylated hydroxytoluene",
+    "formula": "C15H24O",
+    "component": "Stabilizer",
+    "role": "안정제",
+    "mw": 220.35,
+    "density": null,
+    "functionality": null,
+    "unit": "g",
+    "groups": [],
+    "provenance": "사용자 제공 원료 자료 · 대표 물성",
+    "example": false,
+    "reference": {
+      "category": "Initiator / Catalyst / Stabilizer",
+      "molecularWeightDescription": "220.35",
+      "densityDescription": "고체",
+      "usage": "중합 억제·산화 방지",
+      "meltingPoint": "약 69–71",
+      "boilingPoint": "약 265",
+      "notes": "DPA는 Dipropylamine 기준. 공급사 CAS 번호로 구분."
+    },
+    "lots": [
+      {
+        "id": "catalog-bht-unregistered",
+        "name": "Lot 미등록",
+        "stock": "재고 미등록",
+        "example": false
+      }
+    ]
+  },
+  {
+    "id": "catalog-mehq",
+    "name": "MEHQ",
+    "chemicalName": "4-Methoxyphenol",
+    "formula": "C7H8O2",
+    "component": "Stabilizer",
+    "role": "안정제",
+    "mw": 124.14,
+    "density": null,
+    "functionality": null,
+    "unit": "g",
+    "groups": [],
+    "provenance": "사용자 제공 원료 자료 · 대표 물성",
+    "example": false,
+    "reference": {
+      "category": "Initiator / Catalyst / Stabilizer",
+      "molecularWeightDescription": "124.14",
+      "densityDescription": "고체",
+      "usage": "아크릴레이트 중합 억제",
+      "meltingPoint": "약 54–56",
+      "boilingPoint": "약 243",
+      "notes": "DPA는 Dipropylamine 기준. 공급사 CAS 번호로 구분."
+    },
+    "lots": [
+      {
+        "id": "catalog-mehq-unregistered",
+        "name": "Lot 미등록",
+        "stock": "재고 미등록",
+        "example": false
+      }
+    ]
+  },
+  {
+    "id": "catalog-tempo",
+    "name": "TEMPO",
+    "chemicalName": "(2,2,6,6-Tetramethylpiperidin-1-yl)oxyl",
+    "formula": "C9H18NO",
+    "component": "Stabilizer",
+    "role": "안정제",
+    "mw": 156.25,
+    "density": null,
+    "functionality": null,
+    "unit": "g",
+    "groups": [],
+    "provenance": "사용자 제공 원료 자료 · 대표 물성",
+    "example": false,
+    "reference": {
+      "category": "Initiator / Catalyst / Stabilizer",
+      "molecularWeightDescription": "156.25",
+      "densityDescription": "",
+      "usage": "라디칼 억제·조절",
+      "meltingPoint": "",
+      "boilingPoint": "",
+      "notes": "DPA는 Dipropylamine 기준. 공급사 CAS 번호로 구분."
+    },
+    "lots": [
+      {
+        "id": "catalog-tempo-unregistered",
+        "name": "Lot 미등록",
+        "stock": "재고 미등록",
+        "example": false
+      }
+    ]
+  },
+  {
+    "id": "catalog-hcl",
+    "name": "HCl",
+    "chemicalName": "Hydrogen chloride",
+    "formula": "HCl",
+    "component": "Other",
+    "role": "기타",
+    "mw": 36.46,
+    "density": null,
+    "functionality": null,
+    "unit": "g",
+    "groups": [],
+    "provenance": "사용자 제공 원료 자료 · 대표 물성",
+    "example": false,
+    "reference": {
+      "category": "Workup",
+      "molecularWeightDescription": "36.46",
+      "densityDescription": "수용액 농도별 상이",
+      "usage": "",
+      "meltingPoint": "−114.2*",
+      "boilingPoint": "−85.1*",
+      "notes": "HCl 열적 특성은 순수 염화수소 기준이며 염산 수용액과 다름. 고체 밀도 단위는 g/cm³. Brine 및 농도별 수용액은 별도 등록."
+    },
+    "lots": [
+      {
+        "id": "catalog-hcl-unregistered",
+        "name": "Lot 미등록",
+        "stock": "재고 미등록",
+        "example": false
+      }
+    ]
+  },
+  {
+    "id": "catalog-nacl",
+    "name": "NaCl",
+    "chemicalName": "Sodium chloride",
+    "formula": "NaCl",
+    "component": "Other",
+    "role": "기타",
+    "mw": 58.44,
+    "density": 2.16,
+    "functionality": null,
+    "unit": "g",
+    "groups": [],
+    "provenance": "사용자 제공 원료 자료 · 대표 물성",
+    "example": false,
+    "reference": {
+      "category": "Workup",
+      "molecularWeightDescription": "58.44",
+      "densityDescription": "2.16 (g/cm³)",
+      "usage": "",
+      "meltingPoint": "801",
+      "boilingPoint": "1465",
+      "notes": "HCl 열적 특성은 순수 염화수소 기준이며 염산 수용액과 다름. 고체 밀도 단위는 g/cm³. Brine 및 농도별 수용액은 별도 등록."
+    },
+    "lots": [
+      {
+        "id": "catalog-nacl-unregistered",
+        "name": "Lot 미등록",
+        "stock": "재고 미등록",
+        "example": false
+      }
+    ]
+  },
+  {
+    "id": "catalog-nahco3",
+    "name": "NaHCO3",
+    "chemicalName": "Sodium bicarbonate",
+    "formula": "NaHCO3",
+    "component": "Other",
+    "role": "기타",
+    "mw": 84.01,
+    "density": 2.2,
+    "functionality": null,
+    "unit": "g",
+    "groups": [],
+    "provenance": "사용자 제공 원료 자료 · 대표 물성",
+    "example": false,
+    "reference": {
+      "category": "Workup",
+      "molecularWeightDescription": "84.01",
+      "densityDescription": "약 2.20 (g/cm³)",
+      "usage": "",
+      "meltingPoint": "분해",
+      "boilingPoint": "분해",
+      "notes": "HCl 열적 특성은 순수 염화수소 기준이며 염산 수용액과 다름. 고체 밀도 단위는 g/cm³. Brine 및 농도별 수용액은 별도 등록."
+    },
+    "lots": [
+      {
+        "id": "catalog-nahco3-unregistered",
+        "name": "Lot 미등록",
+        "stock": "재고 미등록",
+        "example": false
+      }
+    ]
+  },
+  {
+    "id": "catalog-naoh",
+    "name": "NaOH",
+    "chemicalName": "Sodium hydroxide",
+    "formula": "NaOH",
+    "component": "Other",
+    "role": "기타",
+    "mw": 40.0,
+    "density": 2.13,
+    "functionality": null,
+    "unit": "g",
+    "groups": [],
+    "provenance": "사용자 제공 원료 자료 · 대표 물성",
+    "example": false,
+    "reference": {
+      "category": "Workup",
+      "molecularWeightDescription": "40.00",
+      "densityDescription": "2.13 (g/cm³)",
+      "usage": "",
+      "meltingPoint": "318",
+      "boilingPoint": "1388",
+      "notes": "HCl 열적 특성은 순수 염화수소 기준이며 염산 수용액과 다름. 고체 밀도 단위는 g/cm³. Brine 및 농도별 수용액은 별도 등록."
+    },
+    "lots": [
+      {
+        "id": "catalog-naoh-unregistered",
+        "name": "Lot 미등록",
+        "stock": "재고 미등록",
+        "example": false
+      }
+    ]
+  },
+  {
+    "id": "catalog-koh",
+    "name": "KOH",
+    "chemicalName": "Potassium hydroxide",
+    "formula": "KOH",
+    "component": "Other",
+    "role": "기타",
+    "mw": 56.11,
+    "density": 2.04,
+    "functionality": null,
+    "unit": "g",
+    "groups": [],
+    "provenance": "사용자 제공 원료 자료 · 대표 물성",
+    "example": false,
+    "reference": {
+      "category": "Workup",
+      "molecularWeightDescription": "56.11",
+      "densityDescription": "2.04 (g/cm³)",
+      "usage": "",
+      "meltingPoint": "360",
+      "boilingPoint": "약 1320",
+      "notes": "HCl 열적 특성은 순수 염화수소 기준이며 염산 수용액과 다름. 고체 밀도 단위는 g/cm³. Brine 및 농도별 수용액은 별도 등록."
+    },
+    "lots": [
+      {
+        "id": "catalog-koh-unregistered",
+        "name": "Lot 미등록",
+        "stock": "재고 미등록",
+        "example": false
+      }
+    ]
+  },
+  {
+    "id": "catalog-mgso4",
+    "name": "MgSO4",
+    "chemicalName": "Magnesium sulfate (anhydrous)",
+    "formula": "MgSO4",
+    "component": "Other",
+    "role": "기타",
+    "mw": 120.37,
+    "density": 2.66,
+    "functionality": null,
+    "unit": "g",
+    "groups": [],
+    "provenance": "사용자 제공 원료 자료 · 대표 물성",
+    "example": false,
+    "reference": {
+      "category": "Workup",
+      "molecularWeightDescription": "120.37",
+      "densityDescription": "2.66 (g/cm³)",
+      "usage": "",
+      "meltingPoint": "약 1124 (분해)",
+      "boilingPoint": "해당 없음",
+      "notes": "HCl 열적 특성은 순수 염화수소 기준이며 염산 수용액과 다름. 고체 밀도 단위는 g/cm³. Brine 및 농도별 수용액은 별도 등록."
+    },
+    "lots": [
+      {
+        "id": "catalog-mgso4-unregistered",
+        "name": "Lot 미등록",
+        "stock": "재고 미등록",
+        "example": false
+      }
+    ]
+  },
+  {
+    "id": "catalog-na2so4",
+    "name": "Na2SO4",
+    "chemicalName": "Sodium sulfate (anhydrous)",
+    "formula": "Na2SO4",
+    "component": "Other",
+    "role": "기타",
+    "mw": 142.04,
+    "density": 2.66,
+    "functionality": null,
+    "unit": "g",
+    "groups": [],
+    "provenance": "사용자 제공 원료 자료 · 대표 물성",
+    "example": false,
+    "reference": {
+      "category": "Workup",
+      "molecularWeightDescription": "142.04",
+      "densityDescription": "2.66 (g/cm³)",
+      "usage": "",
+      "meltingPoint": "884",
+      "boilingPoint": "해당 없음",
+      "notes": "HCl 열적 특성은 순수 염화수소 기준이며 염산 수용액과 다름. 고체 밀도 단위는 g/cm³. Brine 및 농도별 수용액은 별도 등록."
+    },
+    "lots": [
+      {
+        "id": "catalog-na2so4-unregistered",
+        "name": "Lot 미등록",
+        "stock": "재고 미등록",
+        "example": false
+      }
+    ]
+  },
+  {
+    "id": "catalog-acoh",
+    "name": "AcOH",
+    "chemicalName": "Acetic acid",
+    "formula": "C2H4O2",
+    "component": "Other",
+    "role": "기타",
+    "mw": 60.05,
+    "density": 1.049,
+    "functionality": null,
+    "unit": "g",
+    "groups": [],
+    "provenance": "사용자 제공 원료 자료 · 대표 물성",
+    "example": false,
+    "reference": {
+      "category": "Workup",
+      "molecularWeightDescription": "60.05",
+      "densityDescription": "1.049",
+      "usage": "",
+      "meltingPoint": "16.6",
+      "boilingPoint": "118.1",
+      "notes": "HCl 열적 특성은 순수 염화수소 기준이며 염산 수용액과 다름. 고체 밀도 단위는 g/cm³. Brine 및 농도별 수용액은 별도 등록."
+    },
+    "lots": [
+      {
+        "id": "catalog-acoh-unregistered",
+        "name": "Lot 미등록",
+        "stock": "재고 미등록",
+        "example": false
+      }
+    ]
+  },
+  {
+    "id": "catalog-peg",
+    "name": "PEG",
+    "chemicalName": "Polyethylene glycol",
+    "formula": "",
+    "component": "Oligomer",
+    "role": "기타",
+    "mw": null,
+    "density": null,
+    "functionality": null,
+    "unit": "g",
+    "groups": [],
+    "provenance": "사용자 제공 원료 자료 · 대표 물성",
+    "example": false,
+    "reference": {
+      "category": "Polymer",
+      "molecularWeightDescription": "Mn 200–20,000+",
+      "densityDescription": "",
+      "usage": "유연성·친수성 조절",
+      "meltingPoint": "",
+      "boilingPoint": "",
+      "notes": "제품별 평균 분자량 사용. 범위에서 임의의 단일 분자량을 지정하지 않음."
+    },
+    "lots": [
+      {
+        "id": "catalog-peg-unregistered",
+        "name": "Lot 미등록",
+        "stock": "재고 미등록",
+        "example": false
+      }
+    ]
+  },
+  {
+    "id": "catalog-pegma",
+    "name": "PEGMA",
+    "chemicalName": "Polyethylene glycol methacrylate",
+    "formula": "",
+    "component": "Oligomer",
+    "role": "기타",
+    "mw": null,
+    "density": null,
+    "functionality": 1,
+    "unit": "g",
+    "groups": [
+      {
+        "type": "Methacrylate",
+        "count": 1
+      }
+    ],
+    "provenance": "사용자 제공 원료 자료 · 대표 물성",
+    "example": false,
+    "reference": {
+      "category": "Polymer",
+      "molecularWeightDescription": "제품별 상이",
+      "densityDescription": "",
+      "usage": "단관능 고분자 모노머",
+      "meltingPoint": "",
+      "boilingPoint": "",
+      "notes": "제품별 평균 분자량 사용. 범위에서 임의의 단일 분자량을 지정하지 않음."
+    },
+    "lots": [
+      {
+        "id": "catalog-pegma-unregistered",
+        "name": "Lot 미등록",
+        "stock": "재고 미등록",
+        "example": false
+      }
+    ]
+  },
+  {
+    "id": "catalog-ppg",
+    "name": "PPG",
+    "chemicalName": "Polypropylene glycol",
+    "formula": "",
+    "component": "Oligomer",
+    "role": "기타",
+    "mw": null,
+    "density": null,
+    "functionality": null,
+    "unit": "g",
+    "groups": [],
+    "provenance": "사용자 제공 원료 자료 · 대표 물성",
+    "example": false,
+    "reference": {
+      "category": "Polymer",
+      "molecularWeightDescription": "Mn 400–4,000+",
+      "densityDescription": "",
+      "usage": "연질 세그먼트",
+      "meltingPoint": "",
+      "boilingPoint": "",
+      "notes": "제품별 평균 분자량 사용. 범위에서 임의의 단일 분자량을 지정하지 않음."
+    },
+    "lots": [
+      {
+        "id": "catalog-ppg-unregistered",
+        "name": "Lot 미등록",
+        "stock": "재고 미등록",
+        "example": false
+      }
+    ]
+  },
+  {
+    "id": "catalog-pdms",
+    "name": "PDMS",
+    "chemicalName": "Polydimethylsiloxane",
+    "formula": "",
+    "component": "Oligomer",
+    "role": "기타",
+    "mw": null,
+    "density": null,
+    "functionality": null,
+    "unit": "g",
+    "groups": [],
+    "provenance": "사용자 제공 원료 자료 · 대표 물성",
+    "example": false,
+    "reference": {
+      "category": "Polymer",
+      "molecularWeightDescription": "제품별 상이",
+      "densityDescription": "",
+      "usage": "실리콘 탄성체",
+      "meltingPoint": "",
+      "boilingPoint": "",
+      "notes": "제품별 평균 분자량 사용. 범위에서 임의의 단일 분자량을 지정하지 않음."
+    },
+    "lots": [
+      {
+        "id": "catalog-pdms-unregistered",
+        "name": "Lot 미등록",
+        "stock": "재고 미등록",
+        "example": false
+      }
+    ]
+  },
+  {
+    "id": "catalog-pcl",
+    "name": "PCL",
+    "chemicalName": "Polycaprolactone",
+    "formula": "",
+    "component": "Oligomer",
+    "role": "기타",
+    "mw": null,
+    "density": null,
+    "functionality": null,
+    "unit": "g",
+    "groups": [],
+    "provenance": "사용자 제공 원료 자료 · 대표 물성",
+    "example": false,
+    "reference": {
+      "category": "Polymer",
+      "molecularWeightDescription": "Mn 1,000–80,000+",
+      "densityDescription": "",
+      "usage": "결정성·형상기억 소재",
+      "meltingPoint": "",
+      "boilingPoint": "",
+      "notes": "제품별 평균 분자량 사용. 범위에서 임의의 단일 분자량을 지정하지 않음."
+    },
+    "lots": [
+      {
+        "id": "catalog-pcl-unregistered",
+        "name": "Lot 미등록",
+        "stock": "재고 미등록",
+        "example": false
+      }
+    ]
+  },
+  {
+    "id": "catalog-pva",
+    "name": "PVA",
+    "chemicalName": "Polyvinyl alcohol",
+    "formula": "",
+    "component": "Oligomer",
+    "role": "기타",
+    "mw": null,
+    "density": null,
+    "functionality": null,
+    "unit": "g",
+    "groups": [],
+    "provenance": "사용자 제공 원료 자료 · 대표 물성",
+    "example": false,
+    "reference": {
+      "category": "Polymer",
+      "molecularWeightDescription": "제품별 상이",
+      "densityDescription": "",
+      "usage": "필름·고분자 블렌드",
+      "meltingPoint": "",
+      "boilingPoint": "",
+      "notes": "제품별 평균 분자량 사용. 범위에서 임의의 단일 분자량을 지정하지 않음."
+    },
+    "lots": [
+      {
+        "id": "catalog-pva-unregistered",
+        "name": "Lot 미등록",
+        "stock": "재고 미등록",
+        "example": false
+      }
+    ]
+  },
+  {
+    "id": "catalog-pmma",
+    "name": "PMMA",
+    "chemicalName": "Polymethyl methacrylate",
+    "formula": "",
+    "component": "Oligomer",
+    "role": "기타",
+    "mw": null,
+    "density": null,
+    "functionality": null,
+    "unit": "g",
+    "groups": [],
+    "provenance": "사용자 제공 원료 자료 · 대표 물성",
+    "example": false,
+    "reference": {
+      "category": "Polymer",
+      "molecularWeightDescription": "제품별 상이",
+      "densityDescription": "",
+      "usage": "비교용 고분자",
+      "meltingPoint": "",
+      "boilingPoint": "",
+      "notes": "제품별 평균 분자량 사용. 범위에서 임의의 단일 분자량을 지정하지 않음."
+    },
+    "lots": [
+      {
+        "id": "catalog-pmma-unregistered",
+        "name": "Lot 미등록",
+        "stock": "재고 미등록",
+        "example": false
+      }
+    ]
+  }
+]

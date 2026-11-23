@@ -68,7 +68,7 @@ export default function MaterialInventory() {
   const rows = records.flatMap(material => material.lots.map(lot => ({ material, lot, values: makeMaterialDraft(material, lot) })));
   const selectedRow = rows.find(row => row.lot.id === selected);
   const query = filters.query.trim().toLowerCase();
-  const filtered = rows.filter(({ material, lot, values }) => [material.name, material.id, lot.name, values.cas, values.manufacturer, values.location]
+  const filtered = rows.filter(({ material, lot, values }) => [material.name, material.chemicalName ?? '', material.formula ?? '', material.id, lot.name, values.cas, values.manufacturer, values.location]
     .some(value => value.toLowerCase().includes(query))
     && (!filters.location || values.location === filters.location)
     && (!filters.state || values.state === filters.state || values.lifecycle === filters.state)
@@ -210,7 +210,7 @@ export default function MaterialInventory() {
       <button onClick={() => { setFilters(filtersInitial); setPage(1); }}>초기화</button>
     </div>
     <section className="ob-list" aria-labelledby="mi-list-title">
-      <div className="ob-list-title"><h2 id="mi-list-title">보유 물질</h2><span>총 {filtered.length}건</span>
+      <div className="ob-list-title"><h2 id="mi-list-title">원료 라이브러리</h2><span>총 {filtered.length}건</span>
         {draft && !draft.lotId && <span className="ob-badge">작성 중</span>}
         {checked.length > 0 && <span>{checked.length}건 선택</span>}</div>
       <div className="ob-scroll"><table>
@@ -310,6 +310,8 @@ export default function MaterialInventory() {
             </div></details></div>
         </div>
         <div className="mi-grid">
+          {material.reference && detail('원료 기본 물성', [['영문 / 화학명', material.chemicalName ?? ''], ['분자식', material.formula ?? ''], ['분류', material.reference.category], ['분자량 정보', material.reference.molecularWeightDescription], ['밀도 원문', material.reference.densityDescription], ['작용기 종류 / 수', material.groups?.map(g => g.type + ' ' + g.count).join(', ') || (material.functionality === 0 ? '반응성 Acrylate 없음 (0)' : '')], ['당량 (g/eq)', material.mw && material.functionality ? String(Number((material.mw / material.functionality).toPrecision(8))) : ''], ['녹는점 (°C)', material.reference.meltingPoint ?? ''], ['끓는점 (°C)', material.reference.boilingPoint ?? ''], ['순수 물질 상전이', material.reference.phaseTransitions ?? ''], ['주요 용도', material.reference.usage], ['출처', material.provenance ?? ''], ['물성 비고', material.reference.notes ?? '']])}
+
           {detail('기본 정보', [['물질명', material.name], ['CAS 번호', values.cas], ['회사명', values.manufacturer], ['Lot 번호', lot.name],
             ['용량', values.capacity && values.capacity + ' ' + values.unit], ['잔량', values.remaining && values.remaining + ' ' + values.unit]])}
           {detail('보관 및 사용', [['보관 위치', values.location], ['구매일', values.purchased], ['개봉일', values.opened || (values.unopened && lot.inventory ? '미개봉' : '')],
