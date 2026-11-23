@@ -334,3 +334,5 @@ footer{border-top-color:var(--brand-line);color:#607C9C;align-items:center;gap:1
 .app.sidebar-expanded>aside nav button>svg{flex-shrink:0}
 .app.sidebar-expanded .lab-logo-text small{line-height:1.65;letter-spacing:0}
 .app.sidebar-expanded .lab-logo-text small>span{white-space:nowrap}
+
+.workspace .workspace-lab-name>span{white-space:nowrap}
