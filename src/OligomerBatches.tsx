@@ -196,11 +196,11 @@ export default function OligomerBatches({ projects }: { projects: Project[] }) {
     if (!draft) return null;
     return <div className="ob-field">
       <label htmlFor={'ob-' + key}>{titles[key]}{['name', 'type'].includes(key) && <em> *</em>}</label>
-      <div className="ob-input">
+      <div className={options.choices ? "ob-input ob-unit-field" : "ob-input"}>
         <input id={'ob-' + key} value={draft[key]} type={options.type === 'number' ? 'text' : options.type ?? 'text'}
           inputMode={options.type === 'number' ? 'decimal' : undefined} placeholder={options.hint}
           list={key === 'type' ? 'ob-types' : undefined} onChange={event => change({ [key]: event.target.value })}/>
-        {options.choices ? <select className="ob-unit-select" aria-label={titles[key]+' 단위'} value={options.unit} onChange={event => options.onUnit?.(event.target.value)}>{options.choices.map(unit => <option key={unit} value={unit}>{unit === 'min' ? 'min (분)' : unit}</option>)}</select> : options.unit && <span>{options.unit}</span>}
+        {options.choices ? <select className="ob-unit-select" aria-label={titles[key]+' 단위'} value={options.unit} onChange={event => options.onUnit?.(event.target.value)}>{options.choices.map(unit => <option key={unit} value={unit}>{unit}</option>)}</select> : options.unit && <span>{options.unit}</span>}
       </div>
       {options.chips && <div className="ob-chips"><small>자주 사용</small>{options.chips.map(value =>
         <button type="button" key={value} onClick={() => change({ [key]: value })}>{value}{options.unit && ' ' + options.unit}</button>)}</div>}

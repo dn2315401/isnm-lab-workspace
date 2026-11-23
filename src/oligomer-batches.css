@@ -110,3 +110,9 @@
 }
 
 .ob-input .ob-unit-select{width:auto;min-width:4.5rem;flex:0 0 auto;border:0;border-left:1px solid #DCE6F0;border-radius:0;background:transparent;padding:.6rem;cursor:pointer}.ob-input:has(.ob-unit-select)>input{min-width:0}.ob-wash-row{display:flex;gap:.5rem;align-items:center}.ob-wash-row input{min-width:0;flex:1}.ob-wash-row button{flex-shrink:0;font-size:.875rem}.ob-wash-add{display:flex;align-items:center;gap:.3rem;align-self:flex-start;color:#155FB4;font-size:.875rem}
+
+/* Equal-sized compound fields regardless of selected unit text. */
+.ob-page .ob-input.ob-unit-field{display:grid;grid-template-columns:minmax(0,1fr) 5rem;width:100%;min-width:0;border:1px solid var(--ob-line);border-radius:8px;background:var(--ob-soft);overflow:hidden}
+.ob-page .ob-input.ob-unit-field>input{width:100%;min-width:0;min-height:44px;border:0;border-radius:0;padding:8px 11px;background:transparent;box-shadow:none}
+.ob-page .ob-input.ob-unit-field>.ob-unit-select{width:100%;min-width:0;height:100%;min-height:44px;border:0;border-left:1px solid var(--ob-line);border-radius:0;padding:8px 24px 8px 9px;background-color:transparent;box-shadow:none}
+.ob-page .ob-input.ob-unit-field:focus-within{border-color:#155FB4;box-shadow:0 0 0 2px #155FB422}

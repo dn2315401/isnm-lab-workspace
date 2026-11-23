@@ -9,7 +9,8 @@ import {
 } from './material-inventory';
 import './material-inventory.css';
 
-const filtersInitial = { query: '', location: '', state: '', manufacturer: '' };
+const filtersInitial = { query: '', category: '', location: '', state: '', manufacturer: '' };
+const categoryLabels: Record<string,string> = { Acrylate: '아크릴레이트', Thiol: '싸이올', Mesogen: '액정성 모노머·메조젠', Solvent: '용매', 'Initiator / Catalyst / Stabilizer': '개시제·촉매·억제제', Workup: '세척·중화·후처리', Polymer: '고분자·올리고머' };
 const titles = {
   name: '물질명', lot: 'Lot 번호', cas: 'CAS 번호', manufacturer: '회사명', location: '보관 위치',
   state: '상태', capacity: '용량', remaining: '잔량', purchased: '구매일', opened: '개봉일',
@@ -70,6 +71,7 @@ export default function MaterialInventory() {
   const query = filters.query.trim().toLowerCase();
   const filtered = rows.filter(({ material, lot, values }) => [material.name, material.chemicalName ?? '', material.formula ?? '', material.id, lot.name, values.cas, values.manufacturer, values.location]
     .some(value => value.toLowerCase().includes(query))
+    && (!filters.category || (material.reference?.category ?? material.component) === filters.category)
     && (!filters.location || values.location === filters.location)
     && (!filters.state || values.state === filters.state || values.lifecycle === filters.state)
     && (!filters.manufacturer || values.manufacturer === filters.manufacturer));
@@ -200,8 +202,9 @@ export default function MaterialInventory() {
     <div className="ob-heading"><div><h1>원료물질 DB</h1><p>연구실의 원료와 시약을 한곳에서 검색하고 관리하세요.</p></div>
       <button className="ob-primary" onClick={() => edit(makeMaterialDraft())} disabled={busy}><Plus size={17}/> 새 물질 추가</button></div>
     <div className="ob-filters">
-      <label className="ob-search"><Search size={16}/><input aria-label="원료물질 검색" placeholder="물질명, CAS 번호, 회사명 검색…"
+      <label className="ob-search"><Search size={16}/><input aria-label="원료물질 검색" placeholder="약칭, 화학명, 분자식, CAS, 회사명 검색…"
         value={filters.query} onChange={event => { setFilters({ ...filters, query: event.target.value }); setPage(1); }}/></label>
+      <label>원료 분류<select value={filters.category} onChange={event => { setFilters({ ...filters, category: event.target.value }); setPage(1); }}><option value="">전체 분류</option>{Array.from(new Set(records.map(material => material.reference?.category ?? material.component))).map(category => <option key={category} value={category}>{categoryLabels[category] ?? category}</option>)}</select></label>
       {(['location', 'state', 'manufacturer'] as const).map(key => <label key={key}>{titles[key]}
         <select value={filters[key]} onChange={event => { setFilters({ ...filters, [key]: event.target.value }); setPage(1); }}>
           <option value="">전체</option>
@@ -222,7 +225,7 @@ export default function MaterialInventory() {
         <tbody>{visible.map(({ material, lot, values }) => <tr key={lot.id} className={selected === lot.id || checked.includes(lot.id) ? 'ob-active' : ''}>
           <td><input type="checkbox" checked={checked.includes(lot.id)} aria-label={material.name + ' ' + lot.name + ' 선택'}
             onChange={() => { if (checked.includes(lot.id)) setChecked(previous => previous.filter(id => id !== lot.id)); else openRow(material, lot); }}/></td>
-          <td><button className="ob-link mi-name" onClick={() => openRow(material, lot)}><strong>{material.name}</strong><small>{lot.name}{(lot.example ?? material.example) && ' · 예시'}</small></button></td>
+          <td><button className="ob-link mi-name" onClick={() => openRow(material, lot)}><strong>{material.name}</strong>{material.chemicalName && <small>{material.chemicalName}</small>}{material.reference && <small>{categoryLabels[material.reference.category] ?? material.reference.category}</small>}<small>{lot.name}{(lot.example ?? material.example) && ' · 예시'}</small></button></td>
           {cellValues(values).map((value, index) => <td key={index}>{value || '—'}</td>)}
           <td><span className="ob-badge">{values.state || values.lifecycle}</span>{values.state && values.lifecycle !== 'Active' && <small>{values.lifecycle}</small>}</td>
           <td>{values.purchased || '—'}</td><td>{values.opened || (lot.inventory && values.unopened ? '미개봉' : '—')}</td>
@@ -310,7 +313,7 @@ export default function MaterialInventory() {
             </div></details></div>
         </div>
         <div className="mi-grid">
-          {material.reference && detail('원료 기본 물성', [['영문 / 화학명', material.chemicalName ?? ''], ['분자식', material.formula ?? ''], ['분류', material.reference.category], ['분자량 정보', material.reference.molecularWeightDescription], ['밀도 원문', material.reference.densityDescription], ['작용기 종류 / 수', material.groups?.map(g => g.type + ' ' + g.count).join(', ') || (material.functionality === 0 ? '반응성 Acrylate 없음 (0)' : '')], ['당량 (g/eq)', material.mw && material.functionality ? String(Number((material.mw / material.functionality).toPrecision(8))) : ''], ['녹는점 (°C)', material.reference.meltingPoint ?? ''], ['끓는점 (°C)', material.reference.boilingPoint ?? ''], ['순수 물질 상전이', material.reference.phaseTransitions ?? ''], ['주요 용도', material.reference.usage], ['출처', material.provenance ?? ''], ['물성 비고', material.reference.notes ?? '']])}
+          {material.reference && detail('원료 기본 물성', [['영문 / 화학명', material.chemicalName ?? ''], ['분자식', material.formula ?? ''], ['분류', categoryLabels[material.reference.category] ?? material.reference.category], ['분자량 정보', material.reference.molecularWeightDescription], ['밀도 원문', material.reference.densityDescription], ['작용기 종류 / 수', material.groups?.map(g => g.type + ' ' + g.count).join(', ') || (material.functionality === 0 ? '반응성 Acrylate 없음 (0)' : '')], ['당량 (g/eq)', material.mw && material.functionality ? String(Number((material.mw / material.functionality).toPrecision(8))) : ''], ['녹는점 (°C)', material.reference.meltingPoint ?? ''], ['끓는점 (°C)', material.reference.boilingPoint ?? ''], ['순수 물질 상전이', material.reference.phaseTransitions ?? ''], ['주요 용도', material.reference.usage], ['출처', material.provenance ?? ''], ['물성 비고', material.reference.notes ?? '']])}
 
           {detail('기본 정보', [['물질명', material.name], ['CAS 번호', values.cas], ['회사명', values.manufacturer], ['Lot 번호', lot.name],
             ['용량', values.capacity && values.capacity + ' ' + values.unit], ['잔량', values.remaining && values.remaining + ' ' + values.unit]])}
