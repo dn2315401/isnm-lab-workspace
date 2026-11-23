@@ -1,7 +1,9 @@
+import {materialApi} from './material-api';
 import {calendarApi} from './calendar-api';
 import {assets} from '../.sites-runtime/calendar-assets';
 export default {async fetch(request:Request,env:any){
  const url=new URL(request.url);
+ if(url.pathname.startsWith('/api/materials/'))return materialApi(request,env);
  if(url.pathname.startsWith('/api/calendar/'))return calendarApi(request,env);
  if(url.pathname.startsWith('/api/'))return Response.json({error:'Not found'},{status:404});
  if(!['GET','HEAD'].includes(request.method))return new Response('Method not allowed',{status:405});

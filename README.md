@@ -1,10 +1,10 @@
-# ISNM LAB Workspace · 2026-11-23 · v3
+# ISNM LAB Workspace · 2026-11-24 · v1
 
 연구 프로젝트, 조성 정보, 조성계산기, 합성 계획, 샘플 계획을 관리하는 React + TypeScript + Vite 웹앱입니다.
 
 현재 웹앱: https://isnm-lab-2026-11-14-v1.dn2315401.chatgpt.site
 
-현재 수정본은 `work/2026-11-23-v3` 브랜치에 저장합니다. v2를 기반으로 연구실 공유 캘린더를 추가했습니다. main과 이전 작업 브랜치는 유지합니다.
+현재 수정본은 `work/2026-11-24-v1` 브랜치에 저장합니다. v2를 기반으로 연구실 공유 캘린더를 추가했습니다. main과 이전 작업 브랜치는 유지합니다.
 
 현재 작업본 다운로드, 수정, 재저장은 [공동 개발 가이드](docs/COLLABORATION.md)를 참고하세요.
 
@@ -15,7 +15,7 @@ Node.js 22 이상이 필요합니다.
 ```bash
 git clone https://github.com/dn2315401/isnm-lab-workspace.git
 cd isnm-lab-workspace
-git switch work/2026-11-23-v3
+git switch work/2026-11-24-v1
 npm ci
 npm run dev
 ```
@@ -102,3 +102,13 @@ git push -u origin feature/my-change
 관리자는 캘린더의 구성원 관리에서 실제 계정 이메일을 허용하거나 로그인 대기 계정을 승인합니다. 배포 환경의 `CALENDAR_OWNER_EMAIL`은 Sites 설정에서 관리하며 저장소에는 넣지 않습니다. 로컬 Vite 개발 서버는 화면 개발용이며, 실제 인증·공유 API는 Sites Worker 배포에서 제공됩니다. 로컬 서버 로직은 `npm run test:calendar`로 SQLite를 사용해 검증할 수 있습니다.
 
 [구조·권한·반복 처리·운영 방법](docs/LAB_CALENDAR.md)
+
+## 전역 물질 연결 (2026-11-24 v1)
+
+원료·Lot은 공용 D1 DB를 기준으로 선택합니다. 촉매·용매·세척액·조성·실제 합성 입력은 공통 원료 선택창을 사용합니다. 과거 물성은 스냅샷으로 유지하고, 계획량과 실제량을 구분합니다. 자체 합성 원료는 완료 배치를 명시적으로 등록하여 원료 종류와 배치별 Lot을 구분합니다. 재고 자동 차감은 사용하지 않습니다.
+
+승인된 연구실 계정으로 로그인하면 기존 브라우저 원료를 백업·대조하고, 확실한 참조만 연결합니다. 중복 후보는 검토 목록에 남습니다. 실험 원본과 첨부 파일은 브라우저에서 삭제하지 않습니다.
+
+- `npm run test:connections`: 실제 SQLite의 물질·Lot FK, DBU 연결, 양방향 사용 이력, 스냅샷, 계획/실제, 미등록 Lot 재고 보존 검증
+- `npm run check:materials`: 원료 API 타입 검사
+- [변경 영역·DB 관계·이전·검증·제한 사항](docs/MATERIAL_CONNECTIONS.md)

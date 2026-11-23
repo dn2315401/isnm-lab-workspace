@@ -1,3 +1,4 @@
+import {MaterialLink} from './materials/shared';
 import {useState} from 'react';
 import type {Calculator, CalcResult} from './calculator-model';
 
@@ -27,5 +28,5 @@ export function ResultTable({d,result}:{d:Calculator,result:CalcResult}){
     if(value==null)return '—';
     return (value*(units[key] as Record<string,number>)[unit(key)]).toLocaleString('ko-KR',{maximumFractionDigits:d.precision,minimumFractionDigits:d.precision});
   }
-  return <><div className="result-options">{(['fraction','eq'] as const).map(k=><label key={k}><input type="checkbox" checked={optional[k]} onChange={e=>setOptional({...optional,[k]:e.target.checked})}/>{k==='fraction'?'mol%':'작용기 당량'}</label>)}</div><div className="calc-input-scroll"><table className="calc-result-table"><thead><tr><th>원료명</th>{columns.map(c=><th key={c.title}>{c.title}<br/><select aria-label={c.title+' 표시 단위'} value={unit(c.key)} onChange={e=>setSelected({...selected,[c.key]:e.target.value})}>{Object.keys(units[c.key]).map(u=><option key={u}>{u}</option>)}</select></th>)}</tr></thead><tbody>{rows.map((r,i)=><tr key={r.id}><td>{r.name}{!r.included&&<small>제외</small>}</td>{columns.map(c=><td key={c.title}>{r.included?format(c.values[i],c.key):'—'}</td>)}</tr>)}</tbody><tfoot><tr><td>합계</td>{columns.map(c=><td key={c.title}>{format(c.total,c.key)}</td>)}</tr></tfoot></table></div></>;
+  return <><div className="result-options">{(['fraction','eq'] as const).map(k=><label key={k}><input type="checkbox" checked={optional[k]} onChange={e=>setOptional({...optional,[k]:e.target.checked})}/>{k==='fraction'?'mol%':'작용기 당량'}</label>)}</div><div className="calc-input-scroll"><table className="calc-result-table"><thead><tr><th>원료명</th>{columns.map(c=><th key={c.title}>{c.title}<br/><select aria-label={c.title+' 표시 단위'} value={unit(c.key)} onChange={e=>setSelected({...selected,[c.key]:e.target.value})}>{Object.keys(units[c.key]).map(u=><option key={u}>{u}</option>)}</select></th>)}</tr></thead><tbody>{rows.map((r,i)=><tr key={r.id}><td><MaterialLink materialId={d.rows[i].materialId} snapshotName={r.name}/>{!r.included&&<small>제외</small>}</td>{columns.map(c=><td key={c.title}>{r.included?format(c.values[i],c.key):'—'}</td>)}</tr>)}</tbody><tfoot><tr><td>합계</td>{columns.map(c=><td key={c.title}>{format(c.total,c.key)}</td>)}</tr></tfoot></table></div></>;
 }

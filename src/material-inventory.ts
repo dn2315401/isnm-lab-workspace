@@ -18,9 +18,9 @@ export type InventoryLot = Material['lots'][number] & {
   inventory?: InventoryFields; unit?: Unit; purity?: number | null; revision?: number; example?: boolean;
   history?: { date: string; changes: string[] }[];
 };
-export type InventoryMaterial = Omit<Material, 'lots'> & { cas?: string; chemicalName?: string; formula?: string; reference?: { category: string; molecularWeightDescription: string; densityDescription: string; usage: string; meltingPoint?: string; boilingPoint?: string; phaseTransitions?: string; notes?: string }; lots: InventoryLot[]; example?: boolean };
+export type InventoryMaterial = Omit<Material, 'lots'> & { revision?: number; cas?: string; chemicalName?: string; formula?: string; reference?: { category: string; molecularWeightDescription: string; densityDescription: string; usage: string; meltingPoint?: string; boilingPoint?: string; phaseTransitions?: string; notes?: string }; lots: InventoryLot[]; example?: boolean };
 export type MaterialDraft = InventoryFields & {
-  materialId: string; lotId: string; revision: number; name: string; lot: string; cas: string; unit: Unit;
+  materialRevision?:number;groupsText?:string;chemicalName?:string;materialId: string; lotId: string; revision: number; name: string; lot: string; cas: string; unit: Unit;
   component: string; mw: string; density: string; functionality: string;
 };
 export const materialDraftKey = 'isnm-material-draft-v1';
@@ -38,7 +38,7 @@ const blankInventory = (): InventoryFields => ({
 export function makeMaterialDraft(material?: InventoryMaterial, lot?: InventoryLot): MaterialDraft {
   return {
     ...blankInventory(), ...lot?.inventory, materialId: material?.id ?? '', lotId: lot?.id ?? '',
-    revision: lot?.revision ?? 0, name: material?.name ?? '', lot: lot?.name ?? '', cas: material?.cas ?? '',
+    revision: lot?.revision ?? 0, materialRevision:material?.revision, groupsText:material?.groups?.map(g=>g.type+':'+g.count).join('\n')||'', chemicalName:material?.chemicalName||'', name: material?.name ?? '', lot: lot?.name ?? '', cas: material?.cas ?? '',
     unit: lot?.unit ?? material?.unit ?? 'g', component: material?.component ?? 'Other',
     mw: String((lot?.mw !== undefined ? lot.mw : material?.mw) ?? ''),
     density: String((lot?.density !== undefined ? lot.density : material?.density) ?? ''),
@@ -76,20 +76,8 @@ export function readInventory(): InventoryMaterial[] {
   const raw = localStorage.getItem(materialKey);
   const parsed: unknown = raw === null ? [] : JSON.parse(raw);
   if (!Array.isArray(parsed)) throw new Error('원료 라이브러리 형식을 확인해주세요.');
-  const cleanup = localStorage.getItem(notesCleanupKey) !== 'done';
-  const records = mergeMaterialCatalog(parsed).map(material => cleanup ? ({ ...material,
-    reference: material.reference ? { ...material.reference, notes: '' } : undefined,
-    lots: material.lots.map(lot => ({ ...lot, inventory: lot.inventory ? { ...lot.inventory, notes: '' } : undefined })) }) : material);
-  for (const material of records) for (const lot of material.lots) {
-    if ((lot.inventory?.lifecycle as string) === 'Depleted') lot.inventory = { ...lot.inventory!, lifecycle: 'Archived' };
-  }
-  const serialized = JSON.stringify(records);
-  if (raw !== serialized) localStorage.setItem(materialKey, serialized);
-  if (cleanup) {
-    const draftRaw = localStorage.getItem(materialDraftKey);
-    if (draftRaw) { try { const draft = JSON.parse(draftRaw); if (draft && typeof draft === 'object') localStorage.setItem(materialDraftKey, JSON.stringify({ ...draft, notes: '' })); } catch { /* Leave unreadable drafts intact. */ } }
-    localStorage.setItem(notesCleanupKey, 'done');
-  }
+  // The shared DB migration must not perform the retired one-time note cleanup.
+  const records = mergeMaterialCatalog(parsed).map(material=>({...material,lots:material.lots.map(lot=>(lot.inventory?.lifecycle as string)==='Depleted'?{...lot,inventory:{...lot.inventory!,lifecycle:'Archived' as const}}:lot)}));
   return records;
 }
 
@@ -136,42 +124,5 @@ export function validateMaterial(draft: MaterialDraft, temporary: boolean) {
   return errors;
 }
 
-export function saveMaterial(draft: MaterialDraft) {
-  const records = readInventory();
-  const existing = records.find(record => record.id === draft.materialId)
-    ?? (!draft.materialId ? records.find(record => normalized(record.name) === normalized(draft.name)
-      && normalized(record.cas ?? '') === normalized(draft.cas)) : undefined);
-  if (draft.materialId && !existing) throw new Error('연결할 물질을 다시 선택해주세요.');
-  const previous = existing?.lots.find(lot => lot.id === draft.lotId);
-  if (draft.lotId && (!previous || (previous.revision ?? 0) !== draft.revision)) throw new Error('최신 Lot 기록을 다시 열어주세요.');
-  if (draft.lot.trim() && existing?.lots.some(lot => lot.id !== draft.lotId
-    && normalized(lot.name) === normalized(draft.lot) && normalized(lot.inventory?.manufacturer ?? '') === normalized(draft.manufacturer))) {
-    throw new Error('이 물질과 회사에 같은 Lot 번호가 이미 등록되어 있습니다.');
-  }
-  const { materialId, lotId, revision, name, lot, cas, unit, component, mw, density, functionality, ...details } = draft;
-  const inventory = { ...details, opened: draft.unopened ? '' : draft.opened,
-    manufacturer: draft.manufacturer.trim(), location: draft.location.trim(), state: draft.state.trim() };
-  const nextLot: InventoryLot = {
-    ...previous, id: lotId || crypto.randomUUID(), name: lot.trim() || 'Lot 미등록', unit,
-    example: previous ? previous.example ?? existing?.example ?? false : false,
-    stock: amountText(inventory.remaining || inventory.capacity, unit) || '재고 미등록',
-    mw: numeric(mw), density: numeric(density), purity: numeric(inventory.purity), revision: revision + 1, inventory,
-  };
-  const old = previous && existing ? makeMaterialDraft(existing, previous) : null;
-  const changes = old ? Object.entries(draft).flatMap(([key, value]) => {
-    const before = old[key as keyof MaterialDraft];
-    if (key === 'msds') {
-      return old.msds?.id === draft.msds?.id ? [] : ['MSDS: ' + (old.msds?.name ?? '—') + ' → ' + (draft.msds?.name ?? '—')];
-    }
-    return before === value ? [] : [key + ': ' + String(before || '—') + ' → ' + String(value || '—')];
-  }) : ['Lot 등록'];
-  nextLot.history = [...(previous?.history ?? []), ...(changes.length ? [{ date: new Date().toISOString(), changes }] : [])];
-  const nextMaterial: InventoryMaterial = {
-    ...(existing ?? { id: crypto.randomUUID(), unit, role: '기타', mw: numeric(mw), density: numeric(density) }),
-    name: name.trim(), cas: cas.trim(), component, functionality: numeric(functionality),
-    lots: previous ? existing!.lots.map(item => item.id === previous.id ? nextLot : item) : [...(existing?.lots ?? []), nextLot],
-  };
-  const next = existing ? records.map(record => record.id === existing.id ? nextMaterial : record) : [nextMaterial, ...records];
-  localStorage.setItem(materialKey, JSON.stringify(next));
-  return { records: next, lotId: nextLot.id };
-}
+/** Legacy local-only persistence is retired. All UI registrations use saveSharedMaterial. */
+export function saveMaterial(_draft: MaterialDraft):never {throw new Error('공용 원료 DB 저장 기능을 사용해주세요.');}

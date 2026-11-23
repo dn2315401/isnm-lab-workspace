@@ -1,3 +1,6 @@
+import {useMaterialLibrary,MaterialSyncStatus} from './materials/shared';
+import {saveSharedMaterial} from './materials/service';
+import UsageHistory from './materials/UsageHistory';
 import MaterialDateInput from './MaterialDateInput';
 import { useEffect, useRef, useState } from 'react';
 import { Download, FileText, Pencil, Plus, Search, Upload } from 'lucide-react';
@@ -46,6 +49,8 @@ function usage(materialId: string, lotId: string) {
 }
 
 export default function MaterialInventory() {
+  const shared=useMaterialLibrary();const openedMaterialRoute=useRef('');
+  useEffect(()=>{if(shared.materials.length){setRecords(shared.materials);const prefix='#materials/material/';if(location.hash.startsWith(prefix)&&openedMaterialRoute.current!==location.hash){const m=shared.materials.find(item=>item.id===decodeURIComponent(location.hash.slice(prefix.length)));if(m?.lots[0]){setSelected(m.lots[0].id);openedMaterialRoute.current=location.hash}}}},[shared.materials]);
   const [initial] = useState(() => {
     try { return { records: readInventory(), error: '' }; }
     catch { return { records: [] as InventoryMaterial[], error: '원료물질 데이터를 불러오지 못했습니다.' }; }
@@ -120,7 +125,7 @@ export default function MaterialInventory() {
         localStorage.setItem(materialDraftKey, JSON.stringify(draft));
         setSavedDraft(draft);
       } else {
-        const result = navigator.locks ? await navigator.locks.request('isnm-material-inventory', () => saveMaterial(draft)) : saveMaterial(draft);
+        const result = await saveSharedMaterial(draft,draft.groupsText);
         setRecords(result.records); setSelected(result.lotId); setFilters(filtersInitial);
         const index = result.records.flatMap(material => material.lots).findIndex(lot => lot.id === result.lotId);
         setPage(Math.floor(index / pageSize) + 1);
@@ -200,9 +205,9 @@ export default function MaterialInventory() {
     </dl></section>;
   }
 
-  return <section className="ob-page mi-page">
+  return <section className="ob-page mi-page"><MaterialSyncStatus/>
     <div className="ob-heading"><div><h1>원료물질 DB</h1><p>연구실의 원료와 시약을 한곳에서 검색하고 관리하세요.</p></div>
-      <button className="ob-primary" onClick={() => edit(makeMaterialDraft())} disabled={busy}><Plus size={17}/> 새 물질 추가</button></div>
+      <button className="ob-primary" onClick={() => edit(makeMaterialDraft())} disabled={busy||shared.status!=='ready'}><Plus size={17}/> 새 물질 추가</button></div>
     <div className="ob-filters">
       <label className="ob-search"><Search size={16}/><input aria-label="원료물질 검색" placeholder="약칭, 화학명, 분자식, CAS, 회사명 검색…"
         value={filters.query} onChange={event => { setFilters({ ...filters, query: event.target.value }); setPage(1); }}/></label>
@@ -254,9 +259,9 @@ export default function MaterialInventory() {
             {!draft.lotId && <label className="ob-field">기존 물질의 새 Lot<select value={draft.materialId} onChange={event => {
               const material = records.find(item => item.id === event.target.value);
               const base = makeMaterialDraft(material);
-              patch({ materialId: base.materialId, name: base.name, cas: base.cas, component: base.component, mw: base.mw, density: base.density, functionality: base.functionality });
+              patch({ materialId: base.materialId, name: base.name, cas: base.cas, component: base.component, mw: base.mw, density: base.density, functionality: base.functionality, materialRevision:base.materialRevision, groupsText:base.groupsText, chemicalName:base.chemicalName });
             }}><option value="">새 물질 등록</option>{records.map(material => <option value={material.id} key={material.id}>{material.name}{material.cas ? ' · ' + material.cas : ''}</option>)}</select></label>}
-            {field('name', { hint: '물질명 또는 제품명 입력' })}
+            {field('name', { hint: '물질명 또는 제품명 입력' })}<label className="ob-field">영문 / 화학명<input value={draft.chemicalName||''} onChange={event=>patch({chemicalName:event.target.value})}/></label>
             <div className="mi-pair">{field('cas', { hint: '예: 000-00-0' })}{field('lot')}</div>
             {draft.cas.trim() && records.some(material => material.id !== draft.materialId && material.cas === draft.cas.trim())
               && <p className="ob-muted">동일 CAS가 등록되어 있습니다. 기존 물질을 선택하거나 별도 제품으로 등록할 수 있습니다.</p>}
@@ -285,7 +290,7 @@ export default function MaterialInventory() {
             <div className="mi-pair"><label className="ob-field">상변화 유형<select value={draft.phase} aria-invalid={!!errors.phase} onChange={event => patch({ phase: event.target.value })}>
               <option value="">종류 선택</option>{phases.map(phase => <option key={phase}>{phase}</option>)}</select>
               {errors.phase && <small className="ob-error">{errors.phase}</small>}</label>{field('phaseValue', { type: 'number', unit: '°C' })}</div>
-            <div className="mi-pair">{field('purity', { type: 'number', unit: '%' })}{field('functionality', { type: 'number' })}</div>
+            <div className="mi-pair">{field('purity', { type: 'number', unit: '%' })}{field('functionality', { type: 'number' })}<label className="ob-field">작용기 종류:수<textarea value={draft.groupsText||''} placeholder="예: Acrylate:2" onChange={event=>patch({groupsText:event.target.value})}/></label></div>
             <input hidden type="file" accept="application/pdf,.pdf" ref={input}
               onChange={event => { void attach(event.target.files?.[0]); event.target.value = ''; }}/>
             <button className="ob-drop" type="button" onClick={() => input.current?.click()}
@@ -297,7 +302,7 @@ export default function MaterialInventory() {
         {error && <p className="ob-error" role="alert">{error}</p>}
         <div className="ob-actions"><button type="button" onClick={() => edit(null)}>취소</button>
           <button type="button" onClick={() => void persist(true)}>임시저장</button>
-          <button type="submit" className="ob-primary">{busy ? '처리 중…' : '물질 저장'}</button></div>
+          <button type="submit" className="ob-primary" disabled={shared.status!=='ready'}>{busy ? '처리 중…' : '물질 저장'}</button></div>
       </fieldset>
     </form> : selectedRow && (() => {
       const { material, lot, values } = selectedRow;
@@ -331,6 +336,8 @@ export default function MaterialInventory() {
               : <p className="ob-muted mi-no-document">MSDS 미등록</p>}
           </div>
         </div>
+        <section className="mi-card"><h3>등록된 Lot 목록</h3>{material.lots.map(item=><button type="button" key={item.id} onClick={()=>openRow(material,item)}>{item.name} · {item.inventory?.manufacturer||'제조사 미등록'} </button>)}</section>
+        <UsageHistory materialId={material.id}/>
         <details className="ob-links" ref={usagePanel}><summary>사용 이력</summary>
           {hasUsage ? <ul>
             {linked.batches.map(batch => <li key={batch.id}><a href={'#oligomer-batches/' + encodeURIComponent(batch.id)}>{batch.id} · {batch.name}</a>

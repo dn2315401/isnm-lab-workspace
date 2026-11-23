@@ -1,8 +1,9 @@
+import {writeResearchStorage} from './materials/storage-events';
 import type { Material, Row } from './formulation-model';
 
 export const batchStatuses = ['작성 중', '합성 예정', '합성 중', '합성 완료', '분석 대기', '완료', '실패', '폐기'] as const;
 export type BatchStatus = typeof batchStatuses[number];
-export type Ingredient = Row & { plannedAmount?: string; purity?: number | null };
+export type Ingredient = Row & { plannedRatio?:{amount:string;unit:'wt%'};plannedAmount?: string; purity?: number | null };
 export type BatchAttachment = {
   id: string; name: string; type: string; size: number; data: string;
   uploadedAt: string; uploadedBy: string; batchId?: string;
@@ -15,6 +16,7 @@ export type BatchFields = {
 };
 export type BatchDraft = BatchFields & {
   id?: string; revision?: number; status: BatchStatus;
+  catalystUsageId?:string;solventUsageId?:string;washUsageIds?:string[];
   catalystUnit?: 'mg' | 'g' | 'kg' | 'wt%'; durationUnit?: 'h' | 'min'; washSolutions?: string[];
   ingredients: Ingredient[]; attachments: BatchAttachment[];
   projectIds: string[]; formulationRef: string; sampleIds: string; analysisRefs: string;
@@ -109,7 +111,7 @@ export function validateBatch(draft: BatchDraft, temporary: boolean): string {
     }
   }
   for (const row of draft.ingredients) {
-    if (!temporary && (!row.lotId || !row.amount.trim())) return `${row.name}의 Lot와 실제 사용량을 입력해주세요.`;
+    if (!row.materialId) return `${row.name}의 원료 DB 연결을 확인해주세요.`;
     if ([row.amount, row.plannedAmount].some(value => value && (!Number.isFinite(Number(value)) || Number(value) < 0))) {
       return `${row.name}의 사용량은 0 이상의 숫자로 입력해주세요.`;
     }
@@ -152,20 +154,11 @@ export async function saveBatch(draft: BatchDraft, temporary: boolean) {
       history: [...(prior?.history ?? []), ...(changes.length ? [{ at, by: draft.researcher, fields: changes }] : [])],
     };
     const next = prior ? records.map(record => record.id === id ? batch : record) : [batch, ...records];
-    localStorage.setItem(batchStorageKey, JSON.stringify(next));
+    writeResearchStorage(batchStorageKey, JSON.stringify(next));
     return { batch, records: next };
   };
   return navigator.locks ? navigator.locks.request(batchStorageKey, persist) : persist();
 }
 
-export function withOligomerBatches(materials: Material[]): Material[] {
-  let records: Batch[];
-  try { records = readBatches(); } catch { return materials; }
-  return [...records.filter(batch => !['작성 중', '합성 예정', '합성 중', '실패', '폐기'].includes(batch.status))
-    .map((batch): Material => ({
-      id: 'batch:' + batch.id, name: batch.name, component: 'Oligomer', role: '올리고머',
-      mw: Number(batch.mn) || null, density: null, functionality: null, unit: 'g',
-      provenance: (batch.example ? 'UI용 예시 배치 · ' : '') + batch.id + (batch.pdi ? ' · PDI ' + batch.pdi : ''),
-      lots: [{ id: batch.id, name: batch.id, stock: '재고 미등록' }],
-    })), ...materials];
-}
+/** Completed outputs are explicitly registered in the shared material DB, never synthesized as virtual materials. */
+export function withOligomerBatches(materials:Material[]):Material[]{return materials;}

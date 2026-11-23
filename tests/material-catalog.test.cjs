@@ -28,10 +28,10 @@ assert.equal(mergeMaterialCatalog([edited]).find(m=>m.id==='rm82').lots[0].revis
 const storage=new Map();global.localStorage={getItem:key=>storage.get(key)??null,setItem:(key,value)=>storage.set(key,value)};
 assert.equal(readInventory().length,86);const once=storage.get(materialKey);readInventory();assert.equal(storage.get(materialKey),once);
 storage.clear();storage.set(materialKey,JSON.stringify([{...custom,reference:{...custom.reference,notes:'old reference'},lots:[{...custom.lots[0],inventory:{notes:'old note',lifecycle:'Active'}}]}]));
-assert.equal(readInventory().find(m=>m.id==='user-thf').lots[0].inventory.notes,'');
-const after=JSON.parse(storage.get(materialKey));after.find(m=>m.id==='user-thf').lots[0].inventory.notes='new user note';storage.set(materialKey,JSON.stringify(after));assert.equal(readInventory().find(m=>m.id==='user-thf').lots[0].inventory.notes,'new user note');
+assert.equal(readInventory().find(m=>m.id==='user-thf').lots[0].inventory.notes,'old note');
+const after=readInventory();after.find(m=>m.id==='user-thf').lots[0].inventory.notes='new user note';storage.set(materialKey,JSON.stringify(after));assert.equal(readInventory().find(m=>m.id==='user-thf').lots[0].inventory.notes,'new user note');
 storage.set(materialKey,'broken');assert.throws(()=>readInventory());assert.equal(storage.get(materialKey),'broken');
-console.log('원료 86종, 기존 Lot 보존, 비고 일회 초기화 및 이후 메모 보존 검증 통과');
+console.log('원료 86종, 기존 Lot 보존, 기존 비고·메모 원본 보존 검증 통과');
 
 const dates=require('../work/test-material-catalog/material-dates.js');
 assert.equal(dates.materialDateInput('20261123'),'2026-11-23');

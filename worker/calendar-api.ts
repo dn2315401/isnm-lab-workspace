@@ -4,7 +4,7 @@ type Env={DB:any;CALENDAR_OWNER_EMAIL?:string};
 class ApiError extends Error{constructor(public status:number,message:string){super(message)}}
 function fail(code:number,message:string):never{throw new ApiError(code,message)}
 const json=(data:unknown,status=200)=>Response.json(data,{status,headers:{'Cache-Control':'no-store','Vary':'Cookie','X-Content-Type-Options':'nosniff'}});
-async function memberFor(request:Request,env:Env):Promise<Member|null>{
+export async function memberFor(request:Request,env:Env):Promise<Member|null>{
  const id=request.headers.get('oai-authenticated-user-id'),email=request.headers.get('oai-authenticated-user-email')?.toLowerCase();if(!id||!email)return null;
  let name=request.headers.get('oai-authenticated-user-full-name')||email;
  if(request.headers.get('oai-authenticated-user-full-name-encoding')==='percent-encoded-utf-8'){try{name=decodeURIComponent(name)}catch{name=email}}

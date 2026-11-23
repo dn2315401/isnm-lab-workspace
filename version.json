@@ -1,10 +1,10 @@
 {
-  "name": "ISNM LAB · 2026-11-23 · v3",
-  "date": "2026-11-23",
-  "version": "v3",
-  "branch": "work/2026-11-23-v3",
-  "tag": "2026-11-23-v3",
+  "name": "ISNM LAB · 2026-11-24 · v1",
+  "date": "2026-11-24",
+  "version": "v1",
+  "branch": "work/2026-11-24-v1",
+  "tag": "2026-11-24-v1",
   "repository": "https://github.com/dn2315401/isnm-lab-workspace",
-  "basedOnCommit": "794bc8d0989ba20d253a18355edf5a779ce00324",
-  "description": "공유 연구실 캘린더 · 반복 일정 · 수업 시간표"
+  "basedOnCommit": "ab76a24",
+  "description": "공용 원료 라이브러리 · 전역 물질·Lot 연결 및 사용 이력"
 }

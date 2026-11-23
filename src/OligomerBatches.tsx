@@ -1,3 +1,10 @@
+import MaterialPicker from './materials/MaterialPicker';
+import MaterialBindingField from './materials/MaterialBindingField';
+import BatchOutput from './materials/BatchOutput';
+import {MaterialLink,MaterialSyncStatus,useMaterialLibrary} from './materials/shared';
+import {currentMaterial} from './materials/service';
+import {matchChemical,unregisteredLot,selectionRow,type MaterialSelection} from './materials/model';
+import {bindBatchMaterial,synchronizeBatchLinks,type BatchMaterialTarget} from './materials/batch-links';
 import { availableMaterials, readInventorySafely } from './material-inventory';
 import { useEffect, useRef, useState } from 'react';
 import { Plus, Search, Upload } from 'lucide-react';
@@ -44,6 +51,7 @@ function localDate(date: Date) {
 }
 
 export default function OligomerBatches({ projects }: { projects: Project[] }) {
+  const shared=useMaterialLibrary();const[picking,setPicking]=useState<{target:BatchMaterialTarget;query:string}|null>(null);
   const [initial] = useState(() => {
     try { return { records: readBatches(), error: '' }; }
     catch { return { records: [] as Batch[], error: '저장된 배치 기록을 불러오지 못했습니다.' }; }
@@ -115,7 +123,7 @@ export default function OligomerBatches({ projects }: { projects: Project[] }) {
   }
 
   function change(patch: Partial<BatchDraft>) {
-    setDraft(previous => previous && ({ ...previous, ...patch }));
+    setDraft(previous => previous && synchronizeBatchLinks({ ...previous, ...patch },patch));
     setDirty(true);
   }
 
@@ -182,6 +190,9 @@ export default function OligomerBatches({ projects }: { projects: Project[] }) {
     if (draft) change({ ingredients: draft.ingredients.map(row => row.id === id ? { ...row, ...patch } : row) });
   }
 
+  function chooseMaterial(selection:MaterialSelection,target:BatchMaterialTarget) {if(!draft)return;setDraft(bindBatchMaterial(draft,selection,target));setDirty(true);setPicking(null)}
+  function shortcut(query:string,target:BatchMaterialTarget) {const match=matchChemical(shared.materials,query);if(shared.status==='ready'&&match.status==='linked'){chooseMaterial({materialId:match.material!.id,lotId:null,material:match.material!,lot:null},target);setMessage(query+' 원료 ID 연결됨. 실제 Lot과 사용량을 확인하세요.')}else setPicking({target,query})}
+  function linkedMaterial(usageId?:string){return draft?.ingredients.find(row=>row.id===usageId)?.materialId}
   function addMaterial(material: Material, lotId: string) {
     if (!draft) return;
     const lot = material.lots.find(entry => entry.id === lotId);
@@ -213,7 +224,7 @@ export default function OligomerBatches({ projects }: { projects: Project[] }) {
     </select>;
   }
 
-  return <section className="ob-page">
+  return <section className="ob-page"><MaterialSyncStatus/>{picking&&<MaterialPicker defaultComponent={picking.target==='catalyst'?'Catalyst':picking.target==='solvent'||picking.target.startsWith('wash:')?'Solvent':'Other'} initialQuery={picking.query} onClose={()=>setPicking(null)} onSelect={selection=>chooseMaterial(selection,picking.target)}/>}
     <div className="ob-heading"><div><h1>올리고머 배치 관리</h1><p>합성 이력부터 분석 결과까지, 배치 단위로 관리하세요.</p></div>
       <button className="ob-primary" onClick={() => open(blankBatch(), false)} disabled={busy}><Plus size={17}/> 새 올리고머 합성</button></div>
     <datalist id="ob-types">{types.map(type => <option key={type} value={type}/>)}</datalist>
@@ -282,41 +293,30 @@ export default function OligomerBatches({ projects }: { projects: Project[] }) {
         <div className="ob-editor-grid">
           <section className="ob-recipe"><h3>합성 레시피 요약</h3><div className="ob-fields">
             {field('type', { hint: '검색 또는 직접 입력', chips: ['CLCE', 'SMP', 'Epoxy'] })}
-            {field('composition', { hint: '예: RM82 / CM18', chips: ['RM82 / CM18', 'RM70 / CM30'] })}
-            {field('catalyst', { chips: ['DBU', 'TBD', 'Sn(Oct)₂'] })}
+            {field('composition', { hint: '조성 설명 · 실제 원료 연결은 아래 원료 행에서 선택' })}
+            <MaterialBindingField label="촉매" name={draft.catalyst} materialId={linkedMaterial(draft.catalystUsageId)} onPick={()=>setPicking({target:'catalyst',query:draft.catalyst})} shortcuts={['DBU','TBD','Sn(Oct)₂']} onShortcut={query=>shortcut(query,'catalyst')}/>
             {field('catalystAmount', { unit: draft.catalystUnit ?? 'wt%', choices: ['mg', 'g', 'kg', 'wt%'], onUnit: unit => {const next = unit as NonNullable<BatchDraft['catalystUnit']>; const previous = draft.catalystUnit ?? 'wt%'; change({ catalystUnit: next, catalystAmount: changeCatalystUnit(draft.catalystAmount, previous, next) }); if (draft.catalystAmount && (previous === 'wt%' || next === 'wt%')) setMessage('질량과 wt% 간 변경 시 함량을 다시 입력해주세요.');}, type: 'number' })}
             {field('temperature', { unit: '°C', type: 'number', chips: ['60', '80', '100'] })}
             {field('duration', { unit: draft.durationUnit ?? 'h', choices: ['h', 'min'], onUnit: unit => {const next = unit as 'h' | 'min'; change({durationUnit: next, duration: changeDurationUnit(draft.duration, draft.durationUnit ?? 'h', next)})}, type: 'number', chips: draft.durationUnit === 'min' ? ['30', '60', '120'] : ['4', '6', '12'] })}
-            {field('solvent', { chips: ['THF', '에탄올'] })}<div className="ob-field ob-wash-solutions"><span>세척액</span>{(draft.washSolutions ?? [draft.wash]).map((value, index, list) => <div className="ob-wash-row" key={index}><input aria-label={'세척액 '+(index+1)} placeholder="예: 에탄올 95%" value={value} onChange={event => {const next = list.map((item, i) => i === index ? event.target.value : item); change({washSolutions: next, wash: next.filter(Boolean).join(' / ')})}}/>{list.length > 1 && <button type="button" aria-label={'세척액 '+(index+1)+' 삭제'} onClick={() => {const next = list.filter((_, i) => i !== index); change({washSolutions: next, wash: next.filter(Boolean).join(' / ')})}}>삭제</button>}</div>)}<button type="button" className="ob-wash-add" onClick={() => change({washSolutions: [...(draft.washSolutions ?? [draft.wash]), '']})}><Plus size={15}/> 세척액 추가</button></div>
+            <MaterialBindingField label="용매" name={draft.solvent} materialId={linkedMaterial(draft.solventUsageId)} onPick={()=>setPicking({target:'solvent',query:draft.solvent})} shortcuts={['THF','EtOH']} onShortcut={query=>shortcut(query,'solvent')}/>
+            <div className="ob-field ob-wash-solutions"><span>세척액</span>{(draft.washSolutions??[draft.wash]).map((name,index,list)=><div key={index}><MaterialBindingField label={'세척액 '+(index+1)} name={name} materialId={linkedMaterial(draft.washUsageIds?.[index])} onPick={()=>setPicking({target:`wash:${index}`,query:name})}/>{list.length>1&&<button type="button" onClick={()=>{const removed=draft.washUsageIds?.[index];const washSolutions=list.filter((_,i)=>i!==index);change({washSolutions,wash:washSolutions.filter(Boolean).join(' / '),washUsageIds:(draft.washUsageIds||[]).filter((_,i)=>i!==index),ingredients:draft.ingredients.filter(row=>row.id!==removed)})}}>이 세척액 제거</button>}</div>)}<button type="button" className="ob-wash-add" onClick={()=>change({washSolutions:[...(draft.washSolutions??[draft.wash]),''],washUsageIds:[...(draft.washUsageIds||[]),'']})}><Plus size={15}/> 세척액 추가</button></div>
             {field('plannedDate', { type: 'date' })}
             <label className="ob-field">조성 기준<select value={draft.basis} onChange={event => change({ basis: event.target.value })}>
               {['wt%', 'mol%', '작용기 당량', '미지정'].map(basis => <option key={basis}>{basis}</option>)}</select></label>
             <label className="ob-field">촉매 함량 기준<select value={draft.catalystBasis} onChange={event => change({ catalystBasis: event.target.value })}>
               {['전체 조성', '모노머', '수지'].map(basis => <option key={basis}>{basis}</option>)}</select></label>
           </div></section>
-          <section className="ob-materials"><h3>원료 물질 (Lot)</h3><p className="ob-muted">원료 라이브러리에서 사용한 Lot를 선택하세요.</p>
+          <section className="ob-materials"><h3>원료 물질 (Lot)</h3><p className="ob-muted">촉매·용매·세척액 요약과 이 목록은 동일한 사용 행을 공유합니다. Lot이 없으면 미지정으로 보존하며 실제 합성 시 확인해주세요.</p><div className="ob-chips"><small>빠른 원료 연결</small>{['RM82','EDDT','DMPA'].map(name=><button type="button" key={name} onClick={()=>shortcut(name,'ingredient')}>{name}</button>)}</div>
             {!draft.ingredients.length && <p className="ob-muted">추가된 원료가 없습니다.</p>}
             <div className="ob-ingredients">{draft.ingredients.map(row => <div className="ob-ingredient" key={row.id}>
-              <div><strong>{row.name}</strong><small>{row.lot}</small></div>
-              <label>계획량<input inputMode="decimal" value={row.plannedAmount ?? ''} onChange={event => ingredient(row.id, { plannedAmount: event.target.value })}/></label>
+              <div className="material-linked-identity"><MaterialLink materialId={row.materialId} snapshotName={row.name}/><small>기록 Lot: {row.lot||'미지정'}</small><select aria-label={row.name+' 실제 Lot'} value={row.lotId||''} onChange={event=>{const m=currentMaterial(row.materialId);const lot=m?.lots.find(l=>l.id===event.target.value);if(m)ingredient(row.id,{...selectionRow({materialId:m.id,lotId:lot?.id||null,material:m,lot:lot||null}),id:row.id,amount:row.amount,plannedAmount:row.plannedAmount,role:row.role})}}><option value="">Lot 미등록 / 미지정</option>{row.lotId&&!currentMaterial(row.materialId)?.lots.some(l=>l.id===row.lotId)&&<option value={row.lotId}>{row.lot||row.lotId} · 검토 필요</option>}{currentMaterial(row.materialId)?.lots.filter(l=>!unregisteredLot(l)).map(l=><option key={l.id} value={l.id}>{l.name}</option>)}</select></div>
+              <label>역할<select className="material-role" value={row.role} onChange={event=>ingredient(row.id,{role:event.target.value})}>{Array.from(new Set([row.role,'촉매','용매','세척액','단량체','가교제','광개시제','첨가제','올리고머','기타'])).map(role=><option key={role}>{role}</option>)}</select></label>{row.plannedRatio&&<small>계획 비율: {row.plannedRatio.amount} {row.plannedRatio.unit}</small>}<label>계획량<input inputMode="decimal" value={row.plannedAmount ?? ''} onChange={event => ingredient(row.id, { plannedAmount: event.target.value })}/></label>
               <label>실제량<input inputMode="decimal" value={row.amount} onChange={event => ingredient(row.id, { amount: event.target.value })}/></label>
               <label>단위<select value={row.unit} onChange={event => ingredient(row.id, { unit: event.target.value as Unit })}>
-                {units.map(unit => <option key={unit}>{unit}</option>)}</select></label>
+                {units.filter(unit=>row.id!==draft.catalystUsageId||['mg','g','kg'].includes(unit)).map(unit => <option key={unit}>{unit}</option>)}</select></label>
               <button type="button" aria-label={row.name + ' 삭제'} onClick={() => change({ ingredients: draft.ingredients.filter(item => item.id !== row.id) })}>×</button>
             </div>)}</div>
-            <button type="button" onClick={() => { setPicker(!picker); setMaterialQuery(''); }}><Plus size={15}/> 원료 추가</button>
-            {picker && <div className="ob-picker">
-              <input aria-label="원료 검색" placeholder="원료명, ID, Lot, 제조사 검색" value={materialQuery} onChange={event => setMaterialQuery(event.target.value)}/>
-              {materials.filter(material => [material.name, material.id, (material as Material & { manufacturer?: string }).manufacturer,
-                ...material.lots.flatMap(lot => [lot.id, lot.name, lot.inventory?.manufacturer])].some(value => value?.toLowerCase().includes(materialQuery.trim().toLowerCase())))
-                .map(material => <div className="ob-picker-row" key={material.id}>
-                  <span>{material.name}</span><select aria-label={material.name + ' Lot'} value={materialLots[material.id] ?? material.lots[0]?.id ?? ''}
-                    onChange={event => setMaterialLots(previous => ({ ...previous, [material.id]: event.target.value }))}>
-                    {material.lots.map(lot => <option key={lot.id} value={lot.id}>{lot.name}</option>)}</select>
-                  <button type="button" disabled={!material.lots.length}
-                    onClick={() => addMaterial(material, materialLots[material.id] ?? material.lots[0]?.id ?? '')}>선택</button>
-                </div>)}
-            </div>}
+            <button type="button" onClick={()=>setPicking({target:'ingredient',query:''})}><Plus size={15}/> 공용 원료 추가</button>
             <h3 className="ob-attachment-title">첨부 파일</h3>
             <input hidden ref={files} type="file" multiple accept=".pdf,.csv,.xlsx,.jpg,.jpeg,.png"
               onChange={event => { void attach(event.currentTarget.files); event.currentTarget.value = ''; }}/>
@@ -337,6 +337,7 @@ export default function OligomerBatches({ projects }: { projects: Project[] }) {
           <label className="ob-notes"><span>비고</span><textarea value={draft.notes} placeholder="합성 과정의 관찰 사항이나 특이사항을 기록하세요."
             onChange={event => change({ notes: event.target.value })}/></label>
         </div>
+        {draft.id&&<BatchOutput batchId={draft.id} name={draft.name} status={draft.status} example={records.find(r=>r.id===draft.id)?.example}/>}
         <details className="ob-links"><summary>연결된 연구 기록</summary><div className="ob-fields">
           <label className="ob-field">프로젝트<select multiple size={Math.min(4, Math.max(2, projects.length))} value={draft.projectIds}
             onChange={event => change({ projectIds: Array.from(event.target.selectedOptions, option => option.value) })}>
