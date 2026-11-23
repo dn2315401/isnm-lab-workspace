@@ -3,10 +3,10 @@ import catalog from './material-catalog.json';
 import { library, type Material, type Unit } from './formulation-model';
 
 export const materialKey = 'isnm-material-library-v1';
-export const lifecycle = ['Active', 'Depleted', 'Expired', 'Archived', 'Disposed'] as const;
+export const lifecycle = ['Active', 'Expired', 'Archived', 'Disposed'] as const;
 export type Lifecycle = typeof lifecycle[number];
-export const lifecycleLabels: Record<Lifecycle,string> = { Active: '사용 중', Depleted: '소진', Expired: '유효기간 만료', Archived: '보관 중', Disposed: '폐기' };
-export const lifecycleLabel = (value: string) => lifecycleLabels[value as Lifecycle] ?? value;
+export const lifecycleLabels: Record<Lifecycle,string> = { Active: '사용 중', Expired: '유효기간 만료', Archived: '보관 중', Disposed: '폐기' };
+export const lifecycleLabel = (value: string) => lifecycleLabels[value as Lifecycle] ?? (value === 'Depleted' ? '보관 중' : value);
 const notesCleanupKey = 'isnm-material-notes-cleared-2026-11-23';
 export type InventoryFields = {
   manufacturer: string; location: string; capacity: string; remaining: string; state: string;
@@ -43,6 +43,7 @@ export function makeMaterialDraft(material?: InventoryMaterial, lot?: InventoryL
     mw: String((lot?.mw !== undefined ? lot.mw : material?.mw) ?? ''),
     density: String((lot?.density !== undefined ? lot.density : material?.density) ?? ''),
     functionality: String(material?.functionality ?? ''),
+    lifecycle: (lot?.inventory?.lifecycle as string) === 'Depleted' ? 'Archived' : lot?.inventory?.lifecycle ?? 'Active',
   };
 }
 
@@ -79,6 +80,9 @@ export function readInventory(): InventoryMaterial[] {
   const records = mergeMaterialCatalog(parsed).map(material => cleanup ? ({ ...material,
     reference: material.reference ? { ...material.reference, notes: '' } : undefined,
     lots: material.lots.map(lot => ({ ...lot, inventory: lot.inventory ? { ...lot.inventory, notes: '' } : undefined })) }) : material);
+  for (const material of records) for (const lot of material.lots) {
+    if ((lot.inventory?.lifecycle as string) === 'Depleted') lot.inventory = { ...lot.inventory!, lifecycle: 'Archived' };
+  }
   const serialized = JSON.stringify(records);
   if (raw !== serialized) localStorage.setItem(materialKey, serialized);
   if (cleanup) {
@@ -107,6 +111,7 @@ const amountText = (value: string, unit: Unit) => value === '' ? '' : value + ' 
 
 export function validateMaterial(draft: MaterialDraft, temporary: boolean) {
   const errors: Partial<Record<keyof MaterialDraft, string>> = {};
+  if (!lifecycle.includes(draft.lifecycle)) errors.lifecycle = '재고 상태를 다시 선택해주세요.';
   const required = { name: '물질명', capacity: '용량', state: '상태', location: '보관 위치' } as const;
   if (!temporary) for (const key of Object.keys(required) as (keyof typeof required)[]) {
     if (!draft[key].trim()) errors[key] = required[key] + '을(를) 입력해주세요.';
@@ -146,7 +151,6 @@ export function saveMaterial(draft: MaterialDraft) {
   const { materialId, lotId, revision, name, lot, cas, unit, component, mw, density, functionality, ...details } = draft;
   const inventory = { ...details, opened: draft.unopened ? '' : draft.opened,
     manufacturer: draft.manufacturer.trim(), location: draft.location.trim(), state: draft.state.trim() };
-  if (inventory.lifecycle === 'Active' && numeric(inventory.remaining) === 0) inventory.lifecycle = 'Depleted';
   const nextLot: InventoryLot = {
     ...previous, id: lotId || crypto.randomUUID(), name: lot.trim() || 'Lot 미등록', unit,
     example: previous ? previous.example ?? existing?.example ?? false : false,
