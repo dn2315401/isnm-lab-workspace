@@ -52,3 +52,4 @@
   .eq-day { min-height: 57px; padding: 2px; }
   .eq-page .eq-day > .eq-event { font-size: var(--text-meta); }
 }
+.eq-date-jump{display:flex;align-items:center;gap:12px;font-size:.875rem;margin:8px 16px 14px}.eq-date-jump>.date-input{width:180px}.home-equipment-date{display:flex;align-items:center;gap:12px;font-size:.875rem;margin:8px 0 14px}.home-equipment-date>.date-input{width:180px}

@@ -1,4 +1,5 @@
-import {dateOnlyForStorage} from './date-only';
+import DateInput,{ensureDateInputs} from './DateInput';
+import {dateOnlyForStorage,displayDateOnly,parseDateOnly} from './date-only';
 import EquipmentDetails from './equipment/EquipmentDetails';
 import Dp811Fields,{SafetyNotes} from './equipment/Dp811Fields';
 import {isDp811a,powerRanges} from './equipment-bookings';
@@ -72,10 +73,12 @@ export default function EquipmentReservations({ projects, onChange }: { projects
     return !busy && (!dirty || window.confirm('작성 중인 예약 정보를 삭제하시겠습니까?'));
   }
   function reset() { setDraft(null); setDetail(null); setDirty(false); setError(''); setMaintenanceForm(false); }
+  function syncMonth(day:string){const parsed=parseDateOnly(day);if(!parsed)return;const [year,month]=parsed.split('-').map(Number);const next=new Date(0);next.setFullYear(year,month-1,1);next.setHours(12,0,0,0);setMonth(next)}
+  function updateBookingDate(day:string){if(!parseDateOnly(day))return;editDraft({date:day});setDate(day);syncMonth(day)}
   function selectDay(day: string) {
     if (!device || !canLeave()) return;
     reset();
-    setDate(day);
+    setDate(day);syncMonth(day);
     if (day < today || day > dateKey(deadline) || !device.reservable) return;
     const base: Booking = {
       id: crypto.randomUUID(), equipmentId: device.id, name: device.name, date: day, time: '',
@@ -91,7 +94,7 @@ export default function EquipmentReservations({ projects, onChange }: { projects
   }
   function openBooking(item: Booking) {
     if (!canLeave()) return;
-    reset(); setDate(item.date); setDetail(item);
+    reset(); setDate(item.date);syncMonth(item.date); setDetail(item);
   }
   async function save(cancel = false) {
     const item = cancel ? detail : draft;
@@ -192,6 +195,7 @@ export default function EquipmentReservations({ projects, onChange }: { projects
             <button aria-label="다음 달" onClick={() => setMonth(new Date(year, monthIndex + 1, 1))}><ChevronRight size={17}/></button>
             <button onClick={() => { setMonth(now); selectDay(today); }}>오늘</button><h2>{year}년 {monthIndex + 1}월</h2>
           </div>
+          <label className="eq-date-jump">날짜로 이동<DateInput aria-label="장비 예약 캘린더 날짜" disabled={busy||dirty} required value={date||today} onChange={selectDay}/></label>
           <div className="eq-grid">
             {'일월화수목금토'.split('').map(label => <div className="eq-weekday" key={label}>{label}</div>)}
             {dates.map(day => {
@@ -210,13 +214,14 @@ export default function EquipmentReservations({ projects, onChange }: { projects
         </section>
         {date && <section className="ob-list eq-side">
           <h2>{draft ? detail ? '예약 수정' : '새 예약' : detail ? '예약 상세' : '선택한 날짜'}</h2>
-          <p className="ob-muted">{new Date(date + 'T12:00:00').toLocaleDateString('ko-KR', { month: 'long', day: 'numeric', weekday: 'long' })}</p>
+          <p className="ob-muted">{displayDateOnly(date)}</p>
           <div className="eq-day-list">{active.filter(item => item.date === date).sort((a, b) => a.time.localeCompare(b.time)).map(item =>
             <button key={item.id} onClick={() => openBooking(item)}>{item.time}–{endOf(item)} · {item.person}</button>)}
             {maintenance.filter(item => item.equipmentId === device.id && item.date === date).map(item =>
               <p key={item.id} className="eq-maint">점검 {item.start}–{item.end} {item.note}</p>)}</div>
-          {draft ? <form onSubmit={event => { event.preventDefault(); void save(); }}>
+          {draft ? <form onSubmit={event => { event.preventDefault();if(ensureDateInputs(event.currentTarget))void save(); }}>
             <fieldset disabled={busy}>
+              <label className="ob-field">예약 날짜<DateInput aria-label="예약 날짜" required min={today} max={dateKey(deadline)} value={draft.date} onChange={updateBookingDate}/></label>
               <label className="ob-field">사용자<input value={draft.person} readOnly/></label>
               <div className="eq-pair">{(['time', 'end'] as const).map(key => <label key={key} className="ob-field">{key === 'time' ? '시작 시간' : '종료 시간'}
                 <select value={draft[key] ?? ''} onChange={event => editDraft({ [key]: event.target.value })}>
