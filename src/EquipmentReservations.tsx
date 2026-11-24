@@ -1,5 +1,8 @@
+import EquipmentDetails from './equipment/EquipmentDetails';
+import Dp811Fields,{SafetyNotes} from './equipment/Dp811Fields';
+import {isDp811a,powerRanges} from './equipment-bookings';
 import { useEffect, useState } from 'react';
-import { Activity, ArrowRight, ArrowUpRight, CalendarDays, Check, ChevronLeft, ChevronRight, FileText, FlaskConical, Microscope, Plus, Video } from 'lucide-react';
+import { Activity, ArrowRight, ArrowUpRight, CalendarDays, Check, ChevronLeft, ChevronRight, FileText, FlaskConical, Microscope, Plus, Video, Zap } from 'lucide-react';
 import type { ResearchStore } from './calculator-model';
 import {
   bookingKey, clock, currentResearcher, dateKey, defaults, endOf, equipmentKey, forEquipment, initialBookings, maintenanceKey,
@@ -7,7 +10,7 @@ import {
 } from './equipment-bookings';
 import './equipment-reservations.css';
 
-const icons = { dma: Activity, microscope: Microscope, synthesis: FlaskConical, thermal: Video };
+const icons = { dma: Activity, microscope: Microscope, synthesis: FlaskConical, thermal: Video, power: Zap };
 const conditions: Condition[] = ['미확인', '정상', '이상 있음'];
 const adminKey = 'isnm-equipment-demo-admin';
 type Project = { id: number; name: string };
@@ -168,10 +171,10 @@ export default function EquipmentReservations({ projects, onChange }: { projects
         const Icon = icons[item.icon as keyof typeof icons] ?? CalendarDays;
         return <article className={selected === item.id ? 'eq-card eq-selected' : 'eq-card'} key={item.id}>
           <button className="eq-pick" onClick={() => { setSelected(item.id); setStep(true); setDate(''); reset(); }}>
-            <Icon size={57} strokeWidth={1.4}/><span><strong>{item.name}</strong><small>{item.description}</small>
+            <Icon size={57} strokeWidth={1.4}/><span><strong>{item.name}</strong><small>{item.description}</small>{item.model&&<small>{item.manufacturer} · {item.model}</small>}
               {!item.reservable && <small className="eq-blocked">예약 불가</small>}</span>{selected === item.id && <Check className="eq-check" size={18}/>}
           </button>
-          <div className="eq-card-footer"><button onClick={() => setManual(item)}><FileText size={16}/> 장비 매뉴얼 <ArrowUpRight size={14}/></button>
+          <div className="eq-card-footer"><button onClick={() => setManual(item)}><FileText size={16}/> 상세 · 매뉴얼 <ArrowUpRight size={14}/></button>
             {admin && <button onClick={() => setConfig(item)}>장비 설정</button>}</div>
         </article>;
       })}</div>
@@ -180,7 +183,7 @@ export default function EquipmentReservations({ projects, onChange }: { projects
       </details>
     </> : <>
       <div className="ob-heading"><div><h1>{device.name} 예약 일정</h1><p>날짜를 선택해 예약하거나 기존 예약을 확인하세요.</p></div>
-        <button onClick={() => setManual(device)}><FileText size={16}/> 장비 매뉴얼</button></div>
+        <button onClick={() => setManual(device)}><FileText size={16}/> 상세 · 매뉴얼</button></div>
       <div className="eq-layout">
         <section className="ob-list eq-calendar">
           <div className="eq-month">
@@ -217,7 +220,8 @@ export default function EquipmentReservations({ projects, onChange }: { projects
               <div className="eq-pair">{(['time', 'end'] as const).map(key => <label key={key} className="ob-field">{key === 'time' ? '시작 시간' : '종료 시간'}
                 <select value={draft[key] ?? ''} onChange={event => editDraft({ [key]: event.target.value })}>
                   {times.filter((_, index) => key === 'time' ? index < times.length - 1 : index > 0).map(time => <option key={time}>{time}</option>)}</select></label>)}</div>
-              <label className="ob-field">측정 모드<input required value={draft.mode ?? ''} onChange={event => editDraft({ mode: event.target.value })} placeholder="예: Tension, Temperature sweep"/></label>
+              <label className="ob-field">사용 목적 / 측정 모드<input required value={draft.mode ?? ''} onChange={event => editDraft({ mode: event.target.value })} placeholder="예: Tension, Temperature sweep"/></label>
+              {isDp811a(device)&&<><Dp811Fields value={draft} onChange={editDraft}/><SafetyNotes/></>}
               <div className="ob-field"><span>장비 상태</span><div className="eq-conditions">
                 {conditions.map(value => <button key={value} type="button" aria-pressed={draft.condition === value} onClick={() => editDraft({ condition: value })}>{value}</button>)}
               </div></div>
@@ -234,12 +238,12 @@ export default function EquipmentReservations({ projects, onChange }: { projects
               <button type="button" onClick={() => { if (canLeave()) reset(); }}>취소</button>
             </fieldset>
           </form> : detail ? <>
-            <dl className="eq-detail"><dt>사용자</dt><dd>{detail.person}</dd><dt>예약 시간</dt><dd>{detail.time}–{endOf(detail)}</dd>
+            <dl className="eq-detail"><dt>사용자</dt><dd>{detail.person}</dd><dt>예약 시간</dt><dd>{detail.time}–{endOf(detail)}</dd>{isDp811a(device)&&<><dt>계획 출력 Range</dt><dd>{detail.outputRange?powerRanges[detail.outputRange]?.label:'미입력'}</dd><dt>예정 전압 / 전류</dt><dd>{detail.plannedVoltage||'미입력'} V / {detail.plannedCurrent||'미입력'} A</dd></>}
               {(ownsBooking(detail) || admin) && <><dt>측정 모드</dt><dd>{detail.mode || '—'}</dd><dt>장비 상태</dt><dd>{detail.condition || '미확인'}</dd>
                 <dt>메모</dt><dd>{detail.memo || '—'}</dd></>}</dl>
             {(ownsBooking(detail) || admin) && <div className="eq-pair"><button disabled={busy} onClick={() => setDraft({ ...detail, end: endOf(detail), condition: detail.condition ?? '미확인' })}>수정</button>
               <button disabled={busy} onClick={() => void save(true)}>예약 취소</button></div>}
-            <button onClick={() => selectDay(date)}>이 날짜에 새 예약</button>
+            {isDp811a(device)&&<SafetyNotes/>}<button onClick={() => selectDay(date)}>이 날짜에 새 예약</button>
           </> : <p className="ob-muted">{date < today ? '지난 날짜의 일정입니다.' : !device.reservable ? '현재 예약할 수 없는 장비입니다.'
             : date > dateKey(deadline) ? '예약 가능 기간을 벗어났습니다.' : '날짜를 다시 선택해 새 예약을 시작하세요.'}</p>}
           {admin && !draft && <><button className="eq-maint-action" onClick={() => setMaintenanceForm(!maintenanceForm)}>점검 일정 추가</button>
@@ -251,17 +255,14 @@ export default function EquipmentReservations({ projects, onChange }: { projects
         </section>}
       </div>
     </>}
-    {manual && <div className="eq-overlay" onClick={() => setManual(null)}><section className="ob-list" role="dialog" aria-modal="true" aria-label="장비 매뉴얼" onClick={event => event.stopPropagation()}>
-      <h2>{manual.name} 매뉴얼</h2><p>{manual.description}</p>
-      {/^https?:\/\//i.test(manual.manual) ? <a href={manual.manual} target="_blank" rel="noreferrer">장비 매뉴얼 열기 ↗</a> : <p className="ob-muted">등록된 매뉴얼이 없습니다.</p>}
-      <button autoFocus onClick={() => setManual(null)}>닫기</button>
-    </section></div>}
+    {manual&&<EquipmentDetails equipment={manual} bookings={bookings} projects={projects} onClose={()=>setManual(null)} onReserve={()=>{setSelected(manual.id);setStep(true);setManual(null);setDate('');reset()}}/>}
     {config && <div className="eq-overlay"><form className="ob-list" role="dialog" aria-modal="true" aria-label="장비 설정" onSubmit={event => { event.preventDefault(); void saveEquipment(); }}>
       <h2>장비 설정</h2><fieldset disabled={busy}>
         {(['name', 'description', 'manual', 'opens', 'closes', 'maximum', 'advance'] as const).map((key, index) =>
           <label className="ob-field" key={key}>{['장비명', '사용 목적', '매뉴얼 URL', '운영 시작', '운영 종료', '최대 예약 (분)', '예약 가능 기간 (일)'][index]}
             <input type={key === 'opens' || key === 'closes' ? 'time' : typeof config[key] === 'number' ? 'number' : 'text'}
               value={config[key]} onChange={event => setConfig({ ...config, [key]: typeof config[key] === 'number' ? Number(event.target.value) : event.target.value })}/></label>)}
+        {(['englishName','manufacturer','model','category','location','custodian','managementNumber'] as const).map((key,index)=><label className="ob-field" key={key}>{['영문명','제조사','모델명','분류','장비 위치','담당자','관리번호'][index]}<input value={config[key]||''} onChange={event=>setConfig({...config,[key]:event.target.value})}/></label>)}
         <label className="ob-field">예약 단위<select value={config.step} onChange={event => setConfig({ ...config, step: Number(event.target.value) })}>
           {[15, 30, 60].map(value => <option key={value} value={value}>{value}분</option>)}</select></label>
         <label><input type="checkbox" checked={config.reservable} onChange={event => setConfig({ ...config, reservable: event.target.checked })}/> 예약 가능</label>

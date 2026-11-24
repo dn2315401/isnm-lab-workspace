@@ -1,0 +1,125 @@
+{
+  "name": "DC supply manual.pptx",
+  "slides": [
+    {
+      "number": 1,
+      "text": "공식 Manual\n1"
+    },
+    {
+      "number": 2,
+      "text": "리골 Rigol DP832A 3 채널 195W 프로그래머블 직류 전원 공급장치\n채널 수 1(two ranges)\n전체 파워 200W\n채널 당 출력 20V/10A（Low Range）,40V/5A（High Range）\n부하 변동율 Voltage: ≤0.01% + 2mV； Current: ≤0.01% + 250uA\n전력 변동율 Voltage: ≤0.01% + 2mV； Current: ≤0.01% + 250uA\n낮은 리플 및 잡음 : <350uVrms / 2mVpp\n빠른 과도 응답 시간 : <50us\n타이머 기능\n내장 V / A / W 측정 및 파형 디스플레이\n출력 분석, 모니터, 프리셋 기능\n3.5 인치 와이드 스크린\n2"
+    },
+    {
+      "number": 3,
+      "text": "Front Panel\nLCD\nChannel (Range) Selection and Output Switch\nParameter Input Area\nPreset\nOK\nBack\nOutput Terminals\nFunction Menu Area\nDisplay Mode Switch/ Return to the Main Interface\nMenu Keys\nPower Switch Key\n11\n10\n9\n8\n7\n6\n5\n2\n3\n4\n1\n3"
+    },
+    {
+      "number": 4,
+      "text": "1. LCD\n3.5인치 TFT 디스플레이로, 시스템 파라미터 설정, 출력 상태, 메뉴 옵션, 안내 메시지 등을 표시하는 데 사용된다.\n4"
+    },
+    {
+      "number": 5,
+      "text": "이 키를 누르면 20V/10A 범위를 선택할 수 있다. 사용자는 전압, 전류, 과전압/과전류 보호와 같은 채널의 파라미터를 설정할 수 있다.\n이 키를 누르면 40V/5A 범위를 선택할 수 있다. 사용자는 전압, 전류, 과전압/과전류 보호와 같은 채널의 파라미터를 설정할 수 있다.\n이 키를 누르면 채널의 출력을 켜거나 끌 수 있다.\n2. Single Channel Model (DP811A)\nRangle 선택하는 버튼\n40V/5A 와 20V/10A 중에 어떤 모드로 장비를 사용할지 선택\n5"
+    },
+    {
+      "number": 6,
+      "text": "파라미터 입력 영역은 아래 그림과 같으며, 이 영역에는 방향 키(단위 선택 키), 숫자 키패드 및 노브가 포함된다. \n방향 키 및 단위 선택 키방향 키: 커서를 이동시킨다.단위 선택 키: 숫자 키패드를 사용하여 파라미터를 입력할 때, 전압 단위(V 및 mV)와 전류 단위(A 및 mA)를 선택하는 데 사용된다.\n숫자 키패드원형 숫자 키패드는 0~9의 숫자와 소수점을 포함하며, 해당 키를 눌러 숫자를 입력한다.\n노브파라미터를 설정할 때 노브를 돌리면 커서가 위치한 자리의 값을 증가시키거나 감소시킬 수 있다.설정 항목(타이밍 파라미터, 지연 파라미터 등)을 탐색할 때에도 사용된다.\n3. Parameter Input Area\n셋팅값 변경할 때 숫자 키패드로 숫자 눌러서 몇V 몇A로 셋팅을 할건지 선택할 수 있음. \n노브를 돌려서 커서가 위치한 자리값 증가 감소\n6"
+    },
+    {
+      "number": 7,
+      "text": "기기의 모든 설정을 기본값으로 복원하거나, 사용자가 정의한 채널 전압/전류 설정을 불러온다.\n커서 앞에 있는 문자를 삭제한다.\n기기가 원격 모드에 있을 때 이 키를 누르면 로컬 모드로 전환된다.\n파라미터 설정을 확인한다.\n이 키를 길게 누르면 전면 패널 키가 잠기며, 이때 각 채널의 출력 on/off 키를 제외한 전면 패널 키는 사용할 수 없다.이 키를 다시 길게 누르면 전면 패널 키의 잠금이 해제된다.\n키보드 잠금 비밀번호가 활성화된 경우, 전면 패널 키를 해제하려면 올바른 비밀번호(2012)를 입력해야 한다.\n4. Preset\n5. OK\n6. Back\n7"
+    },
+    {
+      "number": 8,
+      "text": "(1) 채널의 전압과 전류를 출력하는 데 사용된다.\n(2) 이 단자는 기기 섀시 및 접지선(전원 코드의 접지 단자)과 연결되어 있으며, 접지 상태에 있다.\n(3) 전원 공급 장치와 부하 사이의 리드선에서 발생하는 전압 강하를 보상하기 위해, 부하에서의 실제 전압을 감지하는 데 사용된다.\n7. Output Terminals\n(1)\n(2)\n(3)\nDP800A 시리즈의 경우, 모델에 따라 출력 단자는 완전히 동일하지 않다.\n(2)가 악어-바나나 선을 꽂아서 사용하게 될 output 단자\n8"
+    },
+    {
+      "number": 9,
+      "text": "7. Output Terminals – 연결 방법\n(1)\n(2)\n(3)\n방법 1: test lead를 output terminal의 A에 연결한다.\n방법 2: output terminal의 outer nut을 반시계 방향으로 돌린 후, test lead를 output terminal의 B에 연결하고, 그 다음 outer nut을 시계 방향으로 돌린다.이 연결 방법은 output terminal의 저항으로 인해 발생하는 오차를 제거할 수 있다.\n주의: test lead의 positive terminal은 channel output의 (+) terminal에 연결하고, negative terminal은 (−) terminal에 연결해야 한다.\nOutput 부분을 반시계로 돌리면 A부분이 점점 앞으로 나오면서 B부분이 보일거임.\n악어- 바나나 케이블에서 바나나 부분을 A에 꽂아 쓰는 걸 추천하지만 악어-악어 케이블만 있다면 B부분에 악어 케이블을 물려서 사용할 수 있음. 그런데 안정적이지 않거나 오차가 생길수도 있고 B부분에 손상이 갈 수도 있으므로 웬만하면 악어-바나나 케이블 사용해서 바나나 부분을 A에 꽂는 방식으로 사용하는 걸 추천\n9"
+    },
+    {
+      "number": 10,
+      "text": "이 키를 누르면 display parameter 설정 인터페이스로 들어간다. 사용자는 brightness, contrast, RGB luminosity 및 display mode를 설정할 수 있다. 이 키를 누르면 file 저장 및 불러오기 인터페이스로 들어간다.\n파일을 저장, 읽기, 삭제, 복사 및 붙여넣기 할 수 있다. 저장 가능한 파일 종류에는 state file, record file, timer file, delayer file 및 bitmap file이 포함된다. 이 장비는 내부 및 외부 저장과 불러오기를 지원하며, 외부 저장은 FAT32 파일 시스템을 지원한다.\n이 키를 누르면 system 보조 기능 설정 인터페이스로 들어간다. 사용자는 remote interface parameter, system parameter 및 print parameter를 설정할 수 있다. 또한 장비를 보정(calibration)하고, system 정보를 확인하며, Preset의 recall 설정을 정의할 수 있다.\n이 키를 누르면 advanced function 설정 인터페이스로 들어간다. 사용자는 recorder, analyzer, monitor 및 trigger parameter를 설정할 수 있다.\n이 키를 누르면 timer 및 delayer 설정 인터페이스로 들어간다. 사용자는 timer와 delayer parameter를 설정하고, timer와 delayer를 켜거나 끌 수 있다.\n이 키를 누르면 내장 help 시스템이 열리며, 원하는 키를 눌러 해당하는 도움말 정보를 확인할 수 있다.\n8. Function Menu Area\n10"
+    },
+    {
+      "number": 11,
+      "text": "menu 키는 위에 표시된 menu와 대응된다.해당 menu 키를 누르면 대응되는 menu를 선택할 수 있다.\n기기를 켜거나 끈다.\n9. Display Mode Switch/Return to the Main Interface\n현재 display 모드(일반 또는 waveform 모드)와 dial display 모드 사이를 전환한다.또한 다양한 기능 인터페이스에서 이 키를 누르면 현재 인터페이스를 종료하고 main interface로 돌아간다.\n10. Menu Keys\n11. Power Switch Key\n10. Menu Keys 가 Voltage 값, Current값 설정할 때, limit값 설정할 때 등 메뉴를 이동하게 해주는 버튼. 눌러서 원하는 메뉴로 이동하고  3. Parameter Input Area에서 값 선택하면 됨. \n11"
+    },
+    {
+      "number": 12,
+      "text": "DP800A 시리즈의 각 모델별 후면 패널은 아래 그림과 같다.\nNo.\nName\nExplanation\n1\nLAN Interface\nRJ45 인터페이스를 통해 로컬 네트워크에 연결한다.\n2\nUSB DEVICE\ninstrument를 “slave” 장치로 사용하여 외부 USB 장치(예: PC)에 연결한다. \n3\nUSB HOST\ninstrument를 “host” 장치로 사용하여 외부 USB 장치(예: USB 저장장치)에 연결한다. \n4\nDigital I/O\nDigital I/O interface\n5\nRS232 Interface\nSerial communication interface\n6\nVoltage Selector\nSelect the specification of the input voltage (100V,\n115V, 230V)\n7\nPower Socket\nAC power input interface\n8\nFuse\ninstrument 모델 또는 선택된 입력 전압에 따라 fuse 사양이 달라진다.\n9\nFan\n10\nInput Power Requirement\n입력 전원 주파수, 전압, fuse 간의 대응 관계\n11\nOutput Interface\nDP811A에서만 제공되며, 전면 패널의 “Output Terminals”와 동일한 기능을 가진다.\n주의 전면 패널의 “Output Terminals”와 후면 패널의 “Output Interface”는 동시에 출력할 수 없다.두 인터페이스 중 하나만 선택하여 출력할 수 있으며, 전면 패널의 “Output Terminals”가 더 높은 정확도를 가진다.\nRear Panel\n12"
+    },
+    {
+      "number": 13,
+      "text": "To Connect to Power\n입력 전원 요구사항DP800A 시리즈 전원공급기는 세 가지 종류의 AC 전원을 사용할 수 있다:주파수 50Hz–60Hz, 전압 100V, 115V, 230V. \n후면 패널의 voltage selector 확인전원을 연결하기 전에, 후면 패널에 있는 voltage selector의 설정 전압이 입력 전압과 일치하는지 확인해야 한다.\nFuse 확인출고 시 적절한 fuse가 장착되어 있다. 후면 패널의 “Input Power Requirement”를 참고하여 fuse가 입력 전압에 맞는지 확인해야 한다.\n전원 코드 연결제공된 power cord를 사용하여 instrument를 AC 전원에 연결한다. \nWARNING\n감전을 방지하기 위해 instrument가 올바르게 접지되어 있는지 반드시 확인해야 한다.\n13"
+    },
+    {
+      "number": 14,
+      "text": "전면 패널의 power switch를 누르면 instrument가 self-test를 수행한다.self-test를 통과하면 welcome 화면이 표시되고, 통과하지 못하면 해당 오류 정보(TopBoard, BottomBoard, Fan, Temperature 등)가 표시된다.\nTipinstrument를 끈 후 다시 켤 때는 두 동작 사이의 시간이 최소 5초 이상 되도록 해야 한다.\nPower-on Inspection\n14"
+    },
+    {
+      "number": 15,
+      "text": "Fuse를 교체하려면 아래 단계를 따른다.\nInstrument의 전원을 끄고 power cord를 제거한다. \n작은 일자 드라이버를 power socket의 슬롯에 넣고 fuse holder를 조심스럽게 들어 올려 꺼낸다. \npower voltage selector를 수동으로 조정하여 올바른 전압 범위를 선택한다. \nFuse 교체 방법\nFuse 여분은 설명서와 함께 처음 같이 온 지퍼백에 보관되어 있음. 설명서 모아둔 서랍 확인.\nWarning부상을 방지하기 위해 fuse를 교체하기 전에 반드시 전원을 차단해야 한다.감전이나 화재를 방지하기 위해, 전원을 연결하기 전에 올바른 전원 사양을 선택하고 해당 사양에 맞는 fuse로 교체해야 한다.\n4.  Fuse를 꺼내고 지정된 fuse로 교체한다      (입력 전압과 fuse 사양의 대응 관계는 후면 패널의 “Input Power Requirement”를 참고한다). \n15"
+    },
+    {
+      "number": 16,
+      "text": "DP800A 시리즈 전원공급기는 세 가지 display mode(normal, waveform, dial)를 제공한다. 기본값은 normal이며, \nDisplay → Disp Mode를 눌러 “Waveform” 또는 “Dial”로 변경할 수 있다.\n이 절에서는 DP831A를 예로 들어 normal display mode에서의 인터페이스 구성을 설명한다(그림 8 및 표 2 참조).\n사용자 인터페이스\n16"
+    },
+    {
+      "number": 17,
+      "text": "DP800A 시리즈 전원공급기는 세 가지 display mode(normal, waveform, dial)를 제공한다. 기본값은 normal이며, \nDisplay → Disp Mode를 눌러 “Waveform” 또는 “Dial”로 변경할 수 있다.\n이 절에서는 DP831A를 예로 들어 normal display mode에서의 인터페이스 구성을 설명한다(그림 8 및 표 2 참조).\n사용자 인터페이스\n17"
+    },
+    {
+      "number": 18,
+      "text": "To Use the Built-in Help System – 내장 도움말 시스템\n내장 도움말 시스템은 전면 패널의 모든 키(파라미터 입력 영역 제외)와 menu 키에 대한 도움말 정보를 제공하여, 사용자가 기능 키나 메뉴의 기능을 빠르게 확인할 수 있도록 한다.\n임의의 키에 대한 도움말 확인\nHelp 키를 눌러 활성화한 후, 원하는 키를 누르면 해당 키의 도움말 정보가 표시된다. 이때 Help의 백라이트는 꺼진다. Exit를 눌러 도움말 시스템을 종료할 수 있다.\nHelp 키를 눌러 활성화한 뒤 다시 Help 키를 누르면, 아래 그림과 같은 내장 도움말 인터페이스가 열린다.위/아래 방향 키를 사용하여 원하는 도움말 항목을 선택하고, View를 눌러 해당 도움말 정보를 확인할 수 있다.\n내장 도움말 인터페이스\n18"
+    },
+    {
+      "number": 19,
+      "text": "문제 해결\n자주 발생하는 문제와 그 해결 방법은 아래와 같다. 문제가 발생하면 해당 단계에 따라 해결하고, 문제가 지속될 경우 RIGOL에 device 정보(Utility → Sys Info)를 제공하여 문의해야 한다.\n1. instrument가 켜지지 않는 경우\n전원이 올바르게 연결되어 있는지 확인한다.\n전면 패널의 power switch가 실제로 켜져 있는지 확인한다.\npower cord를 분리한 후, voltage selector가 올바른 전압으로 설정되어 있는지, fuse 사양이 맞는지, fuse가 정상인지 확인한다. fuse 교체가 필요하면 “To Replace the Fuse”를 참고한다.\n문제가 계속되면 RIGOL에 문의한다. \n19"
+    },
+    {
+      "number": 20,
+      "text": "문제 해결\n자주 발생하는 문제와 그 해결 방법은 아래와 같다. 문제가 발생하면 해당 단계에 따라 해결하고, 문제가 지속될 경우 RIGOL에 device 정보(Utility → Sys Info)를 제공하여 문의해야 한다.\n2. Constant voltage 출력이 비정상인 경우\n현재 선택된 범위의 최대 출력 power가 load 요구를 만족하는지 확인한다. 만족하면 다음 단계로 진행한다.\nLoad와 power supply를 연결하는 cable이 short-circuit 상태인지, 접촉이 양호한지 확인한다.\nLoad가 정상인지 확인한다.\nCurrent 설정값이 적절한지 확인하고, 너무 낮으면 증가시킨다.\n문제가 계속되면 RIGOL에 문의한다. \n20"
+    },
+    {
+      "number": 21,
+      "text": "문제 해결\n자주 발생하는 문제와 그 해결 방법은 아래와 같다. 문제가 발생하면 해당 단계에 따라 해결하고, 문제가 지속될 경우 RIGOL에 device 정보(Utility → Sys Info)를 제공하여 문의해야 한다.\n3. Constant current 출력이 비정상인 경우\n현재 선택된 범위의 최대 출력 power가 load 요구를 만족하는지 확인한다. 만족하면 다음 단계로 진행한다.\nLoad와 power supply를 연결하는 cable이 short-circuit 상태인지, 접촉이 양호한지 확인한다.\nLoad가 정상인지 확인한다.\nVoltage 설정값이 적절한지 확인하고, 너무 낮으면 증가시킨다.\n문제가 계속되면 RIGOL에 문의한다. \n21"
+    },
+    {
+      "number": 22,
+      "text": "문제 해결\n자주 발생하는 문제와 그 해결 방법은 아래와 같다. 문제가 발생하면 해당 단계에 따라 해결하고, 문제가 지속될 경우 RIGOL에 device 정보(Utility → Sys Info)를 제공하여 문의해야 한다.\n4. USB storage device가 인식되지 않는 경우\nUSB storage device가 정상적으로 작동하는지 확인한다.\n사용 중인 USB가 flash storage 타입인지 확인한다. 이 장비는 하드 디스크 타입 저장장치를 지원하지 않는다.\nInstrument를 재시작한 후 USB storage device를 다시 연결하여 확인한다.\n그래도 정상적으로 동작하지 않으면 RIGOL에 문의한다.\n22"
+    },
+    {
+      "number": 23,
+      "text": "LCE 전열 구동 Manual\n23"
+    },
+    {
+      "number": 24,
+      "text": "위 섹션의 RIGOL 공식 manual 숙지 후 본 내용 읽어보고 실험에 적용할 것\n24"
+    },
+    {
+      "number": 25,
+      "text": "안전 점검\n절연 장갑 착용 후 실험 진행(초자 보관장에 절연장갑 있음) \n절대 맨손으로 장비 만지지 말것 \n물 묻은 손으로 만지지 말것\n감전도 문제지만, 화상도 주의할 것. 에나멜 선 조밀하게 감겨있는 LCE film의 경우 낮은 전류, 전압에서도 온도 2초만에 160도까지 올라감\n전압 기준\n20 V 이하 : 건조한 피부 조건에서 일반적으로 감전 위험 낮음 \n30 ~ 40 V : 손이 젖어 있거나 땀 존재, 금속 전극을 직접 접촉, 양손으로 회로 형성시 40 V에서는 환경에 따라 감전 위험 존재 \n전류 기준\n10 A 까지 올라가는 장비 사용. \n25"
+    },
+    {
+      "number": 26,
+      "text": "Range 선택\n26\n20V/ 10A, 40V/5A 중에 어떤 range로 사용할 건지 선택\nOutput terminal\n(1)\n(2)\n(1)에 악어-바나나 케이블 꽂아서 사용\n케이블 선택\n악어 - 바나나\n악어 - 악어\n공식 manual 섹션에 적어뒀던 대로, 원하는 케이블 선택해서 사용해도 되지만 Output terminal에 기스 안 나게 악어로 B를 잡지말고 바나나로 A에 꽂아서 사용."
+    },
+    {
+      "number": 27,
+      "text": "27\n에나멜 선 사용\n직경별로 0.2, 0.3, 0.5, 0.8, 1.0 mm 에나멜 선 각각 2개씩 박스 안에 있음. 원하는 직경대로 사용. 직경마다 올라가는 온도 다 다름.\n에나멜 선 그대로 연결하면 전기 안 통함. 양쪽 부분을 면도 칼로 긁어서 피복 제거해서 사용.\n값 Seting\nSet 에 원하는 값 선택 6. p 참고.   \n셋팅 값만큼 전류 전압 가했을 때 선 통과해서 들어오는 값. 셋팅 값보다 낮음.\nLimit 값. \n셋팅 값에 비해 들어오는 값이 너무 낮을 때는 Limit값이 Set값보다 낮지는 않은지 확인"
+    },
+    {
+      "number": 28,
+      "text": "28\n연결\nOutput terminal 에 바나나 부분 꽂고 악어에 피복 벗긴 에나멜선 물리기."
+    },
+    {
+      "number": 29,
+      "text": "29\n전원 On/Off\n누르면 On. 전류, 전압 인가\n다시 누르면 Off. "
+    },
+    {
+      "number": 30,
+      "text": "30\n유의사항\n에나멜 선 온도는 가해주는 전류, 전압 뿐만 아니라 에나멜 선 직경과 길이 따라 다 달라짐.\n관련 논문 통해서 충분히 숙지 후, 전류와 전압 조절하고 애나멜 선 직경과 길이 조절했을 때 온도가 어디까지 올라가는지 IR 카메라로 보면서 확인할 것.\n꼭 온도는 IR 카메라로 확인하면서 실험 진행\n에나멜 선 피복을 끝부분만 벗겼다고 해도, 다른 부분이 선 접힘이나 온도에 의해 에나멜 코팅 부분이 타면서 벗겨질 수 있음. 그러다 실수로 만지면 감전되니까 항상 장갑 끼고 안전 유의. \n에나멜 선이 한 가닥일 때는 온도가 70도 80도까지 올라가도 필름과 같은 구조체 안에 선이 조밀하게 감겨있으면 그 부분 온도가 160도까지 올라가기도 함. \n에나멜 피복은 100~200도 사이에서 타면서 유해물질 배출함. 연기가 육안으로 보임. 최소한 110도 이내에서 사용할 것.\n실험할 때 촬영용 배경지에 선이 닿이지 않도록 유의. 본인 옷도 닿이지 않도록 유의."
+    }
+  ]
+}

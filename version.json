@@ -6,5 +6,5 @@
   "tag": "2026-11-24-v1",
   "repository": "https://github.com/dn2315401/isnm-lab-workspace",
   "basedOnCommit": "ab76a24",
-  "description": "원료 라이브러리 · 구매 시약·재구매·사용 완료·폐기·발주 입고 관리"
+  "description": "원료·시약 관리와 RIGOL DP811A 예약·매뉴얼·실제 실험 기록"
 }

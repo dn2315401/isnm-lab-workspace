@@ -32,6 +32,8 @@ npm run build           # TypeScript 검사와 프로덕션 빌드
 npm run preview         # 빌드 결과 확인
 ```
 
+DP811A 장비·매뉴얼·업로드·실제 실험 기록 구현은 [장비 추가 보고서](docs/DP811A_EQUIPMENT.md)를 참고하세요.
+
 ## 구현된 화면과 기능
 
 - 홈 대시보드, 프로젝트 생성·검색·진행률 변경
