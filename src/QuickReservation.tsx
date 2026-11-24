@@ -4,9 +4,10 @@ import {isDp811a} from './equipment-bookings';
 import {useEffect,useRef,useState} from 'react';
 import {X} from 'lucide-react';
 import {bookingKey,clock,currentResearcher,dateKey,defaults,equipmentKey,initialBookings,maintenanceKey,minutes,readList,reservationError,writeSchedule,type Booking,type Equipment,type Maintenance} from './equipment-bookings';
-export default function QuickReservation({date,projects,onClose,onSave}:{date:string;projects:{id:number;name:string}[];onClose:()=>void;onSave:(items:Booking[])=>void}){
+export default function QuickReservation({date,projects,onClose,onSave,initialEquipmentId=''}:{date:string;initialEquipmentId?:string;projects:{id:number;name:string}[];onClose:()=>void;onSave:(items:Booking[])=>void}){
  const [equipment]=useState(()=>{try{return readList<Equipment>(equipmentKey,defaults)}catch{return defaults}});
- const [draft,setDraft]=useState<Booking>({id:crypto.randomUUID(),date,time:'09:00',end:'10:00',name:'',equipmentId:'',person:currentResearcher,owner:currentResearcher,mode:'',memo:'',condition:'미확인'});
+ const initialDevice=equipment.find(item=>item.id===initialEquipmentId);
+ const [draft,setDraft]=useState<Booking>({id:crypto.randomUUID(),date,time:initialDevice?.opens||'09:00',end:initialDevice?clock(minutes(initialDevice.opens)+initialDevice.step):'10:00',name:initialDevice?.name||'',equipmentId:initialDevice?.id||'',person:currentResearcher,owner:currentResearcher,mode:'',memo:'',condition:'미확인'});
  const [error,setError]=useState('');const[busy,setBusy]=useState(false);const dialog=useRef<HTMLDivElement>(null);
  useEffect(()=>{const previous=document.activeElement as HTMLElement|null;dialog.current?.querySelector<HTMLButtonElement>('button')?.focus();const key=(e:KeyboardEvent)=>{if(e.key==='Escape'&&!busy)onClose();if(e.key==='Tab'){const nodes=dialog.current?.querySelectorAll<HTMLElement>('button:not(:disabled),input,select,textarea');if(!nodes?.length)return;const first=nodes[0],last=nodes[nodes.length-1];if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus()}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus()}}};document.addEventListener('keydown',key);return()=>{document.removeEventListener('keydown',key);previous?.focus()}},[busy]);
  const [samples]=useState<{id:string;name:string;projectId:string}[]>(()=>{try{return JSON.parse(localStorage.getItem('isnm-research-v1')||'{}').samples||[]}catch{return[]}});

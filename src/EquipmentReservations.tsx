@@ -1,3 +1,4 @@
+import QuickReservation from './QuickReservation';
 import DateInput,{ensureDateInputs} from './DateInput';
 import {dateOnlyForStorage,displayDateOnly,parseDateOnly} from './date-only';
 import EquipmentDetails from './equipment/EquipmentDetails';
@@ -21,6 +22,7 @@ export default function EquipmentReservations({ projects, onChange }: { projects
   const [equipment, setEquipment] = useState(defaults);
   const [bookings, setBookings] = useState(initialBookings);
   const [maintenance, setMaintenance] = useState<Maintenance[]>([]);
+  const [quickDate,setQuickDate]=useState<string|null>(null);
   const [selected, setSelected] = useState('');
   const [step, setStep] = useState(false);
   const [month, setMonth] = useState(() => new Date());
@@ -88,6 +90,7 @@ export default function EquipmentReservations({ projects, onChange }: { projects
     if (first) setDraft({ ...base, time: first, end: clock(minutes(first) + device.step) });
     else setError('선택한 날짜에 예약할 수 있는 시간이 없습니다.');
   }
+  function openQuickReservation(day:string){if(!device||!canLeave())return;reset();setDate(day);syncMonth(day);setQuickDate(day)}
   function editDraft(values: Partial<Booking>) {
     setDraft(previous => previous && { ...previous, ...values });
     setDirty(true);
@@ -186,7 +189,7 @@ export default function EquipmentReservations({ projects, onChange }: { projects
         <label><input type="checkbox" checked={admin} onChange={event => { setAdmin(event.target.checked); sessionStorage.setItem(adminKey, String(event.target.checked)); }}/> 관리자 화면 체험</label>
       </details>
     </> : <>
-      <div className="ob-heading"><div><h1>{device.name} 예약 일정</h1><p>날짜를 선택해 예약하거나 기존 예약을 확인하세요.</p></div>
+      <div className="ob-heading"><div><h1>{device.name} 예약 일정</h1><p>날짜 빈칸을 더블클릭하면 예약 창이 열립니다. 기존 예약을 클릭하면 상세 정보를 확인할 수 있습니다.</p></div>
         <button onClick={() => setManual(device)}><FileText size={16}/> 상세 · 매뉴얼</button></div>
       <div className="eq-layout">
         <section className="ob-list eq-calendar">
@@ -202,8 +205,8 @@ export default function EquipmentReservations({ projects, onChange }: { projects
               const key = dateKey(day);
               const items = active.filter(item => item.date === key).sort((a, b) => a.time.localeCompare(b.time));
               const blocks = maintenance.filter(item => item.equipmentId === device.id && item.date === key);
-              return <div key={key} className={['eq-day', key === date ? 'eq-day-selected' : '', day.getMonth() !== monthIndex ? 'eq-outside' : ''].join(' ')}>
-                <button className={key === today ? 'eq-today' : ''} aria-label={key + ' 날짜 선택'} aria-pressed={key === date} onClick={() => selectDay(key)}>{day.getDate()}</button>
+              return <div key={key} title="빈칸을 더블클릭하여 장비 예약" onDoubleClick={event=>{const button=(event.target as HTMLElement).closest('button');if(button&&!button.hasAttribute('data-date-trigger'))return;openQuickReservation(key)}} className={['eq-day', key === date ? 'eq-day-selected' : '', day.getMonth() !== monthIndex ? 'eq-outside' : ''].join(' ')}>
+                <button data-date-trigger className={key === today ? 'eq-today' : ''} aria-label={key + ' 날짜 선택'} aria-pressed={key === date} onClick={() => selectDay(key)}>{day.getDate()}</button>
                 {items.slice(0, 2).map(item => <button key={item.id} className={'eq-event' + (ownsBooking(item) ? ' eq-own' : '')}
                   title={item.person + ' ' + item.time + '–' + endOf(item)} onClick={() => openBooking(item)}>{item.person.slice(-2)} {item.time}–{endOf(item)}</button>)}
                 {!!blocks.length && <button className="eq-event eq-maint" onClick={() => selectDay(key)}>점검 {blocks.length}건</button>}
@@ -261,6 +264,7 @@ export default function EquipmentReservations({ projects, onChange }: { projects
         </section>}
       </div>
     </>}
+    {quickDate&&device&&<QuickReservation date={quickDate} initialEquipmentId={device.id} projects={projects} onClose={()=>setQuickDate(null)} onSave={items=>{setBookings(items);onChange(items);setQuickDate(null);reset();setMessage('예약을 저장했습니다.')}}/>}
     {manual&&<EquipmentDetails equipment={manual} bookings={bookings} projects={projects} onClose={()=>setManual(null)} onReserve={()=>{setSelected(manual.id);setStep(true);setManual(null);setDate('');reset()}}/>}
     {config && <div className="eq-overlay"><form className="ob-list" role="dialog" aria-modal="true" aria-label="장비 설정" onSubmit={event => { event.preventDefault(); void saveEquipment(); }}>
       <h2>장비 설정</h2><fieldset disabled={busy}>
