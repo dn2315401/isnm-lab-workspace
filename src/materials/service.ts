@@ -28,3 +28,5 @@ export async function changeReagentStatus(id:string,status:string,date:string,re
 export async function saveReagentOrder(input:any){const result=await materialRequest('/orders/save',{method:'POST',body:JSON.stringify(input)});await refreshMaterials();return result}
 export async function receiveReagentOrder(id:string,input:any){const result=await materialRequest('/orders/'+encodeURIComponent(id)+'/receive',{method:'POST',body:JSON.stringify(input)});await refreshMaterials();return result}
 export function requestReagentHistory(id:string){return materialRequest('/reagents/'+encodeURIComponent(id)+'/history')}
+
+export async function changeTestAvailability(material:InventoryMaterial,status:string){await materialRequest('/test-availability',{method:'POST',body:JSON.stringify({materialId:material.id,revision:(material as InventoryMaterial&{revision?:number}).revision,status})});await refreshMaterials()}

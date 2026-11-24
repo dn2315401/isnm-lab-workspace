@@ -18,7 +18,7 @@
     "test:reagents": "node tests/reagents.test.mjs && node tests/reagent-search.test.mjs",
     "test:equipment": "node tests/equipment.test.mjs && node tests/equipment-api.test.mjs",
     "check:equipment": "tsc worker/equipment-api.ts --target ES2022 --module ESNext --moduleResolution Bundler --lib ES2022,DOM --skipLibCheck --strict --noEmit",
-    "test:oligomer": "node tests/oligomer-recipe.test.mjs",
+    "test:oligomer": "node tests/oligomer-recipe.test.mjs && node tests/test-library-activation.test.mjs && node tests/oligomer-record-ui.test.mjs",
     "test:dates": "node tests/date-input.test.mjs && node tests/equipment-date-integration.test.mjs"
   },
   "dependencies": {

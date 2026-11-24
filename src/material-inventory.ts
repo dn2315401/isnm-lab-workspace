@@ -15,12 +15,14 @@ export type InventoryFields = {
   measurementTemperature: string; measurementConditions: string; phase: string; phaseValue: string; purity: string;
   lifecycle: Lifecycle; msds?: { id: string; name: string; size: number; data: string; uploadedAt: string; uploadedBy: string };
 };
+export type TestAvailability={status:string;basis:'development-test';run:string};
 export type InventoryLot = Material['lots'][number] & {
+  testActivation?:{basis:string;run:string;previousStatus:string};
   reagentId?:string; internalCode?:string; manufacturingLot?:string; sourceKind?:'purchased'|'synthesized'|'legacy'; reviewRequired?:boolean; orderId?:string;
   inventory?: InventoryFields; unit?: Unit; purity?: number | null; revision?: number; example?: boolean;
   history?: { date: string; changes: string[] }[];
 };
-export type InventoryMaterial = Omit<Material, 'lots'> & { revision?: number; cas?: string; chemicalName?: string; formula?: string; reference?: { category: string; molecularWeightDescription: string; densityDescription: string; usage: string; meltingPoint?: string; boilingPoint?: string; phaseTransitions?: string; notes?: string }; lots: InventoryLot[]; example?: boolean };
+export type InventoryMaterial = Omit<Material, 'lots'> & { testAvailability?:TestAvailability; revision?: number; cas?: string; chemicalName?: string; formula?: string; reference?: { category: string; molecularWeightDescription: string; densityDescription: string; usage: string; meltingPoint?: string; boilingPoint?: string; phaseTransitions?: string; notes?: string }; lots: InventoryLot[]; example?: boolean };
 export type MaterialDraft = InventoryFields & {
   materialRevision?:number;groupsText?:string;chemicalName?:string;materialId: string; lotId: string; revision: number; name: string; lot: string; cas: string; unit: Unit;
   component: string; mw: string; density: string; functionality: string;

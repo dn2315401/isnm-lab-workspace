@@ -1,9 +1,10 @@
 import {applyRecipe,calculateRecipe,blankRecipe,type Recipe} from './oligomer-recipe';
-import {isDateOnly,dateOnlyForStorage} from './date-only';
+import {isDateOnly,dateOnlyForStorage,parseDateOnly} from './date-only';
 import {writeResearchStorage} from './materials/storage-events';
 import type { Material, Row } from './formulation-model';
 
-export const batchStatuses = ['작성 중', '합성 예정', '합성 중', '합성 완료', '분석 대기', '완료', '실패', '폐기'] as const;
+export const synthesisStatuses=['합성 예정','합성 중','합성 완료','합성 실패','합성 중단'] as const;
+export const batchStatuses = ['작성 중', '합성 실패', '합성 중단', '합성 예정', '합성 중', '합성 완료', '분석 대기', '완료', '실패', '폐기'] as const;
 export type BatchStatus = typeof batchStatuses[number];
 export type Ingredient = Row & { dosing?:{mode:string;value:string;unit:string};plannedRatio?:{amount:string;unit:'wt%'};plannedAmount?: string; physicalState?:string; purity?: number | null };
 export type BatchAttachment = {
@@ -17,6 +18,7 @@ export type BatchFields = {
   mn: string; pdi: string; tni: string; notes: string;
 };
 export type BatchDraft = BatchFields & {
+  recordType?:'preliminary'|'synthesis';sourcePreliminaryId?:string;
   recipe?:Recipe;recipeResult?:{massA:number|null;massB:number|null;total:number|null;molA:number|null;molB:number|null;catalystMass:number|null;catalystVolume:number|null;molecularRatio:number|null;functionalRatio:number|null;weightRatio:number|null};mw?:string;tg?:string;
   id?: string; revision?: number; status: BatchStatus;
   catalystUsageId?:string;solventUsageId?:string;washUsageIds?:string[];
@@ -36,7 +38,7 @@ export const researchers = ['김지원', '정유진', '이지원'];
 
 export function blankBatch(): BatchDraft {
   return {
-    recipe:blankRecipe(),mw:'',tg:'',name: '', type: '', actualDate: '', plannedDate: '', researcher: researchers[0],
+    recordType:'preliminary',recipe:blankRecipe(),mw:'',tg:'',name: '', type: '', actualDate: '', plannedDate: '', researcher: researchers[0],
     composition: '', basis: 'wt%', catalyst: '', catalystAmount: '', catalystUnit: 'mg', durationUnit: 'h', washSolutions: [''], catalystBasis: '전체 조성',
     temperature: '', duration: '', solvent: '', wash: '', mn: '', pdi: '', tni: '', notes: '',
     status: '합성 중', ingredients: [], attachments: [], projectIds: [], formulationRef: '', sampleIds: '', analysisRefs: '',
@@ -46,7 +48,7 @@ export function blankBatch(): BatchDraft {
 function example(id: string, name: string, type: string, researcher: string, composition: string,
   mn: string, pdi: string, status: BatchStatus, notes: string): Batch {
   return {
-    ...blankBatch(),recipe:undefined, id, name, type, researcher, composition, mn, pdi, status, notes,
+    ...blankBatch(),recordType:'synthesis',recipe:undefined, id, name, type, researcher, composition, mn, pdi, status, notes,
     actualDate: '2026-10-20', example: true, revision: 1, compositionParts: parseComposition(composition),
     history: [], createdAt: '2026-10-20T00:00:00Z', updatedAt: '2026-10-20T00:00:00Z',
   };
@@ -82,7 +84,7 @@ export function changeDurationUnit(value: string, from: NonNullable<BatchDraft['
 }
 
 export function countBatches(): number {
-  try { return readBatches().filter(batch => batch.status !== '작성 중').length; }
+  try { return readBatches().filter(batch => batch.recordType!=='preliminary'&&batch.status !== '작성 중').length; }
   catch { return 0; }
 }
 
@@ -94,21 +96,20 @@ export function parseComposition(value: string) {
 }
 
 export function validateBatch(draft: BatchDraft, temporary: boolean): string {
-  for(const key of ['actualDate','plannedDate'] as const)if(draft[key]&&!isDateOnly(draft[key]))return '합성일·예정일을 실제 날짜로 입력해주세요.';
+  for(const key of ['actualDate'] as const)if(draft.recordType!=='preliminary'&&draft[key]&&!isDateOnly(draft[key]))return '합성일·예정일을 실제 날짜로 입력해주세요.';
   if (!temporary) {
     if (!draft.name.trim()) return '올리고머명을 입력해주세요.';
-    if (!draft.type.trim()) return '올리고머 유형을 입력해주세요.';
-    if (!(draft.status === '합성 예정' ? draft.plannedDate || draft.actualDate : draft.actualDate)) return '합성일을 입력해주세요.';
+    if (draft.recordType!=='preliminary'&&!draft.type.trim()) return '올리고머 유형을 입력해주세요.';
     if (!draft.researcher.trim()) return '연구자를 선택해주세요.';
-    if (draft.status === '작성 중') return '정식 기록의 상태를 선택하거나 임시저장해주세요.';
+    if (draft.recordType!=='preliminary'&&draft.status === '작성 중') return '정식 기록의 상태를 선택하거나 임시저장해주세요.';
   }
   if (!['mg', 'g', 'kg', 'wt%'].includes(draft.catalystUnit ?? 'wt%')) return '촉매 단위를 확인해주세요.';
   if (!['h', 'min'].includes(draft.durationUnit ?? 'h')) return '시간 단위를 확인해주세요.';
   if(draft.recipe){const calculation=calculateRecipe(draft)!;if(!temporary&&calculation.errors.length)return calculation.errors[0];if(!['functional','molecular','weight'].includes(draft.recipe.basis)||!['none','wtA','wtAll','direct','drops'].includes(draft.recipe.catalystMode))return '조성 계산 기준을 확인해주세요.';}
   const numericFields = [
     [draft.catalystAmount, '촉매 함량', 0, (draft.catalystUnit ?? 'wt%') === 'wt%' ? 100 : Infinity], [draft.temperature==='RT'?'':draft.temperature, '반응 온도', -273.15, 1000],
-    [draft.duration, '반응 시간', 0, Infinity], [draft.mn, 'Mn', 0, Infinity],
-    [draft.mw||'', 'Mw', 0, Infinity], [draft.tg||'', 'Tg', -273.15, Infinity], [draft.pdi, 'PDI', 0, Infinity], [draft.tni, 'Tni', -273.15, Infinity],
+    [draft.duration, '반응 시간', 0, Infinity], [draft.recordType==='preliminary'?'':draft.mn, 'Mn', 0, Infinity],
+    [draft.recordType==='preliminary'?'':draft.mw||'', 'Mw', 0, Infinity], [draft.recordType==='preliminary'?'':draft.tg||'', 'Tg', -273.15, Infinity], [draft.recordType==='preliminary'?'':draft.pdi, 'PDI', 0, Infinity], [draft.recordType==='preliminary'?'':draft.tni, 'Tni', -273.15, Infinity],
   ] as const;
   for (const [value, label, min, max] of numericFields) {
     if (value && (!value.trim() || !Number.isFinite(Number(value)) || Number(value) < min || Number(value) > max)) {
@@ -133,7 +134,7 @@ function nextBatchId(records: Batch[], type: string) {
 
 export async function saveBatch(draft: BatchDraft, temporary: boolean) {
   draft=applyRecipe(draft);
-  draft={...draft,actualDate:dateOnlyForStorage(draft.actualDate),plannedDate:dateOnlyForStorage(draft.plannedDate)};
+  draft={...draft,actualDate:draft.recordType==='preliminary'?draft.actualDate:dateOnlyForStorage(draft.actualDate),plannedDate:parseDateOnly(draft.plannedDate)||draft.plannedDate};
   const error = validateBatch(draft, temporary);
   if (error) throw new Error(error);
   const persist = () => {
@@ -169,3 +170,5 @@ export async function saveBatch(draft: BatchDraft, temporary: boolean) {
 
 /** Completed outputs are explicitly registered in the shared material DB, never synthesized as virtual materials. */
 export function withOligomerBatches(materials:Material[]):Material[]{return materials;}
+
+export function synthesisFromPreliminary(source:BatchDraft):BatchDraft{const copy=structuredClone(source);delete copy.id;delete copy.revision;for(const key of ['history','createdAt','updatedAt','example','compositionParts'])delete (copy as unknown as Record<string,unknown>)[key];return {...copy,recordType:'synthesis',sourcePreliminaryId:source.id,status:'합성 예정',attachments:copy.attachments.map(({batchId,...file})=>file)}}

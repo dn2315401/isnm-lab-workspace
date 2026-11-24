@@ -14,14 +14,14 @@ import { Plus, Search, Upload } from 'lucide-react';
 import { makeRow, units, type Material, type Saved, type Unit } from './formulation-model';
 import type { ResearchStore } from './calculator-model';
 import {
-  batchStatuses, batchTypes, blankBatch, readBatches, researchers, saveBatch, changeCatalystUnit, changeDurationUnit,
+  batchStatuses,synthesisStatuses, batchTypes, blankBatch, readBatches, researchers, saveBatch, changeCatalystUnit, changeDurationUnit,synthesisFromPreliminary,
   type Batch, type BatchDraft, type BatchFields, type Ingredient,
 } from './oligomer-batches';
 import './oligomer-batches.css';
 
 type Project = { id: number; name: string };
 const pageSize = 8;
-const emptyFilters = { query: '', type: '', date: '', start: '', end: '', researcher: '', status: '' };
+const emptyFilters = { query: '', type: '', date: '', start: '', end: '', researcher: '', status: '',recordType:'' };
 const fileLimit = 1024 * 1024;
 const extensions = /\.(pdf|csv|xlsx|jpe?g|png)$/i;
 const titles: Partial<Record<keyof BatchDraft, string>> = {
@@ -29,7 +29,7 @@ const titles: Partial<Record<keyof BatchDraft, string>> = {
   researcher: '연구자', composition: '모노머 조성비', basis: '조성 기준',
   catalystUnit: '촉매 단위', durationUnit: '시간 단위', washSolutions: '세척액 목록', catalyst: '촉매', catalystAmount: '촉매 함량', catalystBasis: '촉매 기준',
   temperature: '반응 온도', duration: '반응 시간', solvent: '용매', wash: '세척액',
-  recipe:'합성 조성 계산',recipeResult:'조성 계산 결과',mw:'Mw',tg:'Tg',mn: 'Mn', pdi: 'PDI', tni: 'Tni', notes: '비고', status: '상태',
+  recordType:'기록 유형',sourcePreliminaryId:'원본 예비 계산',recipe:'합성 조성 계산',recipeResult:'조성 계산 결과',mw:'Mw',tg:'Tg',mn: 'Mn', pdi: 'PDI', tni: 'Tni', notes: '비고', status: '상태',
   ingredients: '사용 원료', attachments: '첨부 파일', projectIds: '프로젝트',
   formulationRef: '조성 버전', sampleIds: '샘플 ID', analysisRefs: '분석 기록',
 };
@@ -104,10 +104,12 @@ export default function OligomerBatches({ projects }: { projects: Project[] }) {
   const start = filters.date === 'custom' ? filters.start : filters.date ? localDate(cutoff) : '';
   const end = filters.date === 'custom' ? filters.end : filters.date ? localDate(today) : '';
   const rangeError = start && end && start > end ? '검색 시작일은 종료일 이전이어야 합니다.' : '';
+  const preliminary=draft?.recordType==='preliminary';
   const query = filters.query.trim().toLowerCase();
   const filtered = records.filter(batch => {
     const date = batch.actualDate || batch.plannedDate;
     return !rangeError && [batch.id, batch.name, batch.researcher, batch.notes, batch.composition].some(value => value.toLowerCase().includes(query))
+      && (!filters.recordType||(batch.recordType||'synthesis')===filters.recordType)
       && (!filters.type || batch.type === filters.type)
       && (!filters.researcher || batch.researcher === filters.researcher)
       && (!filters.status || batch.status === filters.status)
@@ -134,7 +136,7 @@ export default function OligomerBatches({ projects }: { projects: Project[] }) {
 
   function open(batch: BatchDraft | null, scroll = true) {
     if (operation.current || (dirty && !window.confirm('저장하지 않은 변경사항이 있습니다. 종료하시겠습니까?'))) return;
-    setDraft(batch);
+    setDraft(batch?{...batch,actualDate:batch.actualDate||batch.plannedDate||''}:null);
     setDirty(false);
     setPicker(false);
     setError('');
@@ -157,7 +159,7 @@ export default function OligomerBatches({ projects }: { projects: Project[] }) {
       setPicker(false);
       setFilters(emptyFilters);
       setPage(Math.floor(result.records.findIndex(batch => batch.id === result.batch.id) / pageSize) + 1);
-      setMessage(temporary ? `${result.batch.id} 임시저장 완료` : `${result.batch.id} 합성 기록 저장 완료`);
+      setMessage(temporary ? `${result.batch.id} 임시저장 완료` : `${result.batch.id} ${draft.recordType==='preliminary'?'예비 계산':'합성 기록'} 저장 완료`);
       document.getElementById('batch-list')?.scrollIntoView({ block: 'start', behavior: 'smooth' });
     } catch (reason) {
       setError(reason instanceof Error && reason.name !== 'QuotaExceededError'
@@ -213,7 +215,7 @@ export default function OligomerBatches({ projects }: { projects: Project[] }) {
   function field(key: keyof BatchFields|'mw'|'tg', options: { unit?: string; chips?: string[]; hint?: string; type?: string; choices?: string[]; onUnit?: (unit: string) => void } = {}) {
     if (!draft) return null;
     return <div className="ob-field">
-      <label htmlFor={'ob-' + key}>{titles[key]}{['name', 'type'].includes(key) && <em> *</em>}</label>
+      <label htmlFor={'ob-' + key}>{titles[key]}{(key==='name'||key==='type'&&!preliminary) && <em> *</em>}</label>
       {options.type === 'date' ? <DateInput id={'ob-' + key} value={draft[key]??''} onChange={value => change({ [key]: value })}/> : <div className={options.choices ? "ob-input ob-unit-field" : "ob-input"}>
         <input id={'ob-' + key} value={draft[key]??''} type={options.type === 'number' ? 'text' : options.type ?? 'text'}
           inputMode={options.type === 'number' ? 'decimal' : undefined} placeholder={options.hint}
@@ -231,10 +233,11 @@ export default function OligomerBatches({ projects }: { projects: Project[] }) {
     </select>;
   }
 
-  return <section className="ob-page" ref={pageRef}><MaterialSyncStatus/>{picking&&<MaterialPicker planning={false} defaultComponent={picking.target==='catalyst'?'Catalyst':picking.target==='solvent'||picking.target.startsWith('wash:')?'Solvent':'Other'} initialQuery={picking.query} onClose={()=>setPicking(null)} onSelect={selection=>chooseMaterial(selection,picking.target)}/>}
+  return <section className="ob-page" ref={pageRef}><MaterialSyncStatus compact/>{picking&&<MaterialPicker planning={false} defaultComponent={picking.target==='catalyst'?'Catalyst':picking.target==='solvent'||picking.target.startsWith('wash:')?'Solvent':'Other'} initialQuery={picking.query} onClose={()=>setPicking(null)} onSelect={selection=>chooseMaterial(selection,picking.target)}/>}
     <div className="ob-heading"><div><h1>올리고머 배치 관리</h1><p>합성 이력부터 분석 결과까지, 배치 단위로 관리하세요.</p></div>
       <button className="ob-primary" onClick={() => open(blankBatch(), false)} disabled={busy}><Plus size={17}/> 새 올리고머 합성</button></div>
     <datalist id="ob-types">{types.map(type => <option key={type} value={type}/>)}</datalist>
+    <div className="ob-record-toggle" role="group" aria-label="기록 유형 필터">{[['','전체'],['preliminary','예비 계산'],['synthesis','합성 기록']].map(([value,label])=><button key={value} type="button" aria-pressed={filters.recordType===value} onClick={()=>filter('recordType',value)}>{label}</button>)}</div>
     <div className="ob-filters">
       <label className="ob-search"><Search size={16}/><input aria-label="배치 검색" value={filters.query}
         placeholder="Batch ID, 올리고머명, 연구자 검색…" onChange={event => filter('query', event.target.value)}/></label>
@@ -268,10 +271,10 @@ export default function OligomerBatches({ projects }: { projects: Project[] }) {
           <td><input type="checkbox" aria-label={batch.id + ' 선택'} checked={selected.includes(batch.id)}
             onChange={() => setSelected(previous => previous.includes(batch.id) ? previous.filter(id => id !== batch.id) : [...previous, batch.id])}/></td>
           <td><button className="ob-link" onClick={() => open(batch)}>{batch.id}</button></td><td>{batch.name || '—'} {batch.example && <small>예시</small>}</td>
-          <td>{batch.type || '—'}</td><td>{batch.actualDate || (batch.plannedDate && batch.plannedDate + ' 예정') || '—'}</td>
+          <td>{batch.type || '—'}</td><td>{batch.recordType==='preliminary'?'—':batch.actualDate || (batch.plannedDate && batch.plannedDate + ' 예정') || '—'}</td>
           <td>{batch.researcher || '—'}</td><td>{batch.composition || '—'}</td>
           <td className="ob-num">{batch.mn ? Number(batch.mn).toLocaleString('ko-KR') : '—'}</td><td className="ob-num">{batch.pdi || '—'}</td>
-          <td><span className="ob-badge" data-status={batch.status}>{batch.status}</span></td><td className="ob-ellipsis" title={batch.notes}>{batch.notes || '—'}</td>
+          <td><span className="ob-badge" data-status={batch.recordType==='preliminary'?'작성 중':batch.status}>{batch.recordType==='preliminary'?'예비 계산':batch.status}</span></td><td className="ob-ellipsis" title={batch.notes}>{batch.notes || '—'}</td>
         </tr>)}
         {!visible.length && !draft && <tr><td colSpan={11} className="ob-empty">{records.length ? '검색 조건에 맞는 배치가 없습니다.' : '등록된 올리고머 배치가 없습니다.'}
           {!records.length && <button onClick={() => open(blankBatch(), false)}>새 올리고머 합성</button>}</td></tr>}
@@ -285,21 +288,23 @@ export default function OligomerBatches({ projects }: { projects: Project[] }) {
     </section>
     {draft && <form className="ob-editor" ref={editor} noValidate onSubmit={event => { event.preventDefault(); void persist(false); }}>
       <fieldset disabled={busy}>
+        <div className="ob-record-toggle" role="group" aria-label="기록 유형">{[['preliminary','예비 계산'],['synthesis','합성 기록']].map(([value,label])=><button key={value} type="button" aria-pressed={(draft.recordType||'synthesis')===value} onClick={()=>change({recordType:value as 'preliminary'|'synthesis'})}>{label}</button>)}</div>
+        {draft.id&&preliminary&&<button type="button" onClick={()=>open(synthesisFromPreliminary(draft))}>합성 기록으로 전환 · 원본을 보존해 새 기록 생성</button>}
         <div className="ob-editor-head"><div><h2>{draft.id ? '배치 기록 수정' : '새 올리고머 합성'}</h2>
           {draft.id && <span className="ob-muted">{draft.id}</span>}</div>
           {field('name', { hint: '올리고머 이름 입력' })}
-          <div className="ob-field"><label htmlFor="ob-actualDate">합성일 <em>*</em></label>
-            <DateInput id="ob-actualDate" value={draft.actualDate} onChange={value => change({ actualDate: value })}/></div>
+          {!preliminary&&<div className="ob-field"><label htmlFor="ob-actualDate">합성일</label>
+            <DateInput id="ob-actualDate" value={draft.actualDate} onChange={value => change({ actualDate: value })}/></div>}
           <div className="ob-field"><span>연구자 <em>*</em></span>{researcher(draft.researcher)}</div>
         </div>
         <div className="ob-editor-type">{field('type', {hint:'검색 또는 직접 입력'})}</div>
         <OligomerRecipeEditor draft={draft} onChange={change}/>
-        <details className="ob-analysis ob-recipe-space"><summary>분석값 · 선택 입력</summary><div className="ob-fields">
+        {!preliminary&&<details className="ob-analysis ob-recipe-space"><summary>분석값 · 선택 입력</summary><div className="ob-fields">
           {field('mn',{unit:'g/mol',type:'number'})}{field('mw',{unit:'g/mol',type:'number'})}
           {draft.mn&&draft.mw&&Number(draft.mn)>0&&Number(draft.mw)>0&&Number.isFinite(Number(draft.mw)/Number(draft.mn))?<label className="ob-field">PDI · Mw / Mn<input readOnly value={draft.pdi}/></label>:field('pdi',{type:'number'})}
           {field('tg',{unit:'°C',type:'number'})}{field('tni',{unit:'°C',type:'number'})}
-        </div></details>
-        <div className="ob-editor-bottom"><section><label className="ob-field">합성 상태<select value={draft.status} onChange={event=>change({status:event.target.value as BatchDraft['status']})}>{batchStatuses.map(status=><option key={status}>{status}</option>)}</select></label>
+        </div></details>}
+        <div className="ob-editor-bottom"><section>{!preliminary&&<label className="ob-field">합성 상태<select value={draft.status} onChange={event=>change({status:event.target.value as BatchDraft['status']})}>{Array.from(new Set(['합성 예정','합성 중','합성 완료','합성 실패','합성 중단',draft.status])).map(status=><option key={status}>{status}</option>)}</select></label>}
             <h3 className="ob-attachment-title">첨부 파일</h3>
             <input hidden ref={files} type="file" multiple accept=".pdf,.csv,.xlsx,.jpg,.jpeg,.png"
               onChange={event => { void attach(event.currentTarget.files); event.currentTarget.value = ''; }}/>
@@ -312,7 +317,7 @@ export default function OligomerBatches({ projects }: { projects: Project[] }) {
               <button type="button" aria-label={file.name + ' 제거'} onClick={() => change({ attachments: draft.attachments.filter(item => item.id !== file.id) })}>×</button>
             </div>)}
 </section><label className="ob-notes"><span>비고</span><textarea rows={5} value={draft.notes} placeholder="합성 조건, 관찰 사항, 정제·건조 및 후처리 내용을 기록하세요." onChange={event=>change({notes:event.target.value})}/></label></div>
-        {draft.id&&<BatchOutput batchId={draft.id} name={draft.name} status={draft.status} example={records.find(r=>r.id===draft.id)?.example}/>}
+        {draft.id&&!preliminary&&<BatchOutput batchId={draft.id} name={draft.name} status={draft.status} example={records.find(r=>r.id===draft.id)?.example}/>}
         <details className="ob-links"><summary>연결된 연구 기록</summary><div className="ob-fields">
           <label className="ob-field">프로젝트<select multiple size={Math.min(4, Math.max(2, projects.length))} value={draft.projectIds}
             onChange={event => change({ projectIds: Array.from(event.target.selectedOptions, option => option.value) })}>
@@ -348,7 +353,7 @@ export default function OligomerBatches({ projects }: { projects: Project[] }) {
         <div className="ob-actions"><span className="ob-muted">저장한 기록은 이 브라우저에 보관됩니다.</span>
           <button type="button" onClick={() => open(null)}>취소</button>
           <button type="button" onClick={() => void persist(true)}>임시저장</button>
-          <button type="submit" className="ob-primary">{busy ? '처리 중…' : '합성 기록 저장'}</button>
+          <button type="submit" className="ob-primary">{busy ? '처리 중…' : preliminary?'예비 계산 저장':'합성 기록 저장'}</button>
         </div>
       </fieldset>
     </form>}

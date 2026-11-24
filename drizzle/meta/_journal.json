@@ -15,6 +15,13 @@
       "when": 1795419000000,
       "tag": "0001_material_connections",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "6",
+      "when": 1795507200000,
+      "tag": "0004_test_material_availability",
+      "breakpoints": true
     }
   ]
 }

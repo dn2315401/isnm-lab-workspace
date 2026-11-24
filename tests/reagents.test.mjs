@@ -17,7 +17,7 @@ for(const p of [safePayload,ambiguousPayload])db.prepare("INSERT INTO material_l
 const snapshot={source:'legacy experiment',materialId:legacyMaterial.id,lotId:safePayload.id,mw:123};
 db.prepare("INSERT INTO material_experiments (id,owner_id,client_id,kind,local_id,name,project_ids,payload,fingerprint,created_at,updated_at) VALUES ('old-experiment','owner','test_browser_1','oligomer','OLD-1','Original','[]',?,'old','','')").run(JSON.stringify(snapshot));
 db.prepare("INSERT INTO material_usages(id,experiment_id,local_key,material_id,lot_id,role,planned_unit,actual_unit,snapshot,created_at,updated_at) VALUES ('old-usage','old-experiment','row-1',?,?,'촉매','g','g',?,'','')").run(legacyMaterial.id,safePayload.id,JSON.stringify(snapshot));
-db.exec(readFileSync('drizzle/0002_reagent_lifecycle.sql','utf8'));
+db.exec(readFileSync('drizzle/0002_reagent_lifecycle.sql','utf8'));db.exec(readFileSync('drizzle/0004_test_material_availability.sql','utf8'));
 assert.equal(db.prepare('SELECT COUNT(*) n FROM material_pre_reagent_backup').get().n,4);
 assert.equal(JSON.parse(db.prepare("SELECT payload FROM material_pre_reagent_backup WHERE kind='lot' AND id='legacy-bottle'").get().payload).row.inventory.remaining,'40');
 class P{constructor(sql,args=[]){this.sql=sql;this.args=args}bind(...args){return new P(this.sql,args)}async first(){return db.prepare(this.sql).get(...this.args)||null}async all(){return {results:db.prepare(this.sql).all(...this.args)}}async run(){return {meta:{changes:Number(db.prepare(this.sql).run(...this.args).changes)}}}}
@@ -28,7 +28,7 @@ const lib=async()=>{const r=await req('/library?clientId=test_browser_1');okay(r
 let data=await lib();let legacy=data.materials.find(m=>m.id===legacyMaterial.id);
 assert.equal(legacy.lots.length,3);assert.equal(legacy.lots.find(l=>l.id===safePayload.id).reviewRequired,false);assert.equal(legacy.lots.find(l=>l.id===ambiguousPayload.id).reviewRequired,true);
 assert.equal(legacy.lots.find(l=>l.inventory?.notes==='Keep original').reviewRequired,true);
-assert.equal(db.prepare('SELECT payload FROM material_entities WHERE id=?').get(legacyMaterial.id).payload,JSON.stringify(legacyMaterial));
+const materialAfterTestActivation=JSON.parse(db.prepare('SELECT payload FROM material_entities WHERE id=?').get(legacyMaterial.id).payload);assert.equal(materialAfterTestActivation.testAvailability.basis,'development-test');delete materialAfterTestActivation.testAvailability;assert.deepEqual(materialAfterTestActivation,legacyMaterial);
 assert.equal(db.prepare('SELECT payload FROM material_lots WHERE id=?').get(safePayload.id).payload,JSON.stringify(safePayload));
 assert.equal(db.prepare("SELECT snapshot FROM material_usages WHERE id='old-usage'").get().snapshot,JSON.stringify(snapshot));
 assert.ok(db.prepare("SELECT reagent_id FROM material_usages WHERE id='old-usage'").get().reagent_id);
