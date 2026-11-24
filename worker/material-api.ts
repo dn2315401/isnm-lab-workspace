@@ -1,3 +1,4 @@
+import {parseDateOnly} from '../src/date-only';
 import {migrateReagents,reagentLibrary,reagentOrders,reagentRoute} from './reagent-api';
 import {memberFor} from './calendar-api';
 import {catalogMaterials,makeMaterialDraft,validateMaterial,type InventoryMaterial,type InventoryLot,type MaterialDraft} from '../src/material-inventory';
@@ -42,7 +43,7 @@ export async function materialApi(request:Request,env:Env):Promise<Response>{
    }for(let start=0;start<deferred.length;start+=40)await env.DB.batch(deferred.slice(start,start+40));await migrateReagents(env,user.id);return response({ok:true,reviews});
   }
   if(path==='/save'&&request.method==='POST'){
-   const d={...makeMaterialDraft(),...body.draft} as MaterialDraft;const errors=validateMaterial(d,true);if(!d.name.trim()||Object.keys(errors).length)fail(400,Object.values(errors)[0]||'원료명을 입력해주세요.');const materials=await library(env);let current=materials.find(m=>m.id===d.materialId);if(d.materialId&&!current)fail(404,'원료를 다시 선택해주세요.');
+   const d={...makeMaterialDraft(),...body.draft} as MaterialDraft;for(const key of ['purchased','opened'] as const){const normalized=parseDateOnly(d[key]);if(normalized)d[key]=normalized}const errors=validateMaterial(d,true);if(!d.name.trim()||Object.keys(errors).length)fail(400,Object.values(errors)[0]||'원료명을 입력해주세요.');const materials=await library(env);let current=materials.find(m=>m.id===d.materialId);if(d.materialId&&!current)fail(404,'원료를 다시 선택해주세요.');
    if(!current){const match=matchChemical(materials,d.name,d.cas);if(match.status==='ambiguous')fail(409,'같은 물질 후보가 여러 개입니다. 기존 원료를 선택해주세요.');if(match.material)return response({duplicate:match.material},409);if(d.cas&&materials.some(m=>normalizeChemical(m.name)===normalizeChemical(d.name)&&!m.cas))fail(409,'동일 이름의 기존 원료가 있습니다. CAS 정보를 확인하고 기존 원료를 선택해주세요.');}
    const at=now(),id=current?.id||crypto.randomUUID(),token=crypto.randomUUID();const groups=checkedGroups(body.groupsText);const {lots,...old}=current||{} as InventoryMaterial;const number=(value:string)=>value.trim()?Number(value):null;
    const material:any={...old,id,name:d.name.trim(),cas:d.cas.trim(),component:d.component,chemicalName:d.chemicalName??old.chemicalName??'',role:current?.role||({Catalyst:'촉매',Solvent:'용매',Oligomer:'올리고머',Crosslinker:'가교제',Additive:'첨가제',Stabilizer:'안정제','Reactive Monomer':'반응성 희석제'} as Record<string,string>)[d.component]||'기타',unit:d.unit,mw:number(d.mw),density:number(d.density),functionality:number(d.functionality),example:false,writeToken:token,...(groups?{groups}:{})};

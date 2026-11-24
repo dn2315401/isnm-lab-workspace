@@ -1,3 +1,4 @@
+import {isDateOnly,dateOnlyForStorage} from './date-only';
 import {writeResearchStorage} from './materials/storage-events';
 import type { Material, Row } from './formulation-model';
 
@@ -91,6 +92,7 @@ export function parseComposition(value: string) {
 }
 
 export function validateBatch(draft: BatchDraft, temporary: boolean): string {
+  for(const key of ['actualDate','plannedDate'] as const)if(draft[key]&&!isDateOnly(draft[key]))return '합성일·예정일을 실제 날짜로 입력해주세요.';
   if (!temporary) {
     if (!draft.name.trim()) return '올리고머명을 입력해주세요.';
     if (!draft.type.trim()) return '올리고머 유형을 입력해주세요.';
@@ -127,6 +129,7 @@ function nextBatchId(records: Batch[], type: string) {
 }
 
 export async function saveBatch(draft: BatchDraft, temporary: boolean) {
+  draft={...draft,actualDate:dateOnlyForStorage(draft.actualDate),plannedDate:dateOnlyForStorage(draft.plannedDate)};
   const error = validateBatch(draft, temporary);
   if (error) throw new Error(error);
   const persist = () => {

@@ -35,10 +35,10 @@ console.log('원료 86종, 기존 Lot 보존, 기존 비고·메모 원본 보�
 
 const dates=require('../work/test-material-catalog/material-dates.js');
 assert.equal(dates.materialDateInput('20261123'),'2026-11-23');
-assert.equal(dates.materialDateInput('2026. 11. 23'),'2026-11-23');
+assert.equal(dates.materialDateInput('2026.11.23'),'2026-11-23');
 assert.equal(dates.materialDateInput('2026112399'),'2026-11-23');
 assert.equal(dates.materialDateInput('20261'),'20261');
-assert.equal(dates.materialDateDisplay('2026-11-23'),'2026. 11. 23');
+assert.equal(dates.materialDateDisplay('2026-11-23'),'2026.11.23');
 assert.equal(dates.isMaterialDate('2024-02-29'),true);
 for(const invalid of ['2026-02-29','2026-04-31','202611-12-01','2026-13-01','0000-01-01','20261'])assert.equal(dates.isMaterialDate(invalid),false);
 console.log('8자리 날짜 입력·붙여넣기·표시·윤년·잘못된 날짜 검증 통과');

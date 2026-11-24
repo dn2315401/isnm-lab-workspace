@@ -1,3 +1,4 @@
+import {dateOnlyForStorage} from './date-only';
 import EquipmentDetails from './equipment/EquipmentDetails';
 import Dp811Fields,{SafetyNotes} from './equipment/Dp811Fields';
 import {isDp811a,powerRanges} from './equipment-bookings';
@@ -110,7 +111,7 @@ export default function EquipmentReservations({ projects, onChange }: { projects
           const problem = reservationError(item, latest, records, readList<Maintenance>(maintenanceKey, []));
           if (problem) throw new Error(problem);
         }
-        const saved = { ...item, equipmentId: device.id, owner: item.owner ?? item.person, revision: (previous?.revision ?? 0) + 1, cancelled: cancel };
+        const saved = { ...item, date:dateOnlyForStorage(item.date,true), equipmentId: device.id, owner: item.owner ?? item.person, revision: (previous?.revision ?? 0) + 1, cancelled: cancel };
         const updated = previous ? records.map(record => record.id === item.id ? saved : record) : [...records, saved];
         localStorage.setItem(bookingKey, JSON.stringify(updated));
         return updated;

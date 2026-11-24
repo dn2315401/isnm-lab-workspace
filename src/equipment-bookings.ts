@@ -1,3 +1,4 @@
+import {isDateOnly} from './date-only';
 export type Equipment = {
   id: string; name: string; description: string; icon: string; manual: string; reservable: boolean;
   opens: string; closes: string; step: number; maximum: number; advance: number;
@@ -103,6 +104,7 @@ export function ownsBooking(booking: Booking) {
   return (booking.owner ?? booking.person) === currentResearcher;
 }
 export function reservationError(booking: Booking, equipment: Equipment, reservations: Booking[], maintenance: Maintenance[], now = new Date()) {
+  if (!isDateOnly(booking.date)) return '예약 날짜를 YYYY.MM.DD 형식의 실제 날짜로 입력해주세요.';
   if (!equipment.reservable) return '현재 예약할 수 없는 장비입니다.';
   if (isDp811a(equipment)) { const powerError = powerSettingsError({outputRange:booking.outputRange,voltage:booking.plannedVoltage,current:booking.plannedCurrent}); if (powerError) return powerError; }
   const today = dateKey(now);

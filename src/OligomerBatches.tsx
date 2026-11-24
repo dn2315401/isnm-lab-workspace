@@ -1,3 +1,4 @@
+import DateInput,{ensureDateInputs} from './DateInput';
 import MaterialPicker,{selectableReagents} from './materials/MaterialPicker';
 import MaterialBindingField from './materials/MaterialBindingField';
 import BatchOutput from './materials/BatchOutput';
@@ -71,6 +72,7 @@ export default function OligomerBatches({ projects }: { projects: Project[] }) {
   const [materialQuery, setMaterialQuery] = useState('');
   const [materialLots, setMaterialLots] = useState<Record<string, string>>({});
   const editor = useRef<HTMLFormElement>(null);
+  const pageRef = useRef<HTMLElement>(null);
   const files = useRef<HTMLInputElement>(null);
   const materials = availableMaterials(readInventorySafely());
   const formulations = localData<Saved[]>('isnm-formulations', []);
@@ -99,10 +101,11 @@ export default function OligomerBatches({ projects }: { projects: Project[] }) {
   cutoff.setDate(today.getDate() - ({ week: 6, month: 29, quarter: 89 }[filters.date] ?? 0));
   const start = filters.date === 'custom' ? filters.start : filters.date ? localDate(cutoff) : '';
   const end = filters.date === 'custom' ? filters.end : filters.date ? localDate(today) : '';
+  const rangeError = start && end && start > end ? '검색 시작일은 종료일 이전이어야 합니다.' : '';
   const query = filters.query.trim().toLowerCase();
   const filtered = records.filter(batch => {
     const date = batch.actualDate || batch.plannedDate;
-    return [batch.id, batch.name, batch.researcher, batch.notes, batch.composition].some(value => value.toLowerCase().includes(query))
+    return !rangeError && [batch.id, batch.name, batch.researcher, batch.notes, batch.composition].some(value => value.toLowerCase().includes(query))
       && (!filters.type || batch.type === filters.type)
       && (!filters.researcher || batch.researcher === filters.researcher)
       && (!filters.status || batch.status === filters.status)
@@ -139,6 +142,8 @@ export default function OligomerBatches({ projects }: { projects: Project[] }) {
 
   async function persist(temporary: boolean) {
     if (!draft || operation.current) return;
+    if (!ensureDateInputs(pageRef.current ?? undefined)) { setError('합성일과 날짜 검색 조건을 YYYY.MM.DD 형식으로 확인해주세요.'); return; }
+    if (rangeError) { setError(rangeError); return; }
     operation.current = true;
     setBusy(true);
     setError('');
@@ -207,12 +212,12 @@ export default function OligomerBatches({ projects }: { projects: Project[] }) {
     if (!draft) return null;
     return <div className="ob-field">
       <label htmlFor={'ob-' + key}>{titles[key]}{['name', 'type'].includes(key) && <em> *</em>}</label>
-      <div className={options.choices ? "ob-input ob-unit-field" : "ob-input"}>
+      {options.type === 'date' ? <DateInput id={'ob-' + key} value={draft[key]} onChange={value => change({ [key]: value })}/> : <div className={options.choices ? "ob-input ob-unit-field" : "ob-input"}>
         <input id={'ob-' + key} value={draft[key]} type={options.type === 'number' ? 'text' : options.type ?? 'text'}
           inputMode={options.type === 'number' ? 'decimal' : undefined} placeholder={options.hint}
           list={key === 'type' ? 'ob-types' : undefined} onChange={event => change({ [key]: event.target.value })}/>
         {options.choices ? <select className="ob-unit-select" aria-label={titles[key]+' 단위'} value={options.unit} onChange={event => options.onUnit?.(event.target.value)}>{options.choices.map(unit => <option key={unit} value={unit}>{unit}</option>)}</select> : options.unit && <span>{options.unit}</span>}
-      </div>
+      </div>}
       {options.chips && <div className="ob-chips"><small>자주 사용</small>{options.chips.map(value =>
         <button type="button" key={value} onClick={() => change({ [key]: value })}>{value}{options.unit && ' ' + options.unit}</button>)}</div>}
     </div>;
@@ -224,7 +229,7 @@ export default function OligomerBatches({ projects }: { projects: Project[] }) {
     </select>;
   }
 
-  return <section className="ob-page"><MaterialSyncStatus/>{picking&&<MaterialPicker planning={false} defaultComponent={picking.target==='catalyst'?'Catalyst':picking.target==='solvent'||picking.target.startsWith('wash:')?'Solvent':'Other'} initialQuery={picking.query} onClose={()=>setPicking(null)} onSelect={selection=>chooseMaterial(selection,picking.target)}/>}
+  return <section className="ob-page" ref={pageRef}><MaterialSyncStatus/>{picking&&<MaterialPicker planning={false} defaultComponent={picking.target==='catalyst'?'Catalyst':picking.target==='solvent'||picking.target.startsWith('wash:')?'Solvent':'Other'} initialQuery={picking.query} onClose={()=>setPicking(null)} onSelect={selection=>chooseMaterial(selection,picking.target)}/>}
     <div className="ob-heading"><div><h1>올리고머 배치 관리</h1><p>합성 이력부터 분석 결과까지, 배치 단위로 관리하세요.</p></div>
       <button className="ob-primary" onClick={() => open(blankBatch(), false)} disabled={busy}><Plus size={17}/> 새 올리고머 합성</button></div>
     <datalist id="ob-types">{types.map(type => <option key={type} value={type}/>)}</datalist>
@@ -242,10 +247,11 @@ export default function OligomerBatches({ projects }: { projects: Project[] }) {
         <option value="">전체</option>{batchStatuses.map(status => <option key={status}>{status}</option>)}</select></label>
       <button type="button" onClick={() => { setFilters(emptyFilters); setPage(1); }}>초기화</button>
       {filters.date === 'custom' && <div className="ob-range">
-        <label>시작일<input type="date" value={filters.start} max={filters.end || undefined} onChange={event => filter('start', event.target.value)}/></label>
-        <label>종료일<input type="date" value={filters.end} min={filters.start || undefined} onChange={event => filter('end', event.target.value)}/></label>
+        <label>시작일<DateInput value={filters.start} max={filters.end || undefined} onChange={value => filter('start', value)}/></label>
+        <label>종료일<DateInput value={filters.end} min={filters.start || undefined} onChange={value => filter('end', value)}/></label>
       </div>}
     </div>
+    {rangeError&&<p className="ob-error" role="alert">{rangeError}</p>}
     <section className="ob-list" id="batch-list" aria-labelledby="ob-list-title">
       <div className="ob-list-title"><h2 id="ob-list-title">배치 목록</h2><span>총 {filtered.length}건</span>
         {draft && !draft.id && <span className="ob-badge">새 배치 작성 중</span>}
@@ -268,7 +274,7 @@ export default function OligomerBatches({ projects }: { projects: Project[] }) {
         {draft && !draft.id && <tr className="ob-active"><td/><td>저장 시 자동 생성</td>
           <td><input aria-label="새 행 올리고머명" placeholder="이름 입력" value={draft.name} onChange={event => change({ name: event.target.value })}/></td>
           <td><input aria-label="새 행 유형" list="ob-types" placeholder="유형" value={draft.type} onChange={event => change({ type: event.target.value })}/></td>
-          <td><input aria-label="새 행 합성일" type="date" value={draft.actualDate} onChange={event => change({ actualDate: event.target.value })}/></td>
+          <td><DateInput aria-label="새 행 합성일" value={draft.actualDate} onChange={value => change({ actualDate: value })}/></td>
           <td>{researcher(draft.researcher)}</td><td>{draft.composition || '—'}</td><td>{draft.mn || '—'}</td>
           <td>{draft.pdi || '—'}</td><td><span className="ob-badge">작성 중</span></td><td>—</td></tr>}
         {!visible.length && !draft && <tr><td colSpan={11} className="ob-empty">{records.length ? '검색 조건에 맞는 배치가 없습니다.' : '등록된 올리고머 배치가 없습니다.'}
@@ -287,7 +293,7 @@ export default function OligomerBatches({ projects }: { projects: Project[] }) {
           {draft.id && <span className="ob-muted">{draft.id}</span>}</div>
           {field('name', { hint: '올리고머 이름 입력' })}
           <div className="ob-field"><label htmlFor="ob-actualDate">합성일 <em>*</em></label>
-            <input id="ob-actualDate" type="date" value={draft.actualDate} onChange={event => change({ actualDate: event.target.value })}/></div>
+            <DateInput id="ob-actualDate" value={draft.actualDate} onChange={value => change({ actualDate: value })}/></div>
           <div className="ob-field"><span>연구자 <em>*</em></span>{researcher(draft.researcher)}</div>
         </div>
         <div className="ob-editor-grid">

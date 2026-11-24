@@ -1,3 +1,4 @@
+import {parseDateOnly} from '../src/date-only';
 import {isMaterialDate} from '../src/material-dates';
 import {memberFor} from './calendar-api';
 import {powerSettingsError} from '../src/equipment-bookings';
@@ -26,7 +27,7 @@ export async function equipmentApi(request:Request,env:any){try{
   const rows=(await env.DB.prepare('SELECT * FROM equipment_experiment_records WHERE equipment_id=? ORDER BY created_at DESC').bind(url.searchParams.get('equipmentId')||'').all()).results;return respond({records:rows.map((r:any)=>({...JSON.parse(r.payload),id:r.id,ownerId:r.owner_id,createdAt:r.created_at}))});
  }
  if(path==='/experiments'&&request.method==='POST'){
-  if(!request.headers.get('content-type')?.includes('application/json'))fail(415,'JSON 입력이 필요합니다.');const text=await request.text();if(text.length>100000)fail(413,'실험 기록이 너무 큽니다.');let body:any;try{body=JSON.parse(text)}catch{fail(400,'실험 입력 자료를 확인해주세요.')}if(typeof body.equipmentId!=='string'||!body.equipmentId||body.equipmentId.length>200||!isMaterialDate(body.date||''))fail(400,'장비와 실제 실험 날짜를 입력해주세요.');
+  if(!request.headers.get('content-type')?.includes('application/json'))fail(415,'JSON 입력이 필요합니다.');const text=await request.text();if(text.length>100000)fail(413,'실험 기록이 너무 큽니다.');let body:any;try{body=JSON.parse(text)}catch{fail(400,'실험 입력 자료를 확인해주세요.')}const normalized=parseDateOnly(body.date);if(normalized)body.date=normalized;if(typeof body.equipmentId!=='string'||!body.equipmentId||body.equipmentId.length>200||!isMaterialDate(body.date||''))fail(400,'장비와 실제 실험 날짜를 입력해주세요.');
   const rangeError=powerSettingsError({outputRange:body.outputRange,voltage:body.actualVoltage,current:body.actualCurrent});if(rangeError)fail(400,rangeError);for(const key of ['actualVoltage','actualCurrent','durationSeconds','temperature'])if(body[key]!==undefined&&body[key]!==''&&(!Number.isFinite(Number(body[key]))||key!=='temperature'&&Number(body[key])<0||key==='temperature'&&Number(body[key])< -273.15))fail(400,'실제 설정값·시간·온도를 확인해주세요.');const id=crypto.randomUUID(),createdAt=new Date().toISOString();await env.DB.prepare('INSERT INTO equipment_experiment_records(id,equipment_id,owner_id,payload,created_at) VALUES (?,?,?,?,?)').bind(id,body.equipmentId,user.id,JSON.stringify({...body,id,recordedBy:user.name||user.email,recordedAt:createdAt}),createdAt).run();return respond({id,record:{...body,id,createdAt}});
  }
  return respond({error:'장비 요청을 찾을 수 없습니다.'},404);

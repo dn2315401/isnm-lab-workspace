@@ -6,5 +6,5 @@
   "tag": "2026-11-24-v1",
   "repository": "https://github.com/dn2315401/isnm-lab-workspace",
   "basedOnCommit": "ab76a24",
-  "description": "원료·시약 관리와 RIGOL DP811A 예약·매뉴얼·실제 실험 기록"
+  "description": "전체 날짜 입력 공통화 · YYYY.MM.DD 표시와 ISO 저장·검증"
 }
