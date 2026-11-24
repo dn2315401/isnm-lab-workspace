@@ -1,10 +1,11 @@
+import {applyRecipe,calculateRecipe,blankRecipe,type Recipe} from './oligomer-recipe';
 import {isDateOnly,dateOnlyForStorage} from './date-only';
 import {writeResearchStorage} from './materials/storage-events';
 import type { Material, Row } from './formulation-model';
 
 export const batchStatuses = ['작성 중', '합성 예정', '합성 중', '합성 완료', '분석 대기', '완료', '실패', '폐기'] as const;
 export type BatchStatus = typeof batchStatuses[number];
-export type Ingredient = Row & { plannedRatio?:{amount:string;unit:'wt%'};plannedAmount?: string; purity?: number | null };
+export type Ingredient = Row & { dosing?:{mode:string;value:string;unit:string};plannedRatio?:{amount:string;unit:'wt%'};plannedAmount?: string; physicalState?:string; purity?: number | null };
 export type BatchAttachment = {
   id: string; name: string; type: string; size: number; data: string;
   uploadedAt: string; uploadedBy: string; batchId?: string;
@@ -16,6 +17,7 @@ export type BatchFields = {
   mn: string; pdi: string; tni: string; notes: string;
 };
 export type BatchDraft = BatchFields & {
+  recipe?:Recipe;recipeResult?:{massA:number|null;massB:number|null;total:number|null;molA:number|null;molB:number|null;catalystMass:number|null;catalystVolume:number|null;molecularRatio:number|null;functionalRatio:number|null;weightRatio:number|null};mw?:string;tg?:string;
   id?: string; revision?: number; status: BatchStatus;
   catalystUsageId?:string;solventUsageId?:string;washUsageIds?:string[];
   catalystUnit?: 'mg' | 'g' | 'kg' | 'wt%'; durationUnit?: 'h' | 'min'; washSolutions?: string[];
@@ -34,7 +36,7 @@ export const researchers = ['김지원', '정유진', '이지원'];
 
 export function blankBatch(): BatchDraft {
   return {
-    name: '', type: '', actualDate: '', plannedDate: '', researcher: researchers[0],
+    recipe:blankRecipe(),mw:'',tg:'',name: '', type: '', actualDate: '', plannedDate: '', researcher: researchers[0],
     composition: '', basis: 'wt%', catalyst: '', catalystAmount: '', catalystUnit: 'mg', durationUnit: 'h', washSolutions: [''], catalystBasis: '전체 조성',
     temperature: '', duration: '', solvent: '', wash: '', mn: '', pdi: '', tni: '', notes: '',
     status: '합성 중', ingredients: [], attachments: [], projectIds: [], formulationRef: '', sampleIds: '', analysisRefs: '',
@@ -44,7 +46,7 @@ export function blankBatch(): BatchDraft {
 function example(id: string, name: string, type: string, researcher: string, composition: string,
   mn: string, pdi: string, status: BatchStatus, notes: string): Batch {
   return {
-    ...blankBatch(), id, name, type, researcher, composition, mn, pdi, status, notes,
+    ...blankBatch(),recipe:undefined, id, name, type, researcher, composition, mn, pdi, status, notes,
     actualDate: '2026-10-20', example: true, revision: 1, compositionParts: parseComposition(composition),
     history: [], createdAt: '2026-10-20T00:00:00Z', updatedAt: '2026-10-20T00:00:00Z',
   };
@@ -66,7 +68,7 @@ export function readBatches(): Batch[] {
 
 export function normalizeBatchOptions(batch: BatchDraft) {
   return { catalystUnit: batch.catalystUnit ?? 'wt%' as const, durationUnit: batch.durationUnit ?? 'h' as const,
-    washSolutions: batch.washSolutions?.length ? [...batch.washSolutions] : [batch.wash || ''] };
+    washSolutions: batch.washSolutions ? [...batch.washSolutions] : [batch.wash || ''] };
 }
 export function changeCatalystUnit(value: string, from: NonNullable<BatchDraft['catalystUnit']>, to: NonNullable<BatchDraft['catalystUnit']>) {
   if (!value.trim() || from === to) return value;
@@ -102,10 +104,11 @@ export function validateBatch(draft: BatchDraft, temporary: boolean): string {
   }
   if (!['mg', 'g', 'kg', 'wt%'].includes(draft.catalystUnit ?? 'wt%')) return '촉매 단위를 확인해주세요.';
   if (!['h', 'min'].includes(draft.durationUnit ?? 'h')) return '시간 단위를 확인해주세요.';
+  if(draft.recipe){const calculation=calculateRecipe(draft)!;if(!temporary&&calculation.errors.length)return calculation.errors[0];if(!['functional','molecular','weight'].includes(draft.recipe.basis)||!['none','wtA','wtAll','direct','drops'].includes(draft.recipe.catalystMode))return '조성 계산 기준을 확인해주세요.';}
   const numericFields = [
-    [draft.catalystAmount, '촉매 함량', 0, (draft.catalystUnit ?? 'wt%') === 'wt%' ? 100 : Infinity], [draft.temperature, '반응 온도', 0, 1000],
+    [draft.catalystAmount, '촉매 함량', 0, (draft.catalystUnit ?? 'wt%') === 'wt%' ? 100 : Infinity], [draft.temperature==='RT'?'':draft.temperature, '반응 온도', -273.15, 1000],
     [draft.duration, '반응 시간', 0, Infinity], [draft.mn, 'Mn', 0, Infinity],
-    [draft.pdi, 'PDI', 0, Infinity], [draft.tni, 'Tni', -273.15, Infinity],
+    [draft.mw||'', 'Mw', 0, Infinity], [draft.tg||'', 'Tg', -273.15, Infinity], [draft.pdi, 'PDI', 0, Infinity], [draft.tni, 'Tni', -273.15, Infinity],
   ] as const;
   for (const [value, label, min, max] of numericFields) {
     if (value && (!value.trim() || !Number.isFinite(Number(value)) || Number(value) < min || Number(value) > max)) {
@@ -129,6 +132,7 @@ function nextBatchId(records: Batch[], type: string) {
 }
 
 export async function saveBatch(draft: BatchDraft, temporary: boolean) {
+  draft=applyRecipe(draft);
   draft={...draft,actualDate:dateOnlyForStorage(draft.actualDate),plannedDate:dateOnlyForStorage(draft.plannedDate)};
   const error = validateBatch(draft, temporary);
   if (error) throw new Error(error);

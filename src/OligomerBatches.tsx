@@ -1,3 +1,5 @@
+import OligomerRecipeEditor from './OligomerRecipeEditor';
+import {applyRecipe} from './oligomer-recipe';
 import DateInput,{ensureDateInputs} from './DateInput';
 import MaterialPicker,{selectableReagents} from './materials/MaterialPicker';
 import MaterialBindingField from './materials/MaterialBindingField';
@@ -27,7 +29,7 @@ const titles: Partial<Record<keyof BatchDraft, string>> = {
   researcher: '연구자', composition: '모노머 조성비', basis: '조성 기준',
   catalystUnit: '촉매 단위', durationUnit: '시간 단위', washSolutions: '세척액 목록', catalyst: '촉매', catalystAmount: '촉매 함량', catalystBasis: '촉매 기준',
   temperature: '반응 온도', duration: '반응 시간', solvent: '용매', wash: '세척액',
-  mn: 'Mn', pdi: 'PDI', tni: 'Tni', notes: '비고', status: '상태',
+  recipe:'합성 조성 계산',recipeResult:'조성 계산 결과',mw:'Mw',tg:'Tg',mn: 'Mn', pdi: 'PDI', tni: 'Tni', notes: '비고', status: '상태',
   ingredients: '사용 원료', attachments: '첨부 파일', projectIds: '프로젝트',
   formulationRef: '조성 버전', sampleIds: '샘플 ID', analysisRefs: '분석 기록',
 };
@@ -126,7 +128,7 @@ export default function OligomerBatches({ projects }: { projects: Project[] }) {
   }
 
   function change(patch: Partial<BatchDraft>) {
-    setDraft(previous => previous && synchronizeBatchLinks({ ...previous, ...patch },patch));
+    setDraft(previous => {if(!previous)return previous;const next={...previous,...patch};return applyRecipe(next.recipe?next:synchronizeBatchLinks(next,patch))});
     setDirty(true);
   }
 
@@ -208,12 +210,12 @@ export default function OligomerBatches({ projects }: { projects: Project[] }) {
     setPicker(false);
   }
 
-  function field(key: keyof BatchFields, options: { unit?: string; chips?: string[]; hint?: string; type?: string; choices?: string[]; onUnit?: (unit: string) => void } = {}) {
+  function field(key: keyof BatchFields|'mw'|'tg', options: { unit?: string; chips?: string[]; hint?: string; type?: string; choices?: string[]; onUnit?: (unit: string) => void } = {}) {
     if (!draft) return null;
     return <div className="ob-field">
       <label htmlFor={'ob-' + key}>{titles[key]}{['name', 'type'].includes(key) && <em> *</em>}</label>
-      {options.type === 'date' ? <DateInput id={'ob-' + key} value={draft[key]} onChange={value => change({ [key]: value })}/> : <div className={options.choices ? "ob-input ob-unit-field" : "ob-input"}>
-        <input id={'ob-' + key} value={draft[key]} type={options.type === 'number' ? 'text' : options.type ?? 'text'}
+      {options.type === 'date' ? <DateInput id={'ob-' + key} value={draft[key]??''} onChange={value => change({ [key]: value })}/> : <div className={options.choices ? "ob-input ob-unit-field" : "ob-input"}>
+        <input id={'ob-' + key} value={draft[key]??''} type={options.type === 'number' ? 'text' : options.type ?? 'text'}
           inputMode={options.type === 'number' ? 'decimal' : undefined} placeholder={options.hint}
           list={key === 'type' ? 'ob-types' : undefined} onChange={event => change({ [key]: event.target.value })}/>
         {options.choices ? <select className="ob-unit-select" aria-label={titles[key]+' 단위'} value={options.unit} onChange={event => options.onUnit?.(event.target.value)}>{options.choices.map(unit => <option key={unit} value={unit}>{unit}</option>)}</select> : options.unit && <span>{options.unit}</span>}
@@ -271,12 +273,6 @@ export default function OligomerBatches({ projects }: { projects: Project[] }) {
           <td className="ob-num">{batch.mn ? Number(batch.mn).toLocaleString('ko-KR') : '—'}</td><td className="ob-num">{batch.pdi || '—'}</td>
           <td><span className="ob-badge" data-status={batch.status}>{batch.status}</span></td><td className="ob-ellipsis" title={batch.notes}>{batch.notes || '—'}</td>
         </tr>)}
-        {draft && !draft.id && <tr className="ob-active"><td/><td>저장 시 자동 생성</td>
-          <td><input aria-label="새 행 올리고머명" placeholder="이름 입력" value={draft.name} onChange={event => change({ name: event.target.value })}/></td>
-          <td><input aria-label="새 행 유형" list="ob-types" placeholder="유형" value={draft.type} onChange={event => change({ type: event.target.value })}/></td>
-          <td><DateInput aria-label="새 행 합성일" value={draft.actualDate} onChange={value => change({ actualDate: value })}/></td>
-          <td>{researcher(draft.researcher)}</td><td>{draft.composition || '—'}</td><td>{draft.mn || '—'}</td>
-          <td>{draft.pdi || '—'}</td><td><span className="ob-badge">작성 중</span></td><td>—</td></tr>}
         {!visible.length && !draft && <tr><td colSpan={11} className="ob-empty">{records.length ? '검색 조건에 맞는 배치가 없습니다.' : '등록된 올리고머 배치가 없습니다.'}
           {!records.length && <button onClick={() => open(blankBatch(), false)}>새 올리고머 합성</button>}</td></tr>}
         </tbody></table></div>
@@ -296,33 +292,14 @@ export default function OligomerBatches({ projects }: { projects: Project[] }) {
             <DateInput id="ob-actualDate" value={draft.actualDate} onChange={value => change({ actualDate: value })}/></div>
           <div className="ob-field"><span>연구자 <em>*</em></span>{researcher(draft.researcher)}</div>
         </div>
-        <div className="ob-editor-grid">
-          <section className="ob-recipe"><h3>합성 레시피 요약</h3><div className="ob-fields">
-            {field('type', { hint: '검색 또는 직접 입력', chips: ['CLCE', 'SMP', 'Epoxy'] })}
-            {field('composition', { hint: '조성 설명 · 실제 원료 연결은 아래 원료 행에서 선택' })}
-            <MaterialBindingField label="촉매" name={draft.catalyst} materialId={linkedMaterial(draft.catalystUsageId)} onPick={()=>setPicking({target:'catalyst',query:draft.catalyst})} shortcuts={['DBU','DPA']} onShortcut={query=>shortcut(query,'catalyst')}/>
-            {field('catalystAmount', { unit: draft.catalystUnit ?? 'wt%', choices: ['mg', 'g', 'kg', 'wt%'], onUnit: unit => {const next = unit as NonNullable<BatchDraft['catalystUnit']>; const previous = draft.catalystUnit ?? 'wt%'; change({ catalystUnit: next, catalystAmount: changeCatalystUnit(draft.catalystAmount, previous, next) }); if (draft.catalystAmount && (previous === 'wt%' || next === 'wt%')) setMessage('질량과 wt% 간 변경 시 함량을 다시 입력해주세요.');}, type: 'number' })}
-            {field('temperature', { unit: '°C', type: 'number', chips: ['60', '80', '100'] })}
-            {field('duration', { unit: draft.durationUnit ?? 'h', choices: ['h', 'min'], onUnit: unit => {const next = unit as 'h' | 'min'; change({durationUnit: next, duration: changeDurationUnit(draft.duration, draft.durationUnit ?? 'h', next)})}, type: 'number', chips: draft.durationUnit === 'min' ? ['30', '60', '120'] : ['4', '6', '12'] })}
-            <MaterialBindingField label="용매" name={draft.solvent} materialId={linkedMaterial(draft.solventUsageId)} onPick={()=>setPicking({target:'solvent',query:draft.solvent})} shortcuts={['THF','EtOH']} onShortcut={query=>shortcut(query,'solvent')}/>
-            <div className="ob-field ob-wash-solutions"><span>세척액</span>{(draft.washSolutions??[draft.wash]).map((name,index,list)=><div key={index}><MaterialBindingField label={'세척액 '+(index+1)} name={name} materialId={linkedMaterial(draft.washUsageIds?.[index])} onPick={()=>setPicking({target:`wash:${index}`,query:name})}/>{list.length>1&&<button type="button" onClick={()=>{const removed=draft.washUsageIds?.[index];const washSolutions=list.filter((_,i)=>i!==index);change({washSolutions,wash:washSolutions.filter(Boolean).join(' / '),washUsageIds:(draft.washUsageIds||[]).filter((_,i)=>i!==index),ingredients:draft.ingredients.filter(row=>row.id!==removed)})}}>이 세척액 제거</button>}</div>)}<button type="button" className="ob-wash-add" onClick={()=>change({washSolutions:[...(draft.washSolutions??[draft.wash]),''],washUsageIds:[...(draft.washUsageIds||[]),'']})}><Plus size={15}/> 세척액 추가</button></div>
-            {field('plannedDate', { type: 'date' })}
-            <label className="ob-field">조성 기준<select value={draft.basis} onChange={event => change({ basis: event.target.value })}>
-              {['wt%', 'mol%', '작용기 당량', '미지정'].map(basis => <option key={basis}>{basis}</option>)}</select></label>
-            <label className="ob-field">촉매 함량 기준<select value={draft.catalystBasis} onChange={event => change({ catalystBasis: event.target.value })}>
-              {['전체 조성', '모노머', '수지'].map(basis => <option key={basis}>{basis}</option>)}</select></label>
-          </div></section>
-          <section className="ob-materials"><h3>사용 원료</h3><p className="ob-muted">촉매·용매·세척액 요약과 이 목록은 동일한 사용 행을 공유합니다. 사용 시약이 없으면 미등록으로 보존하며 실제 합성 시 확인해주세요.</p><div className="ob-chips"><small>빠른 원료 연결</small>{['RM82','EDDT','DMPA'].map(name=><button type="button" key={name} onClick={()=>shortcut(name,'ingredient')}>{name}</button>)}</div>
-            {!draft.ingredients.length && <p className="ob-muted">추가된 원료가 없습니다.</p>}
-            <div className="ob-ingredients">{draft.ingredients.map(row => <div className="ob-ingredient" key={row.id}>
-              <div className="material-linked-identity"><MaterialLink materialId={row.materialId} snapshotName={row.name}/><small>사용 시약: {row.lot||'미지정'}</small><select aria-label={row.name+' 사용 시약 선택'} value={row.lotId||''} onChange={event=>{const m=currentMaterial(row.materialId);const lot=m?selectableReagents(m).find(l=>l.id===event.target.value):undefined;if(m)ingredient(row.id,{...selectionRow({materialId:m.id,lotId:lot?.id||null,material:m,lot:lot||null}),id:row.id,amount:row.amount,plannedAmount:row.plannedAmount,role:row.role})}}><option value="">사용 시약 미등록</option>{row.lotId&&!(currentMaterial(row.materialId)?selectableReagents(currentMaterial(row.materialId)!):[]).some(l=>l.id===row.lotId)&&<option value={row.lotId}>{row.lot||row.lotId} · 과거 기록 / 상태 확인</option>}{(currentMaterial(row.materialId)?selectableReagents(currentMaterial(row.materialId)!):[]).map(l=><option key={l.id} value={l.id}>{l.name}</option>)}</select></div>
-              <label>역할<select className="material-role" value={row.role} onChange={event=>ingredient(row.id,{role:event.target.value})}>{Array.from(new Set([row.role,'촉매','용매','세척액','단량체','가교제','광개시제','첨가제','올리고머','기타'])).map(role=><option key={role}>{role}</option>)}</select></label>{row.plannedRatio&&<small>계획 비율: {row.plannedRatio.amount} {row.plannedRatio.unit}</small>}<label>계획량<input inputMode="decimal" value={row.plannedAmount ?? ''} onChange={event => ingredient(row.id, { plannedAmount: event.target.value })}/></label>
-              <label>실제량<input inputMode="decimal" value={row.amount} onChange={event => ingredient(row.id, { amount: event.target.value })}/></label>
-              <label>단위<select value={row.unit} onChange={event => ingredient(row.id, { unit: event.target.value as Unit })}>
-                {units.filter(unit=>row.id!==draft.catalystUsageId||['mg','g','kg'].includes(unit)).map(unit => <option key={unit}>{unit}</option>)}</select></label>
-              <button type="button" aria-label={row.name + ' 삭제'} onClick={() => change({ ingredients: draft.ingredients.filter(item => item.id !== row.id) })}>×</button>
-            </div>)}</div>
-            <button type="button" onClick={()=>setPicking({target:'ingredient',query:''})}><Plus size={15}/> 공용 원료 추가</button>
+        <div className="ob-editor-type">{field('type', {hint:'검색 또는 직접 입력'})}</div>
+        <OligomerRecipeEditor draft={draft} onChange={change}/>
+        <details className="ob-analysis ob-recipe-space"><summary>분석값 · 선택 입력</summary><div className="ob-fields">
+          {field('mn',{unit:'g/mol',type:'number'})}{field('mw',{unit:'g/mol',type:'number'})}
+          {draft.mn&&draft.mw&&Number(draft.mn)>0&&Number(draft.mw)>0&&Number.isFinite(Number(draft.mw)/Number(draft.mn))?<label className="ob-field">PDI · Mw / Mn<input readOnly value={draft.pdi}/></label>:field('pdi',{type:'number'})}
+          {field('tg',{unit:'°C',type:'number'})}{field('tni',{unit:'°C',type:'number'})}
+        </div></details>
+        <div className="ob-editor-bottom"><section><label className="ob-field">합성 상태<select value={draft.status} onChange={event=>change({status:event.target.value as BatchDraft['status']})}>{batchStatuses.map(status=><option key={status}>{status}</option>)}</select></label>
             <h3 className="ob-attachment-title">첨부 파일</h3>
             <input hidden ref={files} type="file" multiple accept=".pdf,.csv,.xlsx,.jpg,.jpeg,.png"
               onChange={event => { void attach(event.currentTarget.files); event.currentTarget.value = ''; }}/>
@@ -334,15 +311,7 @@ export default function OligomerBatches({ projects }: { projects: Project[] }) {
               <a href={file.data} download={file.name}>{file.name}</a>
               <button type="button" aria-label={file.name + ' 제거'} onClick={() => change({ attachments: draft.attachments.filter(item => item.id !== file.id) })}>×</button>
             </div>)}
-          </section>
-          <section className="ob-analysis"><h3>분석값 <small>· 나중에 입력 가능</small></h3><div className="ob-fields">
-            {field('mn', { unit: 'g/mol', type: 'number' })}{field('pdi', { type: 'number' })}{field('tni', { unit: '°C', type: 'number' })}
-            <label className="ob-field">상태<select value={draft.status} onChange={event => change({ status: event.target.value as BatchDraft['status'] })}>
-              {batchStatuses.map(status => <option key={status}>{status}</option>)}</select></label>
-          </div></section>
-          <label className="ob-notes"><span>비고</span><textarea value={draft.notes} placeholder="합성 과정의 관찰 사항이나 특이사항을 기록하세요."
-            onChange={event => change({ notes: event.target.value })}/></label>
-        </div>
+</section><label className="ob-notes"><span>비고</span><textarea rows={5} value={draft.notes} placeholder="합성 조건, 관찰 사항, 정제·건조 및 후처리 내용을 기록하세요." onChange={event=>change({notes:event.target.value})}/></label></div>
         {draft.id&&<BatchOutput batchId={draft.id} name={draft.name} status={draft.status} example={records.find(r=>r.id===draft.id)?.example}/>}
         <details className="ob-links"><summary>연결된 연구 기록</summary><div className="ob-fields">
           <label className="ob-field">프로젝트<select multiple size={Math.min(4, Math.max(2, projects.length))} value={draft.projectIds}
